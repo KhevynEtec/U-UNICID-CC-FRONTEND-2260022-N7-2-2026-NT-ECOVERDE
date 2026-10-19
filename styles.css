@@ -1,0 +1,342 @@
+
+/* --------------------------------------------------------------------------
+   1. VARIÁVEIS DE CORES E IDENTIDADE VISUAL
+   -------------------------------------------------------------------------- */
+   :root {
+    /* Paleta Oficial do Escopo */
+    --verde-folha: #2E7D32;       
+    --azul-hidro: #0288D1;        
+    --verde-amarelo: #7CB342;     
+    --fundo-claro: #F5F5F5;        
+    --texto-escuro: #212121;      
+    
+    /* Cores Complementares de Suporte */
+    --branco: #FFFFFF;
+    --cinza-borda: #E0E0E0;
+    --foco-teclado: #FFD600;       
+    --sombra: rgba(0, 0, 0, 0.1);
+  }
+  
+  /* --------------------------------------------------------------------------
+     2. RESET E CONFIGURAÇÕES DE ACESSIBILIDADE BASE
+     -------------------------------------------------------------------------- */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: Arial, "Open Sans", sans-serif; /* Conforme escopo: sem serifa e legível */
+    background-color: var(--fundo-claro);
+    color: var(--texto-escuro);
+    line-height: 1.6;
+    font-size: 1rem;
+  }
+  
+  /* Esconder elementos visualmente mantendo o suporte a leitores de tela */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  
+  /* Link Acessível de Atalho para Saltar Direto ao Conteúdo */
+  .skip-link {
+    position: absolute;
+    top: -60px;
+    left: 10px;
+    background-color: var(--verde-folha);
+    color: var(--branco);
+    padding: 10px 18px;
+    z-index: 1000;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: top 0.2s ease;
+  }
+  
+  .skip-link:focus {
+    top: 10px;
+    outline: 3px solid var(--foco-teclado);
+  }
+  
+  /* Foco para Navegação via Teclado (WCAG) */
+  a:focus, 
+  button:focus, 
+  input:focus, 
+  select:focus, 
+  textarea:focus {
+    outline: 3px solid var(--foco-teclado);
+    outline-offset: 3px;
+  }
+  
+  /* --------------------------------------------------------------------------
+     3. CABEÇALHO E NAVEGAÇÃO GLOBAL (10 Páginas)
+     -------------------------------------------------------------------------- */
+  header {
+    background-color: var(--verde-folha);
+    color: var(--branco);
+    padding: 1rem;
+    box-shadow: 0 2px 6px var(--sombra);
+  }
+  
+  .header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .logo h1 {
+    font-size: 2rem;
+    letter-spacing: 1px;
+  }
+  
+  .logo span {
+    color: var(--verde-amarelo);
+  }
+  
+  /* Menu de Navegação Global */
+  nav {
+    width: 100%;
+    margin-top: 1rem;
+  }
+  
+  nav ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+  
+  nav a {
+    color: var(--branco);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    background-color: rgba(255, 255, 255, 0.15);
+    display: block;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  
+  nav a:hover {
+    background-color: var(--verde-amarelo);
+    color: var(--texto-escuro);
+  }
+  
+  /* Indicação Visual da Página Atual */
+  nav a[aria-current="page"] {
+    background-color: var(--azul-hidro);
+    border-bottom: 3px solid var(--branco);
+  }
+  
+  /* --------------------------------------------------------------------------
+     4. CONTEÚDO PRINCIPAL E SEÇÕES
+     -------------------------------------------------------------------------- */
+  main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  
+  /* Destaque Principal (Banner Hero) */
+  .hero {
+    background-color: var(--azul-hidro);
+    color: var(--branco);
+    padding: 2.5rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 8px var(--sombra);
+  }
+  
+  .hero h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .hero p {
+    font-size: 1.1rem;
+    max-width: 800px;
+    margin: 0 auto 1.5rem auto;
+  }
+  
+  .btn-hero {
+    display: inline-block;
+    background-color: var(--verde-amarelo);
+    color: var(--texto-escuro);
+    padding: 12px 24px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: background-color 0.2s ease;
+  }
+  
+  .btn-hero:hover {
+    background-color: var(--branco);
+  }
+  
+  /* Grade dos Eixos do Projeto */
+  .eixos {
+    margin-bottom: 3rem;
+  }
+  
+  .eixos h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--verde-folha);
+    font-size: 1.8rem;
+  }
+  
+  .grid-eixos {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .card {
+    background: var(--branco);
+    border: 1px solid var(--cinza-borda);
+    border-radius: 8px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 2px 5px var(--sombra);
+  }
+  
+  .card h3 {
+    color: var(--verde-folha);
+    margin-bottom: 0.8rem;
+    font-size: 1.3rem;
+  }
+  
+  .card.itaipu h3 {
+    color: var(--azul-hidro);
+  }
+  
+  .card.setembro-verde h3 {
+    color: #558B2F;
+  }
+  
+  .card p {
+    margin-bottom: 1.2rem;
+  }
+  
+  .card a {
+    color: var(--azul-hidro);
+    font-weight: bold;
+    text-decoration: none;
+    align-self: flex-start;
+  }
+  
+  .card a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Seção Institucional */
+  .sobre-projeto {
+    background-color: var(--branco);
+    padding: 2rem;
+    border-radius: 8px;
+    border-left: 6px solid var(--verde-folha);
+    box-shadow: 0 2px 5px var(--sombra);
+  }
+  
+  .sobre-projeto h2 {
+    margin-bottom: 1rem;
+    color: var(--verde-folha);
+  }
+  
+  /* --------------------------------------------------------------------------
+     5. RODAPÉ INSTITUCIONAL
+     -------------------------------------------------------------------------- */
+  footer {
+    background-color: var(--texto-escuro);
+    color: var(--branco);
+    padding: 2rem 1rem;
+    margin-top: 3rem;
+  }
+  
+  .footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .footer-info h3 {
+    color: var(--verde-amarelo);
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+  }
+  
+  .footer-info p {
+    font-size: 0.9rem;
+  }
+  
+  .footer-creditos {
+    border-top: 1px solid #424242;
+    padding-top: 1rem;
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.85rem;
+  }
+  
+  /* --------------------------------------------------------------------------
+     6. DESIGN RESPONSIVO (Breakpoints para Tablet e Desktop)
+     -------------------------------------------------------------------------- */
+  
+  /* Tablets e Telas Médias (>= 768px) */
+  @media (min-width: 768px) {
+    .header-container {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  
+    nav {
+      width: auto;
+      margin-top: 0;
+    }
+  
+    nav ul {
+      justify-content: flex-end;
+    }
+  
+    .grid-eixos {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  
+    .footer-container {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+  
+  /* Desktops e Telas Grandes (>= 1024px) */
+  @media (min-width: 1024px) {
+    .grid-eixos {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  
+    .hero h2 {
+      font-size: 2.5rem;
+    }
+  }
