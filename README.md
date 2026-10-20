@@ -7,7 +7,7 @@ Link do EcoVerde na hospedagem:
 # Plano de contexto e escopo — EcoVerde
 
 Briefing permanente do projeto para a equipe e para a IA.
-Disciplina Front-End para Web · UNICID – Universidade Cidade de São Paulo · 2026 · Prof. Paulo Sérgio Fratta.
+Disciplina Desenvolvimento Front-End para web · UNICID – Universidade Cidade de São Paulo · 2026 · Prof. Paulo Sérgio Fratta.
 Equipe **Promptdão**: Alexandre Almeida de Jesus Nogueira, Khevyn Lopes dos Santos, Luis Plinio Cornélio Mota, Marcos Paulo Cornélio Mota e Yuri Navas Moreira.
 Projeto acadêmico. Nenhum dado factual foi inventado: o que ainda falta está marcado no site como “A complementar” ou “[a preencher]”.
 
