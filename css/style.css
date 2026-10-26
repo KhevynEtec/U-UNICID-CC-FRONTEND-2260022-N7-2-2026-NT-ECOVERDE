@@ -38,9 +38,9 @@
      #0288D1 e #7CB342 não atingem 4.5:1 sobre branco para texto comum,
      por isso são usados em superfícies/decoração, e as variantes
      escuras abaixo são usadas em textos e links. */
-  --verde-folha-escuro: #1B5E20;   /* 7.9:1 sobre branco */
-  --azul-hidro-escuro: #01579B;    /* 7.4:1 sobre branco */
-  --setembro-escuro: #33691E;      /* 6.6:1 sobre branco */
+  --verde-folha-escuro: #256D2A;   /* 7.9:1 sobre branco */
+  --azul-hidro-escuro: #2E7D32;    /* 7.4:1 sobre branco */
+  --setembro-escuro: #256D2A;      /* 6.6:1 sobre branco */
   --verde-folha-claro: #E8F5E9;
   --azul-hidro-claro: #E1F5FE;
   --setembro-claro: #F1F8E9;
@@ -672,9 +672,7 @@ main:focus {
 .hero {
   position: relative;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 85% 20%, rgba(124, 179, 66, 0.22), transparent 45%),
-    linear-gradient(135deg, var(--verde-folha-escuro) 0%, #256D2A 55%, var(--azul-hidro-escuro) 100%);
+  background: #256D2A;
   color: var(--branco);
   padding-block: var(--esp-7);
 }
@@ -729,8 +727,7 @@ main:focus {
 
 .cabecalho-pagina--azul {
   background:
-    radial-gradient(circle at 90% 10%, rgba(2, 136, 209, 0.45), transparent 45%),
-    linear-gradient(120deg, #003C6C, var(--azul-hidro-escuro));
+    linear-gradient(120deg, #2E7D32);
 }
 
 .cabecalho-pagina--setembro {
