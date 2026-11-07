@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "github": {
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${env:GITHUB_PAT}"
+      }
+    },
+    "railway": {
+      "command": "railway",
+      "args": ["mcp"]
+    },
+    "figma": {
+      "command": "npx",
+      "args": ["-y", "figma-developer-mcp", "--stdio"],
+      "env": {
+        "FIGMA_API_KEY": "${env:FIGMA_API_KEY}"
+      }
+    }
+  }
+}
