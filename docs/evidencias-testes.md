@@ -129,3 +129,37 @@ Validar em https://validator.w3.org/ (página por upload ou URL).
 | iframe | Mapa carrega | Mapa do OpenStreetMap exibido | ⏳ |
 | iframe | Leitor de tela | Anuncia o `title` do iframe | ⏳ |
 | Geral | Sem reprodução automática | Nada toca sozinho | ⏳ |
+
+## 6. Servidor e EcoBot (07/11/2026)
+
+### 6.1 Testes automatizados já executados
+
+| Teste | Ferramenta | Resultado |
+|---|---|---|
+| Respostas do FAQ (9 perguntas típicas, pergunta fora do assunto, normalização de texto, links válidos) | `npm test` (node:test) | ✅ 12 de 12 aprovados |
+| As 10 páginas servidas pelo Express | `curl` em `localhost` | ✅ todas com status 200 |
+| `POST /api/assistente` com pergunta válida | `curl` | ✅ resposta JSON com texto, link e sugestões |
+| Pergunta vazia ou JSON inválido | `curl` | ✅ status 400 com mensagem de erro |
+| Arquivos do servidor não expostos (`/server.js`, `/.env`) | `curl` | ✅ status 404 |
+| Botão do EcoBot visível no desktop (1280 px) | Captura com Edge headless | ✅ |
+
+### 6.2 Testes manuais (preencher)
+
+| Cenário | Resultado esperado | Status |
+|---|---|---|
+| `Tab` até o botão EcoBot e `Enter` | Painel abre, foco vai para o campo de pergunta, `aria-expanded="true"` | ⏳ |
+| Enviar pergunta com `Enter` | Resposta aparece e é anunciada pelo leitor de tela | ⏳ |
+| `Esc` com o painel aberto | Painel fecha e o foco volta ao botão EcoBot | ⏳ |
+| Botões de sugestão | Enviam a pergunta correspondente | ⏳ |
+| Modo alto contraste ativo | Widget em preto e branco, links em amarelo | ⏳ |
+| Celular (375 px) | Painel cabe na tela sem rolagem horizontal | ⏳ |
+| URL pública no Railway | Site e EcoBot funcionando | ⏳ |
+
+## 7. Evidências da Aula 06 (preencher com prints em `docs/evidencias/`)
+
+| Evidência | Onde ver | Status |
+|---|---|---|
+| Regras carregadas no Cursor | Cursor → *Settings → Rules* | ⏳ |
+| Servidores MCP ativos | Cursor → *Settings → MCP* | ⏳ |
+| Pull request feito com agente | Aba *Pull requests* do GitHub | ⏳ |
+| Deploy concluído | Railway → *Deployments* | ⏳ |
