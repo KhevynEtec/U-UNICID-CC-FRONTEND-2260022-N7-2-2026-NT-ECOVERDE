@@ -94,26 +94,41 @@
     <section class="secao" aria-labelledby="titulo-video" id="video">
       <div class="container duas-colunas duas-colunas--larga">
         <div class="midia-bloco">
-          <!--
-            Vídeo demonstrativo (3:27 minutos, com narração) produzido para validar o player.
-            Substituir pelo vídeo oficial do projeto, mantendo o arquivo de legendas atualizado.
-          -->
-          <div class="video-container">
-            <iframe src="https://www.youtube.com/embed/UjU0RlTzP4Y" title="Podcast sobre sustentabilidade"
-              allowfullscreen>
-            </iframe>
-          </div>
+          <!-- Vídeo autoral: ilustrações do próprio portal + narração em português com legendas sincronizadas. -->
+          <video controls preload="none" poster="assets/images/poster-video.webp" width="960" height="540"
+            aria-describedby="descricao-video">
+            <source src="assets/media/video-ecoverde.mp4" type="video/mp4">
+            <track kind="captions" src="assets/media/legendas-video-ecoverde-pt-br.vtt" srclang="pt-BR"
+              label="Português (Brasil)" default>
+            <p>Seu navegador não reproduz vídeo em HTML5. <a href="assets/media/video-ecoverde.mp4">Baixe o vídeo em
+                formato MP4</a>.</p>
+          </video>
+          <details class="transcricao">
+            <summary>Transcrição do vídeo</summary>
+            <p>Olá! Este é o EcoVerde, um portal sobre sustentabilidade, energia limpa e inclusão social.</p>
+            <p>Comece pela reciclagem: separe papel, plástico, metal e vidro dos resíduos orgânicos e leve tudo para a
+              coleta seletiva.</p>
+            <p>No dia a dia, feche a torneira ao escovar os dentes, apague as luzes ao sair de um ambiente e desligue da
+              tomada os aparelhos que não estiver usando.</p>
+            <p>A energia também pode ser limpa. A Usina de Itaipu, no Rio Paraná, gera eletricidade a partir da força da
+              água.</p>
+            <p>E sustentabilidade combina com inclusão. O Setembro Verde reforça o respeito e a inclusão das pessoas com
+              deficiência.</p>
+            <p>Por isso, o EcoVerde funciona com teclado, leitor de tela e alto contraste. Acesse, compartilhe e faça
+              parte!</p>
+          </details>
         </div>
         <div class="texto-corrido">
           <p class="tag">Vídeo</p>
-          <h2 id="titulo-video">EcoVerde em 25 segundos</h2>
-          <p id="descricao-video">Um resumo visual dos três pilares do portal: reciclagem, uso racional dos recursos,
-            energia renovável e inclusão de Pessoas com Deficiência.</p>
+          <h2 id="titulo-video">EcoVerde em menos de um minuto</h2>
+          <p id="descricao-video">Um resumo narrado dos três pilares do portal: reciclagem e uso consciente dos
+            recursos, energia renovável com a Usina de Itaipu e inclusão de Pessoas com Deficiência.</p>
           <ul class="lista-check">
             <li>Legendas em português, ativadas por padrão.</li>
             <li>Transcrição completa em texto.</li>
-            <li>Arquivo leve, de baixo consumo de dados.</li>
+            <li>Ilustrações originais do EcoVerde e arquivo leve.</li>
           </ul>
+          <p class="texto-pequeno">Roteiro e ilustrações da equipe Promptdão. Narração gerada por IA com ElevenLabs.</p>
         </div>
       </div>
     </section>
@@ -131,20 +146,23 @@
             <img class="podcast__capa" src="assets/images/podcast-capa.svg" width="120" height="120"
               alt="Capa do podcast EcoVerde: um microfone branco e uma pequena folha verde sobre fundo em degradê de verde para azul.">
             <div>
-              <h3 id="titulo-episodio">ISADORA OLIVEIRA | SUSTENTABILIDADE: UMA CONSULTORIA AMBIENTAL | PODCAST
-                ADVENTURE | EP. #021</h3>
-              <p class="mb-0">Duração: 37:35</p>
+              <h3 id="titulo-episodio">Episódio 0 – Apresentação do Podcast EcoVerde</h3>
+              <p class="mb-0">Roteiro da equipe Promptdão. Narração gerada por IA com ElevenLabs.</p>
             </div>
           </div>
-          <!-- Vinheta demonstrativa. Substituir pelos episódios reais do podcast, cada um com sua transcrição. -->
           <audio controls preload="none" aria-labelledby="titulo-episodio">
-            <source src="assets/media/vinheta-ecoverde-demonstrativa.mp3" type="audio/mpeg">
-            <p>Seu navegador não reproduz áudio em HTML5. <a
-                href="assets/media/vinheta-ecoverde-demonstrativa.mp3">Baixe o áudio em formato MP3</a>.</p>
+            <source src="assets/media/podcast-ecoverde-ep00.mp3" type="audio/mpeg">
+            <p>Seu navegador não reproduz áudio em HTML5. <a href="assets/media/podcast-ecoverde-ep00.mp3">Baixe o
+                áudio em formato MP3</a>.</p>
           </audio>
           <details class="transcricao">
-            <summary>Caso queira ver com legendas acesse o link: <a
-                href="https://www.youtube.com/watch?v=L-tdNVNsrlw"> Ouvir Podcast</a></summary>
+            <summary>Transcrição do episódio</summary>
+            <p>Você está ouvindo o Podcast EcoVerde, o podcast do portal EcoVerde, criado pela equipe Promptdão, da
+              UNICID.</p>
+            <p>Aqui a gente conversa sobre três assuntos que caminham juntos: reciclagem e uso consciente da água e da
+              energia; energia renovável, como a da Usina de Itaipu; e a inclusão das pessoas com deficiência, a causa
+              do Setembro Verde.</p>
+            <p>Todos os episódios têm transcrição em texto no site. Até o próximo episódio!</p>
           </details>
         </article>
       </div>
