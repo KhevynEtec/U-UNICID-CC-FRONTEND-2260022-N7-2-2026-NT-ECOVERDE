@@ -23,6 +23,7 @@
    19. Modo alto contraste e escala de fonte
    20. Responsividade (breakpoints: 600px, 900px, 1100px)
    21. Movimento reduzido e impressão
+   22. EcoBot (assistente) — declarado antes da seção 21
    ========================================================================== */
 
 /* 1. DESIGN TOKENS ======================================================== */
@@ -2042,6 +2043,202 @@ html.alto-contraste .carrossel__indicador[aria-current="true"] span {
 
   .menu a {
     padding-inline: var(--esp-2);
+  }
+}
+
+/* 22. ECOBOT (assistente) ================================================ */
+.ecobot {
+  position: fixed;
+  right: var(--esp-4);
+  bottom: var(--esp-4);
+  z-index: 900; /* abaixo do skip link (1000) */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--esp-3);
+  max-width: calc(100vw - 2 * var(--esp-4));
+}
+
+.ecobot__abrir {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--esp-2);
+  min-height: var(--alvo-min);
+  padding: var(--esp-2) var(--esp-5);
+  border: 2px solid var(--branco);
+  border-radius: 999px;
+  background: var(--verde-folha);
+  color: var(--branco);
+  font: inherit;
+  font-weight: 700;
+  box-shadow: var(--sombra-2);
+  cursor: pointer;
+  transition: background-color var(--transicao);
+}
+
+.ecobot__abrir:hover {
+  background: var(--verde-folha-escuro);
+}
+
+.ecobot__painel {
+  display: flex;
+  flex-direction: column;
+  width: 22rem;
+  max-width: 100%;
+  max-height: min(34rem, calc(100vh - 7rem));
+  background: var(--branco);
+  color: var(--texto-escuro);
+  border: 1px solid var(--cinza-borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra-2);
+  overflow: hidden;
+}
+
+.ecobot__painel[hidden] {
+  display: none;
+}
+
+.ecobot__cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-3);
+  padding: var(--esp-3) var(--esp-4);
+  background: var(--verde-folha-escuro);
+  color: var(--branco);
+}
+
+.ecobot__titulo {
+  margin: 0;
+  font-weight: 700;
+}
+
+.ecobot__fechar {
+  min-width: var(--alvo-min);
+  min-height: var(--alvo-min);
+  border: 2px solid transparent;
+  border-radius: var(--raio-sm);
+  background: transparent;
+  color: var(--branco);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ecobot__fechar:hover {
+  border-color: var(--branco);
+}
+
+.ecobot__historico {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-3);
+  min-height: 8rem;
+  padding: var(--esp-4);
+  overflow-y: auto;
+  background: var(--fundo-claro);
+}
+
+.ecobot__msg {
+  max-width: 90%;
+  padding: var(--esp-3);
+  border-radius: var(--raio-sm);
+  font-size: var(--fs-sm);
+}
+
+.ecobot__msg p {
+  margin: 0;
+}
+
+.ecobot__msg a {
+  display: inline-block;
+  margin-top: var(--esp-2);
+  color: var(--verde-folha-escuro);
+  font-weight: 700;
+}
+
+.ecobot__msg--bot {
+  align-self: flex-start;
+  background: var(--verde-folha-claro);
+  border: 1px solid var(--cinza-suave);
+}
+
+.ecobot__msg--usuario {
+  align-self: flex-end;
+  background: var(--branco);
+  border: 1px solid var(--cinza-borda);
+}
+
+.ecobot__sugestoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2);
+  margin: 0;
+  padding: var(--esp-3) var(--esp-4) 0;
+  list-style: none;
+}
+
+.ecobot__sugestao {
+  min-height: 2.75rem; /* alvo de toque de 44px */
+  padding: var(--esp-1) var(--esp-3);
+  border: 1px solid var(--verde-folha-escuro);
+  border-radius: 999px;
+  background: var(--branco);
+  color: var(--verde-folha-escuro);
+  font: inherit;
+  font-size: var(--fs-sm);
+  text-align: left;
+  cursor: pointer;
+}
+
+.ecobot__sugestao:hover {
+  background: var(--verde-folha-claro);
+}
+
+.ecobot__form {
+  display: flex;
+  gap: var(--esp-2);
+  padding: var(--esp-3) var(--esp-4);
+}
+
+.ecobot__form input {
+  flex: 1;
+  min-width: 0;
+}
+
+.ecobot__enviar {
+  padding-inline: var(--esp-4);
+}
+
+.ecobot__aviso {
+  margin: 0;
+  padding: 0 var(--esp-4) var(--esp-3);
+  color: var(--texto-suave);
+  font-size: 0.8125rem;
+}
+
+html.alto-contraste .ecobot__abrir,
+html.alto-contraste .ecobot__painel,
+html.alto-contraste .ecobot__cabecalho,
+html.alto-contraste .ecobot__historico,
+html.alto-contraste .ecobot__msg,
+html.alto-contraste .ecobot__sugestao,
+html.alto-contraste .ecobot__fechar {
+  background: #000 !important;
+  color: #FFF !important;
+  border-color: #FFF !important;
+  box-shadow: none !important;
+}
+
+html.alto-contraste .ecobot__msg a,
+html.alto-contraste .ecobot__aviso {
+  color: #FF0 !important;
+}
+
+@media print {
+  .ecobot {
+    display: none !important;
   }
 }
 
