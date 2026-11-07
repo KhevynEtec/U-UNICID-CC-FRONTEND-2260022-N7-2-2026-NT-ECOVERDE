@@ -40,12 +40,13 @@ ODS relacionados: **ODS 7** (energia limpa), **ODS 10** (redução das desiguald
 - **Galeria** com `figure`, `figcaption`, fonte e texto alternativo.
 - **Central de mídia**: `<video>` com legendas WebVTT, `<audio>` com transcrição e mapa em `<iframe>`.
 - **Recursos de acessibilidade**: skip link, atalhos eMAG (1 a 4), alto contraste e ajuste de fonte.
-- **EcoBot**: widget de perguntas e respostas baseado em **FAQ local**, servido pela rota `POST /api/assistente`. Funciona **sem chave de API**.
+- **EcoBot (FAQ + API de IA)**: widget servido pela rota `POST /api/assistente`. Responde primeiro pelo **FAQ local**; quando o FAQ não sabe, consulta a **API de IA (Claude, da Anthropic)**. Sem a chave `IA_API_KEY`, funciona só com o FAQ. Respostas da IA aparecem identificadas.
 
 ## 7. Stack técnica
 
 - **Front-end:** HTML5 semântico, CSS3 puro (um arquivo `public/css/style.css`, mobile-first, variáveis CSS) e JavaScript nativo. Sem frameworks.
 - **Servidor:** Node.js + Express, que serve a pasta `public/` e a rota do EcoBot.
+- **IA do EcoBot:** SDK oficial `@anthropic-ai/sdk`, chave só no servidor (`.env` local e Variables do Railway).
 - **Versionamento:** Git + GitHub (issues, branches por tarefa, pull requests).
 - **Deploy:** Railway, com deploy automático a cada push na `main`.
 - **IA no desenvolvimento:** agentes (Claude Code / Cursor) guiados por este plano e pelas regras em `.cursor/rules/`.
@@ -74,6 +75,7 @@ ecoverde/
 │   ├── js/ecobot.js
 │   └── assets/ (images, icons, media)
 ├── lib/faq.js               # base de perguntas do EcoBot
+├── lib/ia.js                # FAQ primeiro; API de IA se houver chave
 ├── server.js                # Express: site estático + /api/assistente
 ├── package.json
 ├── .env.example
@@ -82,7 +84,6 @@ ecoverde/
 
 ## 10. Desejáveis (nice to have)
 
-- EcoBot com resposta por API de IA quando houver chave configurada (fallback para o FAQ).
 - Mapa de pontos de coleta seletiva.
 - Modo escuro além do alto contraste.
 - Conteúdos oficiais (Itaipu, notícias, podcast) no lugar dos demonstrativos.
@@ -92,6 +93,6 @@ ecoverde/
 - **0 erros** no validador W3C em todas as páginas.
 - **Lighthouse Acessibilidade ≥ 90** em todas as páginas.
 - Todas as páginas navegáveis apenas com teclado.
-- EcoBot respondendo na URL pública do Railway.
+- EcoBot respondendo na URL pública do Railway, pelo FAQ e pela API de IA.
 - Histórico no GitHub com issues, PRs revisados e commits claros.
 - Diário de bordo com os prompts usados e as decisões da equipe.
