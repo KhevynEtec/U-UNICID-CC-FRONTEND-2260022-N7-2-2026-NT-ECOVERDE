@@ -12,7 +12,7 @@ Dar à IA, em toda conversa, o resumo do projeto e apontar para o plano completo
 - Portal educativo e acessível: sustentabilidade, energia limpa (Itaipu) e inclusão (Setembro Verde).
 - Plano completo: `docs/plano-contexto.md` — leia antes de qualquer tarefa grande.
 - Site estático em `public/` (10 páginas HTML5 + `css/style.css` + `js/script.js`).
-- Servidor Node.js + Express (`server.js`) servindo `public/` e a rota `POST /api/assistente` (EcoBot com FAQ local).
+- Servidor Node.js + Express (`server.js`) servindo `public/` e a rota `POST /api/assistente` (EcoBot: FAQ local primeiro, API de IA Claude em `lib/ia.js` quando `IA_API_KEY` existe).
 - Deploy no Railway; versionamento no GitHub com uma branch por tarefa.
 - Público prioritário: pessoas com deficiência. Acessibilidade não é opcional.
 
@@ -27,7 +27,8 @@ Pedido: "crie uma seção de dicas em sobre.html" → ler `docs/plano-contexto.m
 
 ## 5. Erros a evitar
 - Adicionar frameworks (Bootstrap, Tailwind, React, jQuery).
-- Colocar chaves de API ou tokens em qualquer arquivo versionado.
+- Colocar chaves de API ou tokens em qualquer arquivo versionado — inclusive a `IA_API_KEY` do EcoBot.
+- Chamar a API de IA pelo navegador: a chave fica só no servidor.
 - Coletar ou enviar dados pessoais reais (LGPD).
 
 ## 6. Perguntas
