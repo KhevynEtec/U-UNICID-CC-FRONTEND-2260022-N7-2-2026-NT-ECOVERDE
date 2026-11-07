@@ -1,0 +1,58 @@
+---
+description: HTML5 semântico e acessível nas páginas do EcoVerde
+globs: public/**/*.html
+alwaysApply: false
+---
+# HTML semântico – EcoVerde
+
+## 1. Objetivo
+Todas as páginas semânticas, válidas no W3C e com a mesma estrutura do `public/index.html`.
+
+## 2. Contexto do projeto
+HTML5 + CSS3 puros, sem frameworks. Site em `public/`, estilos em `public/css/style.css`, comportamento em `public/js/script.js` (carregado com `defer`).
+
+## 3. Regras detalhadas
+- Copie do `index.html`: skip link, barra de acessibilidade, `header.site-header`, `nav#menu`, `footer#rodape` e o widget do EcoBot.
+- `<html lang="pt-BR">`, `<title>` exclusivo no formato `Página | EcoVerde` e `meta description` própria.
+- `<main id="main-content" tabindex="-1">` em todas as páginas.
+- Um único `<h1>`; hierarquia de títulos sem pular níveis.
+- Cada `<section>` com `aria-labelledby` apontando para o id do seu título.
+- No menu, a página atual recebe `aria-current="page"`.
+- Toda `<img>` com `alt` descritivo, `width` e `height`; decorativas com `alt=""`.
+- Imagens de conteúdo dentro de `<figure>` + `<figcaption>` com a fonte (`<span class="credito">`).
+- Campos de formulário com `<label for>`, validação HTML5 nativa (`required`, `type="email"` etc.) e `aria-describedby` para ajuda e erro.
+
+## 4. Exemplos
+```html
+<section aria-labelledby="titulo-dicas">
+  <h2 id="titulo-dicas">Dicas para o dia a dia</h2>
+</section>
+
+<figure>
+  <img src="assets/images/reciclagem-coleta-seletiva.svg" width="800" height="500" loading="lazy"
+       alt="Quatro lixeiras de coleta seletiva lado a lado sobre um gramado...">
+  <figcaption>
+    <strong>Coleta seletiva</strong>
+    Separar os resíduos por tipo de material facilita a reciclagem.
+    <span class="credito">Fonte: ilustração original do EcoVerde (equipe Promptdão).</span>
+  </figcaption>
+</figure>
+
+<div class="campo">
+  <label for="contato-email">E-mail <span class="obrigatorio" aria-hidden="true">*</span></label>
+  <input type="email" id="contato-email" name="email" required autocomplete="email"
+         aria-describedby="ajuda-contato-email erro-contato-email">
+  <span class="ajuda" id="ajuda-contato-email">Exemplo: nome@exemplo.com</span>
+  <span class="mensagem-erro" id="erro-contato-email"></span>
+</div>
+```
+
+## 5. Erros a evitar
+- `<div>` no lugar de `header`, `nav`, `main`, `section`, `article` e `footer`.
+- CSS inline (`style="..."`) ou `<style>` dentro da página.
+- `alt` genérico ("imagem", "foto1") ou ausente.
+- Links com texto vago ("clique aqui").
+- `onclick` e outros eventos inline — use `js/script.js`.
+
+## 6. Perguntas
+Na dúvida sobre conteúdo, imagem, legenda ou fonte, pergunte antes de inventar.

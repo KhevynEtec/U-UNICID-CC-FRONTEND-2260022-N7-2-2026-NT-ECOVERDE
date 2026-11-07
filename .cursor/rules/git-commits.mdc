@@ -1,0 +1,39 @@
+---
+description: Padrão de branches, commits e pull requests da equipe
+globs:
+alwaysApply: false
+---
+# Git e commits – EcoVerde
+
+> Regra manual: chame com `@git-commits` antes de commitar ou abrir PR.
+
+## 1. Objetivo
+Histórico claro no GitHub, que serve de evidência do processo da equipe (critério "Evolução" da rubrica).
+
+## 2. Contexto
+Fluxo: issue → branch → commits → pull request → revisão → merge na `main` → deploy automático no Railway.
+
+## 3. Regras
+- Uma branch por tarefa, a partir da `main` atualizada: `feat/`, `fix/`, `docs/`, `chore/`, `refactor/` + nome curto em kebab-case.
+- Commits pequenos, no formato `tipo: descrição no imperativo`, em português.
+  Tipos: `feat`, `fix`, `docs`, `style`, `refactor`, `chore`.
+- Corpo do commit explica **o porquê** quando não for óbvio.
+- Commits feitos com IA levam a linha `Co-Authored-By:` do agente (declaração de uso de IA).
+- PR com título no mesmo formato do commit e descrição com: o que mudou, como testar, issue relacionada (`Closes #N`).
+- **Merge só depois de revisão humana.** O agente nunca faz merge sozinho.
+
+## 4. Exemplos
+```
+feat: adiciona widget do EcoBot com FAQ local
+fix: corrige contraste do botão Setembro Verde
+docs: registra prompts da aula 06 no diário de bordo
+```
+
+## 5. Erros a evitar
+- Commits genéricos ("ajustes", "update", "final agora vai").
+- Commitar `.env`, `node_modules/` ou tokens.
+- Push direto na `main` sem PR.
+- Misturar tarefas diferentes no mesmo commit.
+
+## 6. Perguntas
+Se não houver issue para a tarefa, pergunte se deve criar uma antes de começar.

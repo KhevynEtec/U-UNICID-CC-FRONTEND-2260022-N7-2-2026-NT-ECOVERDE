@@ -1,0 +1,30 @@
+---
+description: Como criar e formatar regras do Cursor neste projeto
+globs: .cursor/rules/*.mdc
+alwaysApply: true
+---
+# Como escrever regras – EcoVerde
+
+## 1. Objetivo
+Manter todas as regras no mesmo formato, fáceis de ler pela equipe e pela IA.
+
+## 2. Regras
+- Local: sempre em `.cursor/rules/`.
+- Nome em kebab-case, extensão `.mdc` (ex.: `html-semantico.mdc`).
+- Cabeçalho obrigatório com `description`, `globs` e `alwaysApply`.
+- Use `alwaysApply: true` com moderação: gasta contexto em toda conversa.
+- Corpo com as 6 seções: Objetivo, Contexto, Regras, Exemplos, Erros a evitar, Perguntas.
+- Exemplos tirados do código real do projeto, não genéricos.
+- Curta e objetiva: se passar de ~80 linhas, divida em duas regras.
+
+## 3. Exemplo bom × ruim
+```
+✅ globs: public/**/*.html      → vale só para as páginas
+❌ globs: **/*                  → vale para tudo, sem foco
+
+✅ "Use var(--verde-folha-escuro) em links"
+❌ "Use cores bonitas"
+```
+
+## 4. Perguntas
+Antes de criar uma regra nova, confira se uma existente já cobre o assunto; prefira atualizar.

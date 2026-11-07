@@ -1,0 +1,41 @@
+---
+description: Acessibilidade WCAG 2.1 AA, ARIA, teclado e texto alternativo. Use ao criar ou revisar páginas, formulários, componentes interativos, imagens, vídeo, áudio ou o EcoBot.
+globs:
+alwaysApply: false
+---
+# Acessibilidade – EcoVerde
+
+## 1. Objetivo
+Garantir que pessoas com deficiência (público prioritário) usem todo o site: WCAG 2.1 AA e padrão eMAG.
+
+## 2. Contexto
+O site já tem skip link, atalhos `accesskey` 1–4, alto contraste e ajuste de fonte (`js/script.js`). Tudo que for novo deve conviver com esses recursos.
+
+## 3. Regras
+- Contraste mínimo 4.5:1 (texto comum) e 3:1 (texto grande e ícones).
+- Tudo acessível por teclado, em ordem lógica, com foco visível. Sem armadilhas de foco.
+- Use elementos nativos (`<button>`, `<a>`, `<input>`) antes de ARIA. ARIA só complementa.
+- Componentes que abrem/fecham usam `aria-expanded` e `aria-controls`.
+- Mensagens dinâmicas (erros de formulário, respostas do EcoBot) em região `aria-live="polite"` ou `role="status"`.
+- Vídeo com legendas (`<track kind="captions" srclang="pt-BR">`); áudio com transcrição.
+- `<iframe>` com `title` descritivo.
+- Texto escondido para leitores de tela com a classe `.visually-hidden`.
+
+## 4. Exemplo
+```html
+<button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu">
+  <span class="nav-toggle__icone" aria-hidden="true"></span>
+  <span class="nav-toggle__texto">Menu</span>
+</button>
+<div id="ecobot-mensagens" role="log" aria-live="polite"></div>
+```
+
+## 5. Erros a evitar
+- `div` ou `span` clicável sem `role`, `tabindex` e suporte a Enter/Espaço.
+- Informação transmitida só por cor.
+- `tabindex` positivo.
+- Rotação automática de conteúdo sem botão de pausa.
+- `aria-label` repetindo o texto visível ou contradizendo-o.
+
+## 6. Perguntas
+Se um requisito de design conflitar com acessibilidade, a acessibilidade vence — avise a equipe e pergunte como prosseguir.
