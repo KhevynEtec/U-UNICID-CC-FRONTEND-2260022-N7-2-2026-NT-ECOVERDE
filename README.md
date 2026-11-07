@@ -70,8 +70,8 @@ Os formulários validam os dados mas **não enviam nada**: sem backend, o envio 
 - HTML5 e CSS3 puros, sem framework de CSS ou de interface.
 - JavaScript nativo apenas onde necessário: menu mobile, carrossel, controles de acessibilidade e mensagens de erro dos formulários.
 - Um único arquivo de estilo: `css/style.css`, mobile-first, com variáveis CSS (design tokens).
-- Servidor Node.js + Express (`server.js`): entrega o site da pasta `public/` e a rota `POST /api/assistente` do **EcoBot**, que responde a partir de um FAQ local (`lib/faq.js`), sem chave de API.
-- Para rodar localmente (Node.js 20.11 ou superior):
+- Servidor Node.js + Express (`server.js`): entrega o site da pasta `public/` e a rota `POST /api/assistente` do **EcoBot**, que responde em duas camadas: primeiro pelo FAQ local (`lib/faq.js`) e, quando o FAQ não sabe, pela API de IA (Claude, da Anthropic). A IA só é usada se a variável `IA_API_KEY` estiver definida; sem ela, o EcoBot funciona só com o FAQ. Respostas da IA aparecem identificadas para o visitante.
+- Para rodar localmente (Node.js 20.12 ou superior). Para ativar a IA, copie `.env.example` para `.env` e preencha `IA_API_KEY`:
 
 ```bash
 npm install
@@ -79,7 +79,7 @@ npm start      # abre em http://localhost:3000
 npm test       # testes do EcoBot
 ```
 
-- Deploy no Railway: o Railway executa `npm start` automaticamente a cada push na `main`.
+- Deploy no Railway: o Railway executa `npm start` automaticamente a cada push na `main`. A chave da IA é cadastrada na aba *Variables* do serviço, nunca no código.
 
 - Versionamento no Git / GitHub.
 
@@ -116,7 +116,7 @@ EcoVerde/
 │   ├── js/script.js           # menu, acessibilidade, carrossel, formulários
 │   ├── js/ecobot.js           # widget do EcoBot
 │   └── assets/                # images/, icons/ e media/
-├── lib/ia.js                  # busca a resposta do EcoBot
+├── lib/ia.js                  # FAQ primeiro; API de IA se configurada
 ├── lib/faq.js                 # perguntas e respostas do EcoBot
 ├── test/ia.test.js            # testes do EcoBot (npm test)
 ├── server.js                  # Express: site + /api/assistente

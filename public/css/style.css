@@ -2158,6 +2158,14 @@ html.alto-contraste .carrossel__indicador[aria-current="true"] span {
   font-weight: 700;
 }
 
+.ecobot__fonte {
+  display: block;
+  margin-top: var(--esp-2);
+  color: var(--texto-suave);
+  font-size: 0.8125rem;
+  font-style: italic;
+}
+
 .ecobot__msg--bot {
   align-self: flex-start;
   background: var(--verde-folha-claro);
@@ -2232,6 +2240,7 @@ html.alto-contraste .ecobot__fechar {
 }
 
 html.alto-contraste .ecobot__msg a,
+html.alto-contraste .ecobot__fonte,
 html.alto-contraste .ecobot__aviso {
   color: #FF0 !important;
 }

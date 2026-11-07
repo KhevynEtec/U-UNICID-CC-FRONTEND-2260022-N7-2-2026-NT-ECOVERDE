@@ -2,6 +2,8 @@
    EcoBot — assistente de perguntas frequentes do EcoVerde
    --------------------------------------------------------------------------
    - Envia a pergunta para POST /api/assistente (server.js) e mostra a resposta.
+     O servidor responde pelo FAQ e, se não souber, pela API de IA; respostas
+     da IA aparecem identificadas para o visitante.
    - Acessível: botão com aria-expanded, histórico em role="log" com
      aria-live, Esc fecha e devolve o foco, tudo operável por teclado.
    - Respostas inseridas com textContent (nunca innerHTML) por segurança.
@@ -77,20 +79,23 @@
   const aviso = criar(
     "p",
     { class: "ecobot__aviso" },
-    "Respostas automáticas a partir das perguntas frequentes do site. Não informe dados pessoais."
+    "Respostas automáticas: perguntas frequentes do site e, quando necessário, uma IA. Não informe dados pessoais."
   );
 
   painel.append(cabecalho, historico, listaSugestoes, form, aviso);
   raiz.append(botaoAbrir, painel);
 
   /* Comportamento ------------------------------------------------------- */
-  const adicionarMensagem = (autor, texto, link) => {
+  const adicionarMensagem = (autor, texto, link, fonte) => {
     const item = criar("div", { class: `ecobot__msg ecobot__msg--${autor}` });
     item.append(criar("span", { class: "visually-hidden" }, autor === "bot" ? "EcoBot disse: " : "Você perguntou: "));
     item.append(criar("p", {}, texto));
     if (link?.href) {
       const a = criar("a", { href: link.href }, link.texto || "Saiba mais");
       item.append(a);
+    }
+    if (fonte === "ia") {
+      item.append(criar("small", { class: "ecobot__fonte" }, "Resposta gerada por IA – pode conter erros."));
     }
     historico.append(item);
     historico.scrollTop = historico.scrollHeight;
@@ -122,8 +127,12 @@
         body: JSON.stringify({ pergunta }),
       });
       const dados = await resposta.json();
-      if (!resposta.ok) throw new Error(dados.erro || "Erro ao responder.");
-      adicionarMensagem("bot", dados.resposta, dados.link);
+      if (!resposta.ok) {
+        // Erro conhecido do servidor (pergunta inválida, limite de pedidos).
+        adicionarMensagem("bot", dados.erro || "Não consegui responder agora. Tente de novo.");
+        return;
+      }
+      adicionarMensagem("bot", dados.resposta, dados.link, dados.fonte);
       mostrarSugestoes(dados.sugestoes?.length ? dados.sugestoes : SUGESTOES);
     } catch (erro) {
       adicionarMensagem(
