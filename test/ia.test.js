@@ -9,18 +9,16 @@ import { FAQ } from "../lib/faq.js";
 
 const SEM_IA = { cliente: null };
 
-/** Cliente falso que imita client.beta.messages.create. */
+/** Cliente falso que imita client.messages.create. */
 function clienteFalso(resposta) {
   const chamadas = [];
   return {
     chamadas,
-    beta: {
-      messages: {
-        create: async (params) => {
-          chamadas.push(params);
-          if (resposta instanceof Error) throw resposta;
-          return resposta;
-        },
+    messages: {
+      create: async (params) => {
+        chamadas.push(params);
+        if (resposta instanceof Error) throw resposta;
+        return resposta;
       },
     },
   };
@@ -71,6 +69,7 @@ test("com chave, pergunta fora do FAQ é respondida pela API de IA", async () =>
   assert.equal(resultado.fonte, "ia");
   assert.equal(resultado.resposta, "Resposta da IA.");
   assert.equal(cliente.chamadas.length, 1);
+  assert.equal(cliente.chamadas[0].model, "claude-haiku-5-5");
   assert.match(cliente.chamadas[0].system[0].text, /EcoBot/);
 });
 
