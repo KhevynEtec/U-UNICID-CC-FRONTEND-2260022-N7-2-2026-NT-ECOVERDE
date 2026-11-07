@@ -1,0 +1,34 @@
+---
+description: Visão geral do projeto EcoVerde e onde está o plano de contexto
+globs:
+alwaysApply: true
+---
+# Projeto EcoVerde – visão geral
+
+## 1. Objetivo
+Dar à IA, em toda conversa, o resumo do projeto e apontar para o plano completo.
+
+## 2. Contexto
+- Portal educativo e acessível: sustentabilidade, energia limpa (Itaipu) e inclusão (Setembro Verde).
+- Plano completo: `docs/plano-contexto.md` — leia antes de qualquer tarefa grande.
+- Site estático em `public/` (10 páginas HTML5 + `css/style.css` + `js/script.js`).
+- Servidor Node.js + Express (`server.js`) servindo `public/` e a rota `POST /api/assistente` (EcoBot com FAQ local).
+- Deploy no Railway; versionamento no GitHub com uma branch por tarefa.
+- Público prioritário: pessoas com deficiência. Acessibilidade não é opcional.
+
+## 3. Regras
+- Responda e escreva conteúdo em **português do Brasil**.
+- Siga as regras específicas: `html-semantico.mdc`, `css-estilo.mdc`, `acessibilidade.mdc`.
+- Uma tarefa por vez; mostre o plano antes de editar vários arquivos.
+- Não invente dados factuais (números de Itaipu, notícias, preços). Use "A complementar" e avise.
+
+## 4. Exemplo
+Pedido: "crie uma seção de dicas em sobre.html" → ler `docs/plano-contexto.md`, copiar a estrutura de seção já usada em `public/index.html`, usar as classes existentes do `style.css`.
+
+## 5. Erros a evitar
+- Adicionar frameworks (Bootstrap, Tailwind, React, jQuery).
+- Colocar chaves de API ou tokens em qualquer arquivo versionado.
+- Coletar ou enviar dados pessoais reais (LGPD).
+
+## 6. Perguntas
+Se faltar conteúdo, imagem, fonte ou se o pedido conflitar com o plano, **pergunte antes**.

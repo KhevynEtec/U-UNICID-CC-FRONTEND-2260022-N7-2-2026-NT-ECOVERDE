@@ -1,0 +1,23 @@
+---
+description: Quando e como sugerir melhorias nas regras do projeto
+globs:
+alwaysApply: true
+---
+# Melhoria contínua das regras – EcoVerde
+
+## 1. Objetivo
+Fazer as regras evoluírem com o projeto (ciclo: codar → observar → ajustar → aplicar), sempre com revisão da equipe.
+
+## 2. Gatilhos para sugerir ajuste
+- Um padrão novo aparece em **3 ou mais arquivos**.
+- O mesmo erro se repete em tarefas diferentes.
+- A equipe dá o mesmo feedback em mais de uma revisão.
+- Uma regra cita arquivo, classe ou pasta que não existe mais.
+
+## 3. Como agir
+- **Sugira** a mudança e mostre o diff **antes de salvar**. Nunca altere regras em silêncio.
+- Regra antiga que não vale mais: marque como depreciada no topo e indique a substituta, em vez de apagar de imediato.
+- Registre a mudança no `docs/diario-de-bordo.md`.
+
+## 4. Exemplo de prompt
+"Analise as páginas criadas nesta semana e, seguindo @self-improvement.mdc, sugira ajustes nas regras. Mostre as mudanças antes de salvar."

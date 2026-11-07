@@ -1,0 +1,50 @@
+---
+description: Padrões de CSS do site EcoVerde
+globs: public/css/**/*.css
+alwaysApply: false
+---
+# CSS – EcoVerde
+
+## 1. Objetivo
+Manter um único `public/css/style.css` consistente, mobile-first e com contraste AA.
+
+## 2. Contexto
+O arquivo é dividido em 21 seções numeradas (ver índice no topo). Novos estilos entram na seção correspondente.
+
+## 3. Regras
+- Use sempre as variáveis de `:root` (`--verde-folha`, `--azul-hidro`, `--setembro-verde`, `--esp-4`, `--fs-h2`...). Não repita valores hexadecimais soltos.
+- Texto e links usam as variantes escuras (`--verde-folha-escuro`, `--azul-hidro-escuro`, `--setembro-escuro`); `#0288D1` e `#7CB342` só em superfícies/decoração.
+- Mobile-first: estilos base para celular e `@media (min-width: 600px | 900px | 1100px)`.
+- Classes em português, padrão BEM: bloco `.card`, elemento `.card__corpo`, modificador `.btn--primario`.
+- Foco sempre visível (`--foco` âmbar); nunca `outline: none` sem substituto.
+- Toda animação deve ser desligada em `@media (prefers-reduced-motion: reduce)`.
+- Verifique o modo alto contraste (seção 19) ao criar componentes.
+
+## 4. Exemplo
+```css
+/* Trechos reais do style.css */
+.card {
+  background: var(--branco);
+  border: 1px solid var(--cinza-suave);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra-1);
+}
+.card__corpo { padding: var(--esp-5); }
+.btn--setembro {
+  background: var(--setembro-verde);
+  color: var(--texto-escuro);   /* verde claro sempre com texto escuro */
+}
+
+@media (min-width: 900px) {
+  .grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+```
+
+## 5. Erros a evitar
+- Frameworks, fontes externas ou `@import` de outro arquivo.
+- `!important` (exceto no modo alto contraste).
+- Classes em inglês ou sem padrão (`.blueBox`, `.div1`).
+- `px` fixo em tamanhos de fonte — use as variáveis `--fs-*` ou `rem`.
+
+## 6. Perguntas
+Se um componente novo não tiver cor definida na paleta, pergunte antes de criar uma cor nova.
