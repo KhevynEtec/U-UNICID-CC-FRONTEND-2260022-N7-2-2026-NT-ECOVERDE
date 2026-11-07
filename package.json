@@ -1,0 +1,19 @@
+{
+  "name": "ecoverde",
+  "version": "1.0.0",
+  "description": "Portal EcoVerde: sustentabilidade, energia limpa e inclusão, com o assistente EcoBot.",
+  "private": true,
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20.12"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.6.0",
+    "express": "^5.1.0"
+  }
+}

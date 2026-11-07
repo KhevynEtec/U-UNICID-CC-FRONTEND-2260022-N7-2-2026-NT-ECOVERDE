@@ -70,13 +70,16 @@ Os formulários validam os dados mas **não enviam nada**: sem backend, o envio 
 - HTML5 e CSS3 puros, sem framework de CSS ou de interface.
 - JavaScript nativo apenas onde necessário: menu mobile, carrossel, controles de acessibilidade e mensagens de erro dos formulários.
 - Um único arquivo de estilo: `css/style.css`, mobile-first, com variáveis CSS (design tokens).
-- Site estático: roda abrindo o `index.html` ou com um servidor local (recomendado, para as legendas do vídeo):
+- Servidor Node.js + Express (`server.js`): entrega o site da pasta `public/` e a rota `POST /api/assistente` do **EcoBot**, que responde em duas camadas: primeiro pelo FAQ local (`lib/faq.js`) e, quando o FAQ não sabe, pela API de IA (Claude, da Anthropic). A IA só é usada se a variável `IA_API_KEY` estiver definida; sem ela, o EcoBot funciona só com o FAQ. Respostas da IA aparecem identificadas para o visitante.
+- Para rodar localmente (Node.js 20.12 ou superior). Para ativar a IA, copie `.env.example` para `.env` e preencha `IA_API_KEY`:
 
 ```bash
-python -m http.server 8000
-# ou
-npx serve .
+npm install
+npm start      # abre em http://localhost:3000
+npm test       # testes do EcoBot
 ```
+
+- Deploy no Railway: o Railway executa `npm start` automaticamente a cada push na `main`. A chave da IA é cadastrada na aba *Variables* do serviço, nunca no código.
 
 - Versionamento no Git / GitHub.
 
@@ -104,24 +107,26 @@ Paleta obrigatória:
 
 ```
 EcoVerde/
-├── index.html                 # as 10 páginas HTML na raiz
-├── sobre.html
-├── itaipu.html
-├── doacao.html
-├── acessibilidade.html
-├── galeria.html
-├── midia.html
-├── noticias.html
-├── contato.html
-├── orcamento_hospedagem.html
-├── README.md                  # este plano de contexto
-├── css/style.css
-├── js/script.js
-├── assets/
-│   ├── images/                # ilustrações SVG e pôster WebP
-│   ├── icons/                 # logo e ícones SVG
-│   └── media/                 # vídeo MP4, legendas VTT e áudio MP3
+├── public/                    # o site servido pelo Express
+│   ├── index.html             # as 10 páginas HTML
+│   ├── sobre.html, itaipu.html, doacao.html, acessibilidade.html
+│   ├── galeria.html, midia.html, noticias.html, contato.html
+│   ├── orcamento_hospedagem.html
+│   ├── css/style.css
+│   ├── js/script.js           # menu, acessibilidade, carrossel, formulários
+│   ├── js/ecobot.js           # widget do EcoBot
+│   └── assets/                # images/, icons/ e media/
+├── lib/ia.js                  # FAQ primeiro; API de IA se configurada
+├── lib/faq.js                 # perguntas e respostas do EcoBot
+├── test/ia.test.js            # testes do EcoBot (npm test)
+├── server.js                  # Express: site + /api/assistente
+├── package.json
+├── .cursor/rules/*.mdc        # regras da IA
+├── .cursor/mcp.json           # servidores MCP
+├── AGENTS.md
+├── .env.example               # modelo; o .env real fica fora do Git
 └── docs/
+    ├── plano-contexto.md      # plano de contexto (11 seções)
     ├── README.md
     ├── diario-de-bordo.md
     ├── orcamento-hospedagem.md
@@ -131,7 +136,7 @@ EcoVerde/
 Responsabilidades:
 
 - **Interface:** HTML semântico e CSS em `style.css`. Sem estilo inline.
-- **Comportamento:** JavaScript em `js/script.js`, progressivo (a página funciona sem ele).
+- **Comportamento:** JavaScript em `public/js/script.js`, progressivo (a página funciona sem ele).
 - **Integração:** formulários prontos para receber o atributo `action` quando houver backend.
 
 ## 10. Pendências
