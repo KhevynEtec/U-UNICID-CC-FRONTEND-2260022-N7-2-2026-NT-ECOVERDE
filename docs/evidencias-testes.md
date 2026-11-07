@@ -136,7 +136,10 @@ Validar em https://validator.w3.org/ (página por upload ou URL).
 
 | Teste | Ferramenta | Resultado |
 |---|---|---|
-| Respostas do FAQ (9 perguntas típicas, pergunta fora do assunto, normalização de texto, links válidos) | `npm test` (node:test) | ✅ 12 de 12 aprovados |
+| FAQ (9 perguntas típicas), prioridade do FAQ sobre a IA, resposta da IA, falha e recusa da IA, normalização, links válidos | `npm test` (node:test, com cliente de IA falso) | ✅ 16 de 16 aprovados |
+| Servidor sem `IA_API_KEY` | `curl` | ✅ responde só pelo FAQ; `/api/saude` mostra `"ia": false` |
+| Servidor com chave inválida | `curl` | ✅ API recusa a chave, erro registrado no log e resposta padrão do FAQ (site não quebra) |
+| Limite de 15 perguntas por minuto | `curl` (17 pedidos seguidos) | ✅ status 429 com mensagem em português |
 | As 10 páginas servidas pelo Express | `curl` em `localhost` | ✅ todas com status 200 |
 | `POST /api/assistente` com pergunta válida | `curl` | ✅ resposta JSON com texto, link e sugestões |
 | Pergunta vazia ou JSON inválido | `curl` | ✅ status 400 com mensagem de erro |
@@ -151,6 +154,7 @@ Validar em https://validator.w3.org/ (página por upload ou URL).
 | Enviar pergunta com `Enter` | Resposta aparece e é anunciada pelo leitor de tela | ⏳ |
 | `Esc` com o painel aberto | Painel fecha e o foco volta ao botão EcoBot | ⏳ |
 | Botões de sugestão | Enviam a pergunta correspondente | ⏳ |
+| Pergunta fora do FAQ, com `IA_API_KEY` válida | Resposta da IA com o aviso "Resposta gerada por IA" | ⏳ |
 | Modo alto contraste ativo | Widget em preto e branco, links em amarelo | ⏳ |
 | Celular (375 px) | Painel cabe na tela sem rolagem horizontal | ⏳ |
 | URL pública no Railway | Site e EcoBot funcionando | ⏳ |
