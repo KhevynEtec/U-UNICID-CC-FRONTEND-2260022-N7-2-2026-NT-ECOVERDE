@@ -1,5 +1,4 @@
-Link do EcoVerde na hospedagem:
-[a definir – inserir o link após a publicação]
+Link do EcoVerde na hospedagem: **https://u-unicid-cc-frontend-2260022-n7-2-2026-nt-ecover-production.up.railway.app**
 
 # EcoVerde & Itaipu Sustentável
 

@@ -146,6 +146,19 @@ Validar em https://validator.w3.org/ (página por upload ou URL).
 | Arquivos do servidor não expostos (`/server.js`, `/.env`) | `curl` | ✅ status 404 |
 | Botão do EcoBot visível no desktop (1280 px) | Captura com Edge headless | ✅ |
 
+### 6.1.1 Testes na URL pública (Railway, 07/11/2026)
+
+URL: https://u-unicid-cc-frontend-2260022-n7-2-2026-nt-ecover-production.up.railway.app
+
+| Teste | Ferramenta | Resultado |
+|---|---|---|
+| `/api/saude` | `curl` | ✅ `{"status":"ok","ia":true}` (chave da IA configurada nas Variables do Railway) |
+| As 10 páginas e a raiz `/` | `curl` | ✅ todas com status 200 |
+| CSS, JS, `ecobot.js`, vídeo MP4 e legendas VTT | `curl` | ✅ status 200 |
+| `/server.js` e `/.env` não expostos | `curl` | ✅ status 404 |
+| Pergunta do FAQ ("O que é a Usina de Itaipu?") | `curl` | ✅ `fonte: faq`, resposta e link para itaipu.html |
+| Pergunta fora do FAQ ("Por que o vidro demora para se decompor?") | `curl` | ✅ `fonte: ia`, resposta curta em português, coerente com o site e com orientação de coleta seletiva |
+
 ### 6.2 Testes manuais (preencher)
 
 | Cenário | Resultado esperado | Status |
@@ -157,7 +170,7 @@ Validar em https://validator.w3.org/ (página por upload ou URL).
 | Pergunta fora do FAQ, com `IA_API_KEY` válida | Resposta da IA com o aviso "Resposta gerada por IA" | ⏳ |
 | Modo alto contraste ativo | Widget em preto e branco, links em amarelo | ⏳ |
 | Celular (375 px) | Painel cabe na tela sem rolagem horizontal | ⏳ |
-| URL pública no Railway | Site e EcoBot funcionando | ⏳ |
+| URL pública no Railway | Site e EcoBot funcionando | ✅ (testes automatizados em 6.1.1; conferir também no navegador) |
 
 ## 7. Evidências da Aula 06 (preencher com prints em `docs/evidencias/`)
 
@@ -166,4 +179,4 @@ Validar em https://validator.w3.org/ (página por upload ou URL).
 | Regras carregadas no Cursor | Cursor → *Settings → Rules* | ⏳ |
 | Servidores MCP ativos | Cursor → *Settings → MCP* | ⏳ |
 | Pull request feito com agente | Aba *Pull requests* do GitHub | ⏳ |
-| Deploy concluído | Railway → *Deployments* | ⏳ |
+| Deploy concluído | Railway → *Deployments* | ✅ site no ar em 07/11/2026 (falta o print) |
