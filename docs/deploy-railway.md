@@ -18,7 +18,7 @@ Guia para colocar o site e o EcoBot no ar. O EcoBot responde primeiro pelo FAQ e
 
 ```bash
 npm install
-npm test      # 16 testes do EcoBot devem passar
+npm test      # 18 testes do EcoBot devem passar
 npm start     # abrir http://localhost:3000
 ```
 
