@@ -60,7 +60,7 @@
     tabindex: "0",
   });
 
-  const listaSugestoes = criar("ul", { class: "ecobot__sugestoes", "aria-label": "Perguntas sugeridas" });
+  const listaSugestoes = criar("ul", { class: "ecobot__sugestoes", "aria-label": "Pergunta sugerida" });
 
   const form = criar("form", { class: "ecobot__form" });
   const rotulo = criar("label", { for: "ecobot-pergunta", class: "visually-hidden" }, "Digite sua pergunta");
@@ -101,15 +101,19 @@
     historico.scrollTop = historico.scrollHeight;
   };
 
+  // Mostra uma sugestão por vez, pulando as perguntas que o visitante já fez.
+  const jaPerguntadas = new Set();
   const mostrarSugestoes = (lista) => {
     listaSugestoes.replaceChildren();
-    for (const texto of lista.slice(0, 4)) {
-      const li = criar("li");
-      const botao = criar("button", { type: "button", class: "ecobot__sugestao" }, texto);
-      botao.addEventListener("click", () => perguntar(texto));
-      li.append(botao);
-      listaSugestoes.append(li);
-    }
+    const proxima =
+      lista.find((texto) => !jaPerguntadas.has(texto)) ??
+      SUGESTOES.find((texto) => !jaPerguntadas.has(texto));
+    if (!proxima) return;
+    const li = criar("li");
+    const botao = criar("button", { type: "button", class: "ecobot__sugestao" }, proxima);
+    botao.addEventListener("click", () => perguntar(proxima));
+    li.append(botao);
+    listaSugestoes.append(li);
   };
 
   let ocupado = false;
@@ -118,6 +122,7 @@
     if (!pergunta || ocupado) return;
     ocupado = true;
     botaoEnviar.disabled = true;
+    jaPerguntadas.add(pergunta);
     adicionarMensagem("usuario", pergunta);
 
     try {
