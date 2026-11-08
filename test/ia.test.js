@@ -94,6 +94,26 @@ test("recusa da IA (stop_reason refusal) cai na resposta padrão", async () => {
 
 test("normalizar remove acentos, maiúsculas e pontuação", () => {
   assert.equal(normalizar("  Água, ENERGIA e Inclusão!  "), "agua energia e inclusao");
+  assert.equal(normalizar("Vídeo, áudio, reciclável, transcrição"), "video audio reciclavel transcricao");
+});
+
+test("normalizar funciona sem depender de String.prototype.normalize", () => {
+  // Simula o servidor sem dados de idioma completos (normalize não faz nada).
+  const original = String.prototype.normalize;
+  String.prototype.normalize = function () { return String(this); };
+  try {
+    assert.equal(normalizar("Como economizar água? Tem vídeo?"), "como economizar agua tem video");
+  } finally {
+    String.prototype.normalize = original;
+  }
+});
+
+test("perguntas com acento caem no FAQ (sem chamar a IA)", async () => {
+  for (const [pergunta, id] of [["Como economizar água?", "agua"], ["Tem vídeo no site?", "midia"]]) {
+    const { fonte, resposta } = await perguntarIA(pergunta, SEM_IA);
+    assert.equal(fonte, "faq");
+    assert.equal(resposta, FAQ.find((item) => item.id === id).resposta);
+  }
 });
 
 test("todo link do FAQ aponta para uma página que existe em public/", () => {
