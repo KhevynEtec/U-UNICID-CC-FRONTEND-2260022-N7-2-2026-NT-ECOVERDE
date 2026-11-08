@@ -172,11 +172,11 @@ URL: https://u-unicid-cc-frontend-2260022-n7-2-2026-nt-ecover-production.up.rail
 | Celular (375 px) | Painel cabe na tela sem rolagem horizontal | ⏳ |
 | URL pública no Railway | Site e EcoBot funcionando | ✅ (testes automatizados em 6.1.1; conferir também no navegador) |
 
-## 7. Evidências da Aula 06 (preencher com prints em `docs/evidencias/`)
+## 7. Evidências da Aula 06
 
-| Evidência | Onde ver | Status |
-|---|---|---|
-| Regras carregadas no Cursor | Cursor → *Settings → Rules* | ⏳ |
-| Servidores MCP ativos | Cursor → *Settings → MCP* | ⏳ |
-| Pull request feito com agente | Aba *Pull requests* do GitHub | ⏳ |
-| Deploy concluído | Railway → *Deployments* | ✅ site no ar em 07/11/2026 (falta o print) |
+| Evidência | Onde ver | Resultado | Status |
+|---|---|---|---|
+| Regras carregadas no Cursor | Cursor → *Customize → Rules* | 8 regras do projeto reconhecidas (as 7 de `.cursor/rules/` + `AGENTS.md`). [print](evidencias/cursor-rules.png) | ✅ 07/11/2026 |
+| Servidores MCP configurados | Cursor → *Customize → MCPs* | `github`, `railway` e `figma` reconhecidos a partir do `.cursor/mcp.json`. Aparecem como *Disabled*: o Cursor só ativa MCP de projeto depois de aprovação e configuração dos tokens. [print](evidencias/cursor-mcp.png) | ✅ 07/11/2026 |
+| Pull requests feitos com agente | [Aba Pull requests do GitHub](https://github.com/KhevynEtec/U-UNICID-CC-FRONTEND-2260022-N7-2-2026-NT-ECOVERDE/pulls?q=is%3Apr+is%3Aclosed) | PRs #2 a #7: plano de contexto, regras, MCP, servidor e EcoBot, diário e link do deploy | ✅ 07/11/2026 |
+| Deploy concluído | [Site publicado](https://u-unicid-cc-frontend-2260022-n7-2-2026-nt-ecover-production.up.railway.app) | Site e EcoBot no ar no Railway (testes na seção 6.1.1) | ✅ 07/11/2026 |
