@@ -10,7 +10,7 @@ Cada integrante deve registrar suas atividades, decisões e dificuldades.
 | 1 | Elaboração do escopo, mapa do site e wireframes | 21/09/2026 | Concluída |
 | 2 | Estruturação do HTML5 semântico das 10 páginas | 15/10/2026 | Concluída |
 | 3 | Estilização CSS3, responsividade e acessibilidade (cores/contraste) | 30/10/2026 | Concluída |
-| 4 | Inserção de multimídia (`video`, `audio`, `iframe`) e formulários | 10/11/2026 | Concluída (mídia demonstrativa) |
+| 4 | Inserção de multimídia (`video`, `audio`, `iframe`) e formulários | 10/11/2026 | Concluída (mídia autoral) |
 | 5 | Validação W3C, testes de acessibilidade, `/docs` e compactação (.zip) | 30/11/2026 | Em andamento |
 
 > Ferramenta de gestão definida no escopo: Trello / Notion.
@@ -18,6 +18,27 @@ Cada integrante deve registrar suas atividades, decisões e dificuldades.
 ## Modelo de registro
 
 ```
+### 08/11/2026 – Issues por página abertas com o agente do Cursor
+**Responsável:** Khevyn Lopes dos Santos, com o agente do Cursor (abertura das issues) e o agente Claude Code no VS Code (verificação e registro)
+**O que foi feito:**
+- Pelo Cursor, foram abertas 10 issues no GitHub (#11 a #20), uma para cada página já entregue, todas com o mesmo checklist da regra `html-semantico.mdc`: um único `h1`, `section` com `aria-labelledby`, imagens com `alt`, link no menu com `aria-current="page"` e validação W3C.
+- O Claude Code conferiu automaticamente no código os quatro primeiros itens nas 10 páginas:
+  - um único `h1` em todas;
+  - todas as `section` com `aria-labelledby` apontando para um id existente, exceto a barra de acessibilidade do topo, que usa `aria-label` (ela não tem título visível, então o uso está correto);
+  - nenhuma das 46 imagens sem `alt`;
+  - todas as páginas no `nav#menu`, com `aria-current="page"` na página atual.
+- O item “Validação W3C” fica para o teste manual de cada página.
+
+**Decisões tomadas:**
+- Cada integrante fica responsável por duas issues: confere a página, marca o checklist e fecha a issue pelo PR de testes, com `Closes #número` na descrição.
+- A barra de acessibilidade continua com `aria-label`; isso será comentado nas issues em vez de alterar o HTML.
+
+**Dificuldades e soluções:**
+- As issues #12 e #18 saíram com pequenos erros de digitação no texto (“sobre.htmll” e “Página: doacao.html”); a correção é feita pelo botão *Edit* da própria issue.
+
+**Próximos passos:**
+- Atribuir as issues (*Assignees*), validar cada página no W3C e fechar as issues junto com os PRs de testes.
+
 ### DD/MM/AAAA – Título da atividade
 **Responsável:** nome do integrante
 **O que foi feito:**
