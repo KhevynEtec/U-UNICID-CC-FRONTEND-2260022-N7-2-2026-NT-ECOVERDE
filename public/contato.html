@@ -100,12 +100,12 @@
             <div class="form__linha">
               <div class="campo">
                 <label for="contato-nome">Nome completo <span class="obrigatorio" aria-hidden="true">*</span></label>
-                <input type="text" id="contato-nome" name="nome" required minlength="3" maxlength="120" autocomplete="name" aria-describedby="erro-contato-nome">
+                <input type="text" id="contato-nome" placeholder="Ex.: Maria da Silva" name="nome" required minlength="3" maxlength="120" autocomplete="name" aria-describedby="erro-contato-nome">
                 <span class="mensagem-erro" id="erro-contato-nome"></span>
               </div>
               <div class="campo">
                 <label for="contato-email">E-mail <span class="obrigatorio" aria-hidden="true">*</span></label>
-                <input type="email" id="contato-email" name="email" required maxlength="160" autocomplete="email" aria-describedby="ajuda-contato-email erro-contato-email">
+                <input type="email" id="contato-email" placeholder="nome@exemplo.com" name="email" required maxlength="160" autocomplete="email" aria-describedby="ajuda-contato-email erro-contato-email">
                 <span class="ajuda" id="ajuda-contato-email">Exemplo: nome@exemplo.com</span>
                 <span class="mensagem-erro" id="erro-contato-email"></span>
               </div>
@@ -114,7 +114,7 @@
             <div class="form__linha">
               <div class="campo">
                 <label for="contato-telefone">Telefone <span class="obrigatorio" aria-hidden="true">*</span></label>
-                <input type="tel" id="contato-telefone" name="telefone" required autocomplete="tel" pattern="\(?[0-9]{2}\)? ?[0-9]{4,5}-?[0-9]{4}" data-erro-formato="Informe o telefone com DDD, por exemplo: (11) 91234-5678." aria-describedby="ajuda-contato-telefone erro-contato-telefone">
+                <input type="tel" id="contato-telefone" placeholder="(11) 91234-5678" name="telefone" required autocomplete="tel" pattern="\(?[0-9]{2}\)? ?[0-9]{4,5}-?[0-9]{4}" data-erro-formato="Informe o telefone com DDD, por exemplo: (11) 91234-5678." aria-describedby="ajuda-contato-telefone erro-contato-telefone">
                 <span class="ajuda" id="ajuda-contato-telefone">Com DDD. Exemplo: (11) 91234-5678</span>
                 <span class="mensagem-erro" id="erro-contato-telefone"></span>
               </div>
@@ -134,7 +134,7 @@
 
             <div class="campo">
               <label for="contato-mensagem">Mensagem <span class="obrigatorio" aria-hidden="true">*</span></label>
-              <textarea id="contato-mensagem" name="mensagem" required minlength="10" maxlength="1000" rows="6" aria-describedby="ajuda-contato-mensagem erro-contato-mensagem"></textarea>
+              <textarea id="contato-mensagem" placeholder="Escreva aqui sua dúvida, sugestão ou elogio" name="mensagem" required minlength="10" maxlength="1000" rows="6" aria-describedby="ajuda-contato-mensagem erro-contato-mensagem"></textarea>
               <span class="ajuda" id="ajuda-contato-mensagem">Entre 10 e 1000 caracteres.</span>
               <span class="mensagem-erro" id="erro-contato-mensagem"></span>
             </div>
