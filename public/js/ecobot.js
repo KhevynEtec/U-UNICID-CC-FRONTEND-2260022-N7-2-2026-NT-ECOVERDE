@@ -34,11 +34,12 @@
     class: "ecobot__abrir",
     "aria-expanded": "false",
     "aria-controls": "ecobot-painel",
+    accesskey: "5", // atalho 5, no mesmo padrão eMAG dos atalhos 1 a 4
   });
   botaoAbrir.append(
     criar("span", { class: "ecobot__abrir-icone", "aria-hidden": "true" }, "💬"),
     criar("span", { id: "ecobot-titulo", class: "ecobot__abrir-texto" }, "EcoBot"),
-    criar("span", { class: "visually-hidden" }, " – assistente de dúvidas")
+    criar("span", { class: "visually-hidden" }, " – assistente de dúvidas (atalho 5)")
   );
 
   const painel = criar("div", { id: "ecobot-painel", class: "ecobot__painel", hidden: "" });
