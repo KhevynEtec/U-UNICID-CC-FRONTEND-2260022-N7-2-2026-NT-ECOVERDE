@@ -18,27 +18,6 @@ Cada integrante deve registrar suas atividades, decisões e dificuldades.
 ## Modelo de registro
 
 ```
-### 08/11/2026 – Issues por página abertas com o agente do Cursor
-**Responsável:** Khevyn Lopes dos Santos, com o agente do Cursor (abertura das issues) e o agente Claude Code no VS Code (verificação e registro)
-**O que foi feito:**
-- Pelo Cursor, foram abertas 10 issues no GitHub (#11 a #20), uma para cada página já entregue, todas com o mesmo checklist da regra `html-semantico.mdc`: um único `h1`, `section` com `aria-labelledby`, imagens com `alt`, link no menu com `aria-current="page"` e validação W3C.
-- O Claude Code conferiu automaticamente no código os quatro primeiros itens nas 10 páginas:
-  - um único `h1` em todas;
-  - todas as `section` com `aria-labelledby` apontando para um id existente, exceto a barra de acessibilidade do topo, que usa `aria-label` (ela não tem título visível, então o uso está correto);
-  - nenhuma das 46 imagens sem `alt`;
-  - todas as páginas no `nav#menu`, com `aria-current="page"` na página atual.
-- O item “Validação W3C” fica para o teste manual de cada página.
-
-**Decisões tomadas:**
-- Cada integrante fica responsável por duas issues: confere a página, marca o checklist e fecha a issue pelo PR de testes, com `Closes #número` na descrição.
-- A barra de acessibilidade continua com `aria-label`; isso será comentado nas issues em vez de alterar o HTML.
-
-**Dificuldades e soluções:**
-- As issues #12 e #18 saíram com pequenos erros de digitação no texto (“sobre.htmll” e “Página: doacao.html”); a correção é feita pelo botão *Edit* da própria issue.
-
-**Próximos passos:**
-- Atribuir as issues (*Assignees*), validar cada página no W3C e fechar as issues junto com os PRs de testes.
-
 ### DD/MM/AAAA – Título da atividade
 **Responsável:** nome do integrante
 **O que foi feito:**
@@ -151,6 +130,63 @@ Cada integrante deve registrar suas atividades, decisões e dificuldades.
 - PR da `feat/midia-autoral` (antes) e da `docs/conteudo-pendente` (depois), cada um aprovado e com merge feito por outro integrante.
 - Testes manuais divididos entre os integrantes (W3C, WAVE, Lighthouse, responsividade, formulários, mídia e EcoBot), cada um em sua branch e PR, com registro neste diário.
 - Confirmar com o professor se a compactação em `.zip` (etapa 5 do escopo) é necessária além do GitHub.
+
+### 08/11/2026 – Issues por página abertas com o agente do Cursor
+**Responsável:** Khevyn Lopes dos Santos, com o agente do Cursor (abertura das issues) e o agente Claude Code no VS Code (verificação e registro)
+**O que foi feito:**
+- Pelo Cursor, foram abertas 10 issues no GitHub (#11 a #20), uma para cada página já entregue, todas com o mesmo checklist da regra `html-semantico.mdc`: um único `h1`, `section` com `aria-labelledby`, imagens com `alt`, link no menu com `aria-current="page"` e validação W3C.
+- O Claude Code conferiu automaticamente no código os quatro primeiros itens nas 10 páginas:
+  - um único `h1` em todas;
+  - todas as `section` com `aria-labelledby` apontando para um id existente, exceto a barra de acessibilidade do topo, que usa `aria-label` (ela não tem título visível, então o uso está correto);
+  - nenhuma das 46 imagens sem `alt`;
+  - todas as páginas no `nav#menu`, com `aria-current="page"` na página atual.
+- O item “Validação W3C” fica para o teste manual de cada página.
+
+**Decisões tomadas:**
+- Cada integrante fica responsável por duas issues: confere a página, marca o checklist e fecha a issue pelo PR de testes, com `Closes #número` na descrição.
+- A barra de acessibilidade continua com `aria-label`; isso será comentado nas issues em vez de alterar o HTML.
+
+**Dificuldades e soluções:**
+- As issues #12 e #18 saíram com pequenos erros de digitação no texto (“sobre.htmll” e “Página: doacao.html”); a correção é feita pelo botão *Edit* da própria issue.
+
+**Próximos passos:**
+- Atribuir as issues (*Assignees*), validar cada página no W3C e fechar as issues junto com os PRs de testes.
+
+### 08/11/2026 – Validação W3C das 10 páginas, correções e testes manuais
+**Responsável:** equipe Promptdão, com o agente Claude Code no VS Code (verificação dos prints, correções e registro)
+
+**Participação de cada integrante** (conforme o histórico do GitHub):
+
+| Integrante | O que fez |
+|---|---|
+| Alexandre Almeida de Jesus Nogueira | Validou no W3C as páginas Início (#11) e Sobre (#12), anexou os prints e fechou as issues; fez o merge do PR #21 (registro das issues no diário). |
+| Khevyn Lopes dos Santos | Abriu as 10 issues com o agente do Cursor; validou Acessibilidade (#14), Contato (#19) e Orçamento (#20), refazendo o print da #20; revisou e fechou as issues #13 a #16; validou o CSS no W3C, o que revelou o erro corrigido no PR #22; abriu os PRs #21, #22, #24 e #25 e acompanhou o deploy no Railway. |
+| Luis Plinio Cornélio Mota | Validou no W3C a página Itaipu (#13) e anexou o print. |
+| Marcos Paulo Cornélio Mota | Validou no W3C as páginas Notícias (#15) e Galeria (#16) e anexou os prints. |
+| Yuri Navas Moreira | Validou no W3C as páginas Mídia (#17) e Doação (#18), anexou os prints e fechou as issues; fez o merge dos PRs #22 (correção do CSS) e #23 (sugestão do EcoBot). |
+
+**O que foi feito:**
+- As 10 páginas passaram no W3C com **0 erros e 0 avisos**, validando a URL publicada no Railway; cada print está no comentário da issue da página (#11 a #20).
+- CSS: o validador apontou 1 erro na linha 731 (`linear-gradient` com uma cor só, sobra da troca do cabeçalho azul por verde). Corrigido no PR #22 com cor sólida; os 31 alertas restantes são informativos (variáveis CSS, prefixo `-webkit-`, `clip` do texto para leitor de tela e cores iguais de fundo e borda nos botões).
+- EcoBot: passou a mostrar uma sugestão de pergunta por vez, em vez de até quatro (PRs #23 e #24).
+- EcoBot pelo teclado: o botão ficava no fim da ordem do `Tab` (28 tabulações na página inicial). Foi criado o **atalho 5** (`Alt + 5` no Chrome e no Edge), no padrão eMAG dos atalhos 1 a 4, documentado na tabela da página Acessibilidade e no FAQ (PR #25).
+- Notícias: a foto de uma notícia era bloqueada pelo site de origem e aparecia quebrada. A notícia foi trocada por uma da Agência Brasil (18/10/2026), com foto creditada (PR #25).
+- Testes manuais de acessibilidade, responsividade, formulários, multimídia e EcoBot registrados em `evidencias-testes.md`.
+
+**Decisões tomadas:**
+- As issues foram fechadas com o print no comentário (*Close with comment*), em vez de pelo PR: o print fica junto do checklist de cada página.
+- A barra de acessibilidade mantém `aria-label`, porque não tem título visível; as demais `section` usam `aria-labelledby`.
+- Teste que não foi feito fica ⏳ com a observação “não testado”, e não ✅.
+
+**Dificuldades e soluções:**
+- O primeiro print da issue #20 mostrava o resultado da página Contato (a URL foi trocada sem clicar em *Check*); o print foi refeito.
+- Os deploys do PR #23 falharam no Railway com “Failed to build an image” e sem log de build. A página de status do Railway mostrava um incidente (*GitHub Outage Affecting Builds*). O site continuou no ar com a versão anterior e, quando o serviço voltou, o deploy do PR #25 foi concluído com sucesso.
+- O registro de 08/11 sobre as issues tinha sido inserido por engano dentro do bloco “Modelo de registro”; foi movido para esta seção.
+
+**Próximos passos:**
+- Concluir os itens ⏳ (leitor de tela e movimento reduzido) e descrever as ressalvas ⚠️ em `evidencias-testes.md`.
+- Apagar `styles.css` e `Screenshot_1.png` da raiz.
+- Confirmar com o professor se a compactação em `.zip` é necessária.
 
 ### DD/MM/AAAA – _[próximo registro]_
 **Responsável:**
