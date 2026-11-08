@@ -49,10 +49,6 @@ Relatório comparativo exigido no escopo: **3 fornecedores de hospedagem verde (
 | Registro de domínio | Registro.br – .com.br | R$ 40,00 |
 | **Total estimado** |  | R$ 110,80 no 1º ano; R$ 338,80 após a renovação |
 
-## Recomendação da equipe
-
-Sugestão preliminar (a equipe deve validar): a combinação mais barata é a Locaweb (plano Go) com domínio .com.br no Registro.br, com data center no Brasil e suporte em português, mas a origem da energia não está comprovada no material consultado. Se a prova ambiental for a prioridade, a GreenGeeks é a única com compromisso verde declarado e quantificado (300% de compensação), com ressalvas: é cobrada em dólar, tem servidores fora do Brasil e a compensação é feita por créditos. Os valores de promoção sobem na renovação, então o custo real do segundo ano é o que importa.
-
 ## Hospedagem usada na entrega acadêmica
 
 Para a entrega da disciplina, o site foi publicado no **Railway**, plataforma indicada na Aula 06, porque permite rodar o servidor Node.js do EcoBot e publica automaticamente a cada merge na `main`. O serviço usa o modo *Serverless*, que desliga o servidor quando não há visitas e reduz o consumo de recursos. O comparativo acima continua sendo a referência para uma hospedagem definitiva com foco em energia renovável.
