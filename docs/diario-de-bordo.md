@@ -29,7 +29,7 @@ Cada integrante deve registrar suas atividades, decisões e dificuldades.
 ## Registros
 
 ### 19/10/2026 – Implementação inicial do portal (com apoio de IA)
-**Responsável:** _[preencher]_
+**Responsável:** Khevyn lopes dos Santos
 **O que foi feito:**
 - Criação da estrutura de pastas e das 10 páginas HTML5 interligadas.
 - Definição do design system em `css/style.css` (variáveis de cor, tipografia, espaçamento, botões, cards, formulários, tabelas, foco visível, breakpoints de 600, 900 e 1100 px).
@@ -89,6 +89,47 @@ Cada integrante deve registrar suas atividades, decisões e dificuldades.
 - Publicar no Railway e colocar o link no README.
 - Abrir o projeto no Cursor e registrar prints das Rules e do MCP em `docs/evidencias/`.
 - Testar o EcoBot com teclado e leitor de tela e registrar em `evidencias-testes.md`.
+
+### 07/11/2026 – Publicação no Railway, mídia autoral, evidências da Aula 06 e conteúdo pendente
+**Responsável:** Khevyn Lopes dos Santos, com o agente Claude Code no VS Code
+**O que foi feito:**
+- Merge dos pull requests #2 a #7 na `main`, na ordem planejada: plano de contexto, regras, MCP, servidor e EcoBot, diário e link do deploy.
+- Chave da API da Anthropic criada no Console (com créditos próprios, separados do plano Pro do Claude) e guardada só no `.env` local e nas *Variables* do Railway. A camada de IA do EcoBot passou a usar o modelo **Claude Haiku 5.5**.
+- Site publicado no Railway, com *Serverless* ativado: https://u-unicid-cc-frontend-2260022-n7-2-2026-nt-ecover-production.up.railway.app — páginas, `/api/saude` e EcoBot (FAQ e IA) testados na URL pública.
+- Projeto aberto no Cursor: foram reconhecidas as 8 regras do projeto (7 de `.cursor/rules/` + `AGENTS.md`) e os 3 servidores MCP (`github`, `railway`, `figma`). Prints em `docs/evidencias/` e seção 7 de `evidencias-testes.md` atualizada.
+- Revisão completa do projeto contra o escopo: estrutura das 10 páginas, 428 links internos sem erro e 0 erros no W3C nas 5 páginas validadas automaticamente.
+- Página Mídia (branch `feat/midia-autoral`): retirados o vídeo, o podcast (MP3 de 86 MB) e os embeds do YouTube, que eram de terceiros. Entraram um vídeo vertical autoral de 48 s, com `<video controls poster>`, legendas sincronizadas e transcrição, e o episódio 0 do Podcast EcoVerde (27 s), com `<audio controls>` e transcrição. A pasta de mídia caiu de cerca de 92 MB para 5,8 MB.
+- README reescrito: link do site, funcionalidades, EcoBot, como rodar, documentação, declaração de uso de IA e pendências reais.
+- Conteúdo pendente: o “A complementar” da página Contato virou o link do repositório no GitHub, o da página Setembro Verde virou um aviso de projeto acadêmico e as tabelas de `orcamento-hospedagem.md` foram preenchidas com os mesmos dados da página de orçamento.
+
+**Prompts usados (resumo):**
+1. "Ele tem que ser FAQ e API de IA" → o agente manteve o FAQ como primeira camada e acrescentou a API de IA como segunda.
+2. "Usei o Claude Haiku 5.5" → o agente trocou o modelo e removeu o fallback de recusa, que o Haiku não suporta.
+3. "Analise o projeto inteiro do zero e veja o que precisa ser feito" → o agente comparou o projeto com o escopo e apontou a falta do `<video>` próprio, o áudio de 86 MB de terceiros e o `docs/README.md` desatualizado.
+4. "Pode retirar os vídeos, já que violam diretrizes, e vamos continuar só com os vídeos e áudios autorais nossos" → retirada do material de terceiros e roteiros de 30 a 60 s para o vídeo e o podcast.
+
+**Decisões tomadas:**
+- Haiku 5.5 em vez de Opus: respostas curtas de chat não precisam do modelo maior, e o custo por pergunta fica bem menor.
+- A chave nunca é colada em chat, print ou arquivo versionado.
+- Railway com *Serverless*; o site fica no ar até a nota sair (apresentação em 09/11, com prazo até 16/11).
+- Só material autoral no site: roteiros da equipe, com vídeo e narração produzidos com apoio de IA e identificados na página.
+- Seguindo a orientação do professor (HTML5, CSS3 e JS sem código complexo), a mídia nova usa só tags HTML e 6 linhas de CSS, sem JavaScript novo.
+- Contato sem telefone nem e-mail pessoal (LGPD): o canal oficial é o repositório.
+- Prints só onde não há outra prova: Rules e MCP no Cursor. Deploy e PRs são comprovados pelos próprios links.
+- As cores escuras de texto citadas no registro de 19/10 (`#01579B`, `#33691E`) foram trocadas depois, em 26/10, por tons de verde (`#256D2A`, `#2E7D32`), que também atingem contraste AA. O registro antigo foi mantido como histórico.
+
+**Dificuldades e soluções:**
+- Os primeiros valores informados para a chave eram o ID e a versão mascarada da chave; foi criada uma chave nova e copiada no momento da criação.
+- A conta antiga do Railway estava com o teste expirado; o deploy foi refeito e o site publicado.
+- No Cursor, a pasta aberta era a de fora (`ecoverde-atualizado`); a pasta certa do repositório foi adicionada em *Repositories*, e as regras e o MCP foram encontrados em *Customize*.
+- O vídeo autoral veio em formato vertical (9:16); o CSS passou a limitar a altura para ele caber na tela, e a capa foi gerada a partir de um quadro do próprio vídeo.
+- Na análise do vídeo, o navegador em modo automático não decodificava os quadros; a captura foi feita com o vídeo tocando.
+- Um registro deste diário foi sobrescrito por engano enquanto o arquivo estava aberto no editor e foi reescrito.
+
+**Próximos passos:**
+- PR da `feat/midia-autoral` (antes) e da `docs/conteudo-pendente` (depois), cada um aprovado e com merge feito por outro integrante.
+- Testes manuais divididos entre os integrantes (W3C, WAVE, Lighthouse, responsividade, formulários, mídia e EcoBot), cada um em sua branch e PR, com registro neste diário.
+- Confirmar com o professor se a compactação em `.zip` (etapa 5 do escopo) é necessária além do GitHub.
 
 ### DD/MM/AAAA – _[próximo registro]_
 **Responsável:**
