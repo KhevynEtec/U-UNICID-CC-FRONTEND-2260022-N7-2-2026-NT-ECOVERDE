@@ -1553,6 +1553,14 @@ legend {
   background: #000;
 }
 
+/* Vídeo vertical (9:16): limita a altura para caber na tela sem rolar */
+.midia-bloco .midia-bloco__video--vertical {
+  width: auto;
+  max-width: 100%;
+  max-height: min(80vh, 640px);
+  margin-inline: auto;
+}
+
 .midia-bloco iframe {
   aspect-ratio: 4 / 3;
   height: auto;
