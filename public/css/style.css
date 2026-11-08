@@ -727,8 +727,8 @@ main:focus {
 }
 
 .cabecalho-pagina--azul {
-  background:
-    linear-gradient(120deg, #2E7D32);
+  /* Cor sólida: um gradiente com uma cor só é inválido no W3C. */
+  background: #2E7D32;
 }
 
 .cabecalho-pagina--setembro {
