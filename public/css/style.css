@@ -1337,6 +1337,13 @@ textarea:focus-visible {
   border-color: var(--verde-folha-escuro);
 }
 
+/* Texto de exemplo (placeholder): cinza escuro com 7:1 sobre o branco.
+   É só um exemplo; o rótulo (label) continua sempre visível. */
+::placeholder {
+  color: #595959;
+  opacity: 1; /* o Firefox clareia o placeholder por padrão */
+}
+
 /* Estado inválido só aparece após interação, para não "acusar" o usuário */
 .campo.is-invalido input,
 .campo.is-invalido select,
@@ -1851,6 +1858,10 @@ html.alto-contraste .membro__avatar {
   color: #FFF !important;
   border-color: #FFF !important;
   box-shadow: none !important;
+}
+
+html.alto-contraste ::placeholder {
+  color: #D0D0D0 !important; /* 13:1 sobre o fundo preto */
 }
 
 html.alto-contraste h1,
