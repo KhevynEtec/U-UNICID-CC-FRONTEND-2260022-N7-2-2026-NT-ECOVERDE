@@ -62,16 +62,26 @@ Validar em https://validator.w3.org/ (página por upload ou URL).
 
 | Página | Erros | Alertas de contraste | Alertas | Status | Evidência |
 |---|---|---|---|---|---|
-| index.html | | | | ✅ | |
-| sobre.html | | | | ✅ | |
-| itaipu.html | | | | ✅ | |
-| doacao.html | | | | ✅ | |
-| acessibilidade.html | | | | ✅ | |
-| galeria.html | | | | ✅ | |
-| midia.html | | | | ✅ | |
-| noticias.html | | | | ✅ | |
-| contato.html | | | | ✅ | |
-| orcamento_hospedagem.html | | | | ✅ | |
+| index.html | 0 | 0 | 12 | ✅ | [print](evidencias/wave/index.png) |
+| sobre.html | 0 | 0 | 10 | ✅ | [print](evidencias/wave/sobre.png) |
+| itaipu.html | 0 | 0 | 9 | ✅ | [print](evidencias/wave/itaipu.png) |
+| doacao.html | 0 | 0 | 8 | ✅ | [print](evidencias/wave/doacao.png) |
+| acessibilidade.html | 0 | 0 | 8 | ✅ | [print](evidencias/wave/acessibilidade.png) |
+| galeria.html | 0 | 0 | 19 | ✅ | [print](evidencias/wave/galeria.png) |
+| midia.html | 0 | 0 | 12 | ✅ | [print](evidencias/wave/midia.png) |
+| noticias.html | 0 | 0 | 9 | ✅ | [print](evidencias/wave/noticias.png) |
+| contato.html | 0 | 0 | 7 | ✅ | [print](evidencias/wave/contato.png) |
+| orcamento_hospedagem.html | 0 | 0 | 8 | ✅ | [print](evidencias/wave/orcamento_hospedagem.png) |
+
+Teste feito em 08/11/2026 no site publicado no Railway. As 10 páginas ficaram com **0 erros e 0 erros de contraste**. A nota AIM ficou em 9,8 de 10, e em 9,6 na galeria.
+
+Os alertas não são erros. São pontos que o WAVE pede para uma pessoa conferir:
+
+- **Accesskey (5 por página):** são os atalhos 1 a 5, do padrão eMAG. Foram colocados de propósito e estão explicados na página de acessibilidade.
+- **Long alternative text:** são textos alternativos longos, escritos para descrever bem as imagens. Por isso a galeria tem mais alertas (11).
+- **Redundant link:** a logo e o item "Início" do menu levam para a mesma página.
+- **Possible heading:** um texto em destaque que o WAVE acha que poderia ser um título.
+- **Audio/Video (mídia):** é um lembrete para conferir se há legenda e transcrição. A página de mídia tem as duas.
 
 ### 2.2 Checklist manual
 
