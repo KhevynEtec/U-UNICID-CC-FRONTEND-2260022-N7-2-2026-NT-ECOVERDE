@@ -2763,6 +2763,13 @@ html.alto-contraste .ecobot__aviso {
   z-index: 800;
 }
 
+/* Painel do EcoBot aberto cobrindo o canto do VLibras (js/script.js, seção 5):
+   o botão flutuante some até o EcoBot fechar. Invisível também tira o botão
+   do Tab e do leitor de tela; a janela do avatar é outro elemento. */
+#vlibras-access-wrapper.vlibras-recolhido {
+  visibility: hidden;
+}
+
 @media print {
   #vlibras-access-wrapper,
   #vlibras-app-root {
