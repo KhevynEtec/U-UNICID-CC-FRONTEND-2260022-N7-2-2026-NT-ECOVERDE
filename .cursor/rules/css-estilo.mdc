@@ -43,6 +43,7 @@ O arquivo é dividido em 21 seções numeradas (ver índice no topo). Novos esti
 ## 5. Erros a evitar
 - Frameworks, fontes externas ou `@import` de outro arquivo.
 - `!important` (exceto no modo alto contraste).
+  Única outra exceção: as preferências de leitura facilitada do painel "Mais opções" (`html.espacamento-texto` e `html.destacar-links`, seção 19). São escolhas da pessoa e precisam valer sobre o estilo de qualquer componente, como uma folha de estilo do usuário (critério 1.4.12 da WCAG). O modo escuro **não** usa `!important`: ele usa `:where(html.modo-escuro)` para manter a especificidade original.
 - Classes em inglês ou sem padrão (`.blueBox`, `.div1`).
 - `px` fixo em tamanhos de fonte — use as variáveis `--fs-*` ou `rem`.
 

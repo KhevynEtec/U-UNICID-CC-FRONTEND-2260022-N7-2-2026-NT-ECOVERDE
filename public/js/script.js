@@ -1,13 +1,14 @@
 /* EcoVerde — script.js
    JavaScript só onde HTML/CSS não bastam. Sem bibliotecas.
    O conteúdo continua acessível sem JS (aprimoramento progressivo).
-   1. Menu   2. Acessibilidade (contraste e fonte)   3. Carrossel   4. Formulários
+   1. Menu   2. Acessibilidade (barra e painel "Mais opções")   3. Carrossel   4. Formulários
    5. VLibras (tradutor de Libras do governo federal, carregado de fora) */
 "use strict";
 
 const raiz = document.documentElement;
-// O <head> de cada página já troca no-js por js antes do CSS (evita o pulo
-// do menu no celular). Repetir aqui é uma garantia e não muda nada.
+// O <head> de cada página já troca no-js por js e aplica as preferências
+// salvas antes do CSS (evita o pulo do menu e a tela piscar). Repetir aqui
+// é uma garantia e não muda nada.
 raiz.classList.remove("no-js");
 raiz.classList.add("js");
 
@@ -15,11 +16,20 @@ raiz.classList.add("js");
 const guardar = {
   ler: (chave) => { try { return localStorage.getItem(chave); } catch { return null; } },
   gravar: (chave, valor) => { try { localStorage.setItem(chave, valor); } catch { /* sem persistência */ } },
+  remover: (chave) => { try { localStorage.removeItem(chave); } catch { /* sem persistência */ } },
 };
 
 const reduzirMovimento = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const $ = (seletor, base = document) => base.querySelector(seletor);
 const $$ = (seletor, base = document) => [...base.querySelectorAll(seletor)];
+
+/** Cria um elemento com atributos e, opcionalmente, texto (mesmo padrão do ecobot.js). */
+const criar = (tag, atributos = {}, texto) => {
+  const el = document.createElement(tag);
+  for (const [nome, valor] of Object.entries(atributos)) el.setAttribute(nome, valor);
+  if (texto) el.textContent = texto;
+  return el;
+};
 
 /* 1. MENU ------------------------------------------------------------- */
 function iniciarMenu() {
@@ -49,24 +59,292 @@ function iniciarMenu() {
   });
 }
 
-/* 2. ACESSIBILIDADE --------------------------------------------------- */
+/* 2. ACESSIBILIDADE ---------------------------------------------------
+   Barra: Alto contraste, A+, A-, A, Libras e "Mais opções".
+   O painel "Mais opções" é criado aqui por JavaScript: não repete HTML nas
+   10 páginas, e quem está sem JavaScript não vê controles que não funcionam.
+   As preferências salvas já são aplicadas pelo script do <head> antes do
+   primeiro desenho; aqui elas são lidas de novo para sincronizar os controles. */
+
+// Modos de cor: valor salvo em "ecoverde-cor" → classe no <html>.
+// A mesma tabela está no script do <head> das páginas.
+const MODOS_COR = {
+  padrao: { classe: "", nome: "Padrão" },
+  "alto-contraste": { classe: "alto-contraste", nome: "Alto contraste" },
+  escuro: { classe: "modo-escuro", nome: "Modo escuro" },
+  cinza: { classe: "escala-cinza", nome: "Escala de cinza" },
+};
+
+/** Cor salva. Quem tinha só a chave antiga "ecoverde-contraste" continua com o alto contraste. */
+function corSalva() {
+  const cor = guardar.ler("ecoverde-cor");
+  if (cor && Object.hasOwn(MODOS_COR, cor)) return cor;
+  return guardar.ler("ecoverde-contraste") === "1" ? "alto-contraste" : "padrao";
+}
+
+// Leitura facilitada: chave salva → classe no <html> (também lida pelo script do <head>).
+const LEITURA_FACILITADA = [
+  {
+    chave: "ecoverde-espacamento", classe: "espacamento-texto", id: "facil-espacamento",
+    rotulo: "Aumentar espaçamento do texto",
+    ligado: "Espaçamento do texto aumentado.", desligado: "Espaçamento do texto normal.",
+  },
+  {
+    chave: "ecoverde-links", classe: "destacar-links", id: "facil-links",
+    rotulo: "Destacar links",
+    ligado: "Links destacados.", desligado: "Destaque de links desligado.",
+  },
+];
+
+/** Grupo do painel: <fieldset> com <legend>. */
+function grupoDoPainel(titulo, classe = "") {
+  const grupo = criar("fieldset", { class: `painel-acessibilidade__grupo ${classe}`.trim() });
+  grupo.append(criar("legend", {}, titulo));
+  return grupo;
+}
+
+/** Opção do painel (radio ou checkbox) com <label> de verdade. */
+function opcaoDoPainel(tipo, nome, id, valor, rotulo) {
+  const caixa = criar("div", { class: "painel-acessibilidade__opcao" });
+  const campo = criar("input", { type: tipo, name: nome, id, value: valor });
+  caixa.append(campo, criar("label", { for: id }, rotulo));
+  return { caixa, campo };
+}
+
+/* Leitura em voz alta (Web Speech API do próprio navegador, sem biblioteca) */
+const LIMITE_DA_FALA = 200; // caracteres por fala: alguns navegadores cortam falas longas
+const BLOCOS_DE_TEXTO = "p, li, h1, h2, h3, h4, h5, h6, dt, dd, figcaption, caption, th, td, blockquote, summary, label, legend, pre, address";
+const IGNORAR_NA_LEITURA = '[aria-hidden="true"], [hidden], script, style, noscript, template, .ecobot';
+const VELOCIDADES = [["0.75", "0,75×"], ["1", "1× (normal)"], ["1.25", "1,25×"], ["1.5", "1,5×"]];
+
+/** Divide o texto em frases curtas. Frases longas são quebradas em vírgulas ou espaços. */
+function dividirEmFrases(texto, limite = LIMITE_DA_FALA) {
+  const frases = [];
+  for (let frase of texto.replace(/\s+/g, " ").trim().split(/(?<=[.!?…:;])\s+/)) {
+    while (frase.length > limite) {
+      let corte = frase.lastIndexOf(", ", limite);
+      if (corte < limite / 2) corte = frase.lastIndexOf(" ", limite);
+      if (corte <= 0) corte = limite;
+      frases.push(frase.slice(0, corte + 1).trim());
+      frase = frase.slice(corte + 1).trim();
+    }
+    if (frase) frases.push(frase);
+  }
+  return frases;
+}
+
+/** Textos do <main>, um por bloco (parágrafo, item, título...), sem o que está
+    escondido ou com aria-hidden. O texto de .visually-hidden entra: ele existe
+    justamente para quem não vê a tela. */
+function textosDoMain() {
+  const main = $("main");
+  if (!main) return [];
+  const blocos = [];
+  let blocoAtual = null;
+  const percurso = document.createTreeWalker(main, NodeFilter.SHOW_TEXT, {
+    acceptNode(no) {
+      const el = no.parentElement;
+      if (!el || !no.nodeValue.trim() || el.closest(IGNORAR_NA_LEITURA)) return NodeFilter.FILTER_REJECT;
+      const visivel = el.checkVisibility ? el.checkVisibility({ visibilityProperty: true }) : el.getClientRects().length > 0;
+      return visivel ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+    },
+  });
+  for (let no = percurso.nextNode(); no; no = percurso.nextNode()) {
+    const bloco = no.parentElement.closest(BLOCOS_DE_TEXTO) || no.parentElement;
+    if (bloco !== blocoAtual) {
+      blocos.push("");
+      blocoAtual = bloco;
+    }
+    blocos[blocos.length - 1] += no.nodeValue;
+  }
+  return blocos.map((b) => b.replace(/\s+/g, " ").trim()).filter(Boolean);
+}
+
+/** Campo do painel: <label> em cima de um <select>. */
+function seletorDoPainel(id, rotulo) {
+  const caixa = criar("div", { class: "painel-acessibilidade__campo" });
+  const campo = criar("select", { id });
+  caixa.append(criar("label", { for: id }, rotulo), campo);
+  return { caixa, campo };
+}
+
+/** Grupo "Leitura em voz alta". Devolve o grupo e a função que volta ao padrão. */
+function criarLeituraEmVozAlta(anunciar) {
+  const fala = window.speechSynthesis;
+  const grupo = grupoDoPainel("Leitura em voz alta");
+  const botoes = criar("div", { class: "painel-acessibilidade__opcoes" });
+  const botaoOuvir = criar("button", { type: "button", id: "leitura-ouvir" }, "Ouvir");
+  const botaoPausar = criar("button", { type: "button", id: "leitura-pausar", disabled: "" }, "Pausar");
+  const botaoParar = criar("button", { type: "button", id: "leitura-parar", disabled: "" }, "Parar");
+  botoes.append(botaoOuvir, botaoPausar, botaoParar);
+
+  const velocidade = seletorDoPainel("leitura-velocidade", "Velocidade");
+  for (const [valor, nome] of VELOCIDADES) velocidade.campo.append(criar("option", { value: valor }, nome));
+  const velocidadeSalva = guardar.ler("ecoverde-voz-velocidade");
+  velocidade.campo.value = VELOCIDADES.some(([v]) => v === velocidadeSalva) ? velocidadeSalva : "1";
+
+  const voz = seletorDoPainel("leitura-voz", "Voz");
+  const vozesDoPortugues = () => {
+    const todas = fala.getVoices();
+    const brasil = todas.filter((v) => /^pt[-_]br$/i.test(v.lang));
+    return brasil.length ? brasil : todas.filter((v) => /^pt\b/i.test(v.lang));
+  };
+  const preencherVozes = () => {
+    const vozes = vozesDoPortugues();
+    voz.campo.replaceChildren(criar("option", { value: "" }, vozes.length ? "Automática (português)" : "Padrão do navegador"));
+    for (const v of vozes) voz.campo.append(criar("option", { value: v.name }, v.name));
+    const salva = guardar.ler("ecoverde-voz");
+    if (vozes.some((v) => v.name === salva)) voz.campo.value = salva;
+  };
+  preencherVozes();
+  fala.addEventListener?.("voiceschanged", preencherVozes); // a lista de vozes chega depois em alguns navegadores
+
+  const campos = criar("div", { class: "painel-acessibilidade__opcoes" });
+  campos.append(velocidade.caixa, voz.caixa);
+  grupo.append(
+    criar("p", { class: "painel-acessibilidade__ajuda" }, "Lê o texto selecionado ou, se nada estiver selecionado, o conteúdo principal da página."),
+    botoes,
+    campos,
+  );
+
+  // Estado da leitura. "rodada" muda a cada início ou parada: respostas de
+  // falas antigas (canceladas) são ignoradas.
+  let frases = [];
+  let posicao = 0;
+  let rodada = 0;
+  let estado = "parado"; // "parado" | "lendo" | "pausado"
+
+  const atualizarBotoes = () => {
+    const parado = estado === "parado";
+    // Não deixa o foco "sumir" num botão que vai ficar desabilitado.
+    if (parado && (document.activeElement === botaoPausar || document.activeElement === botaoParar)) botaoOuvir.focus();
+    botaoPausar.disabled = parado;
+    botaoParar.disabled = parado;
+    botaoPausar.textContent = estado === "pausado" ? "Continuar" : "Pausar";
+  };
+
+  const vozEscolhida = () => {
+    const vozes = vozesDoPortugues();
+    return vozes.find((v) => v.name === voz.campo.value) || vozes[0] || null;
+  };
+
+  const encerrar = (mensagem) => {
+    rodada++;
+    fala.cancel();
+    frases = [];
+    posicao = 0;
+    estado = "parado";
+    atualizarBotoes();
+    if (mensagem) anunciar(mensagem);
+  };
+
+  const falarProxima = (minhaRodada) => {
+    if (minhaRodada !== rodada) return;
+    if (posicao >= frases.length) {
+      encerrar("Leitura concluída.");
+      return;
+    }
+    const trecho = new SpeechSynthesisUtterance(frases[posicao]);
+    trecho.lang = "pt-BR";
+    const escolhida = vozEscolhida();
+    if (escolhida) trecho.voice = escolhida;
+    trecho.rate = Number(velocidade.campo.value) || 1;
+    trecho.addEventListener("end", () => {
+      if (minhaRodada !== rodada) return;
+      posicao++;
+      falarProxima(minhaRodada);
+    });
+    trecho.addEventListener("error", (e) => {
+      if (minhaRodada !== rodada || e.error === "interrupted" || e.error === "canceled") return;
+      encerrar("Não foi possível continuar a leitura em voz alta.");
+    });
+    fala.speak(trecho);
+  };
+
+  botaoOuvir.addEventListener("click", () => {
+    const selecionado = getSelection()?.toString().trim() || "";
+    const lista = (selecionado ? [selecionado] : textosDoMain()).flatMap((texto) => dividirEmFrases(texto));
+    if (!lista.length) {
+      anunciar("Não há texto para ler.");
+      return;
+    }
+    rodada++;
+    fala.cancel();
+    frases = lista;
+    posicao = 0;
+    estado = "lendo";
+    atualizarBotoes();
+    anunciar(selecionado ? "Lendo o texto selecionado." : "Lendo o conteúdo da página.");
+    falarProxima(rodada);
+  });
+
+  botaoPausar.addEventListener("click", () => {
+    if (estado === "lendo") {
+      fala.pause();
+      estado = "pausado";
+      anunciar("Leitura pausada.");
+    } else if (estado === "pausado") {
+      fala.resume();
+      estado = "lendo";
+      anunciar("Leitura retomada.");
+    }
+    atualizarBotoes();
+  });
+
+  botaoParar.addEventListener("click", () => encerrar("Leitura interrompida."));
+  velocidade.campo.addEventListener("change", () => guardar.gravar("ecoverde-voz-velocidade", velocidade.campo.value));
+  voz.campo.addEventListener("change", () => guardar.gravar("ecoverde-voz", voz.campo.value));
+
+  // Sair da página para a leitura (o navegador poderia continuar falando).
+  addEventListener("pagehide", () => {
+    rodada++;
+    fala.cancel();
+  });
+
+  const restaurar = () => {
+    encerrar();
+    velocidade.campo.value = "1";
+    voz.campo.value = "";
+    guardar.remover("ecoverde-voz-velocidade");
+    guardar.remover("ecoverde-voz");
+  };
+  return { grupo, restaurar };
+}
+
 function iniciarAcessibilidade() {
+  const grupo = $(".controles-acessibilidade");
   const botaoContraste = $("#btn-contraste");
   const aviso = $("#aviso-acessibilidade");
   const NIVEL_MAX = 3;
   const anunciar = (texto) => { if (aviso) aviso.textContent = texto; };
 
-  const aplicarContraste = (ativo) => {
-    raiz.classList.toggle("alto-contraste", ativo);
-    botaoContraste?.setAttribute("aria-pressed", ativo);
+  /* Cores ------------------------------------------------------------ */
+  const radiosCor = [];
+  const aplicarCor = (cor) => {
+    for (const { classe } of Object.values(MODOS_COR)) if (classe) raiz.classList.remove(classe);
+    if (MODOS_COR[cor].classe) raiz.classList.add(MODOS_COR[cor].classe);
+    botaoContraste?.setAttribute("aria-pressed", cor === "alto-contraste");
+    for (const radio of radiosCor) radio.checked = radio.value === cor;
+  };
+  const escolherCor = (cor, mensagem = `Cores: ${MODOS_COR[cor].nome}.`) => {
+    aplicarCor(cor);
+    guardar.gravar("ecoverde-cor", cor);
+    guardar.remover("ecoverde-contraste"); // chave antiga: a escolha agora fica em "ecoverde-cor"
+    anunciar(mensagem);
   };
 
+  /* Fonte ------------------------------------------------------------ */
   const aplicarFonte = (nivel) => {
     raiz.classList.remove("fonte-1", "fonte-2", "fonte-3");
     if (nivel > 0) raiz.classList.add(`fonte-${nivel}`);
   };
 
-  const nivelSalvo = () => parseInt(guardar.ler("ecoverde-fonte"), 10) || 0;
+  // Só 0 a 3, como no script do <head>: um valor estranho salvo é ignorado
+  // (antes virava uma classe inexistente, como "fonte-9").
+  const nivelSalvo = () => {
+    const nivel = parseInt(guardar.ler("ecoverde-fonte"), 10);
+    return nivel >= 0 && nivel <= NIVEL_MAX ? nivel : 0;
+  };
 
   const mudarFonte = (delta) => {
     const novo = delta === 0 ? 0 : Math.min(NIVEL_MAX, Math.max(0, nivelSalvo() + delta));
@@ -75,19 +353,111 @@ function iniciarAcessibilidade() {
     anunciar(novo === 0 ? "Tamanho de texto padrão." : `Tamanho de texto: nível ${novo} de ${NIVEL_MAX}.`);
   };
 
-  aplicarContraste(guardar.ler("ecoverde-contraste") === "1");
+  aplicarCor(corSalva());
   aplicarFonte(nivelSalvo());
 
+  // Botão rápido da barra: liga e desliga o alto contraste (sincronizado com o painel).
   botaoContraste?.addEventListener("click", () => {
     const ativo = !raiz.classList.contains("alto-contraste");
-    aplicarContraste(ativo);
-    guardar.gravar("ecoverde-contraste", ativo ? "1" : "0");
-    anunciar(ativo ? "Alto contraste ativado." : "Alto contraste desativado.");
+    escolherCor(ativo ? "alto-contraste" : "padrao", ativo ? "Alto contraste ativado." : "Alto contraste desativado.");
   });
 
   $("#btn-fonte-mais")?.addEventListener("click", () => mudarFonte(1));
   $("#btn-fonte-menos")?.addEventListener("click", () => mudarFonte(-1));
   $("#btn-fonte-padrao")?.addEventListener("click", () => mudarFonte(0));
+
+  // Os botões "Libras" e "Mais opções" estão no HTML das páginas (e não são
+  // criados aqui): se surgissem depois do primeiro desenho, a barra mudaria de
+  // altura e empurraria a página (CLS). Sem JavaScript a barra toda fica escondida.
+  const botaoLibras = $("#btn-libras");
+  const botaoMais = $("#btn-mais-opcoes");
+  if (!grupo || !aviso || !botaoMais) return;
+
+  // Botão "Libras": abre o tradutor VLibras. Fica com o espaço reservado,
+  // invisível e fora do Tab (data-aguardando), até o VLibras carregar (seção 5).
+  // O botão do próprio VLibras fica no fim da página; este fica no começo.
+  botaoLibras?.addEventListener("click", () => {
+    window.VLibrasWidget?.open?.();
+    anunciar("Tradutor de Libras aberto.");
+  });
+
+  /* Painel "Mais opções" --------------------------------------------- */
+  const painel = criar("div", { id: "painel-acessibilidade", class: "painel-acessibilidade", hidden: "" });
+  grupo.after(painel); // logo depois dos botões: o Tab segue de "Mais opções" para o painel
+  botaoMais.setAttribute("aria-controls", painel.id); // só agora o painel existe (o W3C exige o id)
+
+  const definirPainel = (aberto) => {
+    painel.hidden = !aberto;
+    botaoMais.setAttribute("aria-expanded", aberto);
+  };
+  botaoMais.addEventListener("click", () => definirPainel(painel.hidden));
+  // Esc fecha o painel e devolve o foco ao botão
+  const fecharComEsc = (e) => {
+    if (e.key === "Escape" && !painel.hidden) {
+      definirPainel(false);
+      botaoMais.focus();
+    }
+  };
+  painel.addEventListener("keydown", fecharComEsc);
+  botaoMais.addEventListener("keydown", fecharComEsc);
+
+  // Grupo "Cores"
+  const grupoCores = grupoDoPainel("Cores");
+  const opcoesCor = criar("div", { class: "painel-acessibilidade__opcoes" });
+  for (const [valor, { nome }] of Object.entries(MODOS_COR)) {
+    const { caixa, campo } = opcaoDoPainel("radio", "ecoverde-cor", `cor-${valor}`, valor, nome);
+    campo.addEventListener("change", () => { if (campo.checked) escolherCor(valor); });
+    radiosCor.push(campo);
+    opcoesCor.append(caixa);
+  }
+  grupoCores.append(opcoesCor);
+  painel.append(grupoCores);
+  aplicarCor(corSalva()); // marca o radio da cor atual
+
+  // Grupo "Leitura em voz alta": só existe se o navegador tiver a Web Speech API.
+  let leitura = null;
+  if (window.speechSynthesis && typeof window.SpeechSynthesisUtterance === "function") {
+    leitura = criarLeituraEmVozAlta(anunciar);
+    painel.append(leitura.grupo);
+  }
+
+  // Grupo "Leitura facilitada" (checkboxes)
+  const grupoFacil = grupoDoPainel("Leitura facilitada");
+  const opcoesFacil = criar("div", { class: "painel-acessibilidade__opcoes" });
+  const caixasFacil = LEITURA_FACILITADA.map((opcao) => {
+    const { caixa, campo } = opcaoDoPainel("checkbox", opcao.chave, opcao.id, "1", opcao.rotulo);
+    campo.checked = guardar.ler(opcao.chave) === "1";
+    raiz.classList.toggle(opcao.classe, campo.checked);
+    campo.addEventListener("change", () => {
+      raiz.classList.toggle(opcao.classe, campo.checked);
+      if (campo.checked) guardar.gravar(opcao.chave, "1");
+      else guardar.remover(opcao.chave);
+      anunciar(campo.checked ? opcao.ligado : opcao.desligado);
+    });
+    opcoesFacil.append(caixa);
+    return { opcao, campo };
+  });
+  grupoFacil.append(opcoesFacil);
+  painel.append(grupoFacil);
+
+  // "Restaurar padrão": desfaz tudo, inclusive o tamanho da fonte.
+  const acoes = criar("div", { class: "painel-acessibilidade__acoes" });
+  const botaoRestaurar = criar("button", { type: "button", id: "btn-restaurar-padrao" }, "Restaurar padrão");
+  botaoRestaurar.addEventListener("click", () => {
+    aplicarCor("padrao");
+    aplicarFonte(0);
+    for (const { opcao, campo } of caixasFacil) {
+      campo.checked = false;
+      raiz.classList.remove(opcao.classe);
+    }
+    leitura?.restaurar();
+    for (const chave of ["ecoverde-cor", "ecoverde-contraste", "ecoverde-fonte", ...LEITURA_FACILITADA.map((o) => o.chave)]) {
+      guardar.remover(chave);
+    }
+    anunciar("Preferências de acessibilidade restauradas para o padrão.");
+  });
+  acoes.append(botaoRestaurar);
+  painel.append(acoes);
 }
 
 /* 3. CARROSSEL ---------------------------------------------------------
@@ -408,14 +778,110 @@ function iniciarVLibras() {
     script.addEventListener("load", () => {
       // Parâmetros: endereço, personalização, avatar e posição.
       if (window.VLibras?.Widget) new window.VLibras.Widget(VLIBRAS_RAIZ, undefined, undefined, "L");
+      // Widget pronto: mostra o botão "Libras" da barra de acessibilidade (seção 2).
+      const botaoLibras = $("#btn-libras");
+      if (typeof window.VLibrasWidget?.open === "function") botaoLibras?.removeAttribute("data-aguardando");
+      else if (botaoLibras) botaoLibras.hidden = true;
     });
-    // Falha de rede: o site segue normalmente, sem o tradutor.
-    script.addEventListener("error", () => script.remove());
+    // Falha de rede: o site segue normalmente, sem o tradutor (e sem o botão "Libras").
+    script.addEventListener("error", () => {
+      script.remove();
+      const botaoLibras = $("#btn-libras");
+      if (botaoLibras) botaoLibras.hidden = true;
+    });
     document.body.append(script);
   };
 
   if (document.readyState === "complete") carregar();
   else window.addEventListener("load", carregar, { once: true });
+}
+
+/* 6. FOCO SEMPRE VISÍVEL ------------------------------------------------
+   O EcoBot (embaixo, à direita) e o botão do VLibras (à esquerda, no meio)
+   ficam fixos na tela. Quando o teclado leva o foco para algo que está atrás
+   deles, a página rola só o necessário para o elemento aparecer
+   (WCAG 2.4.11). O CSS já ajuda com scroll-padding-bottom no <html>. */
+const FOLGA_DO_FOCO = 12;
+
+/** Áreas fixas que podem cobrir o elemento focado (fora delas mesmas). */
+function areasFixas(elemento) {
+  const areas = [];
+  const botaoEcoBot = $(".ecobot__abrir");
+  if (botaoEcoBot && !elemento.closest(".ecobot")) areas.push(botaoEcoBot.getBoundingClientRect());
+  const painelEcoBot = $("#ecobot-painel");
+  if (painelEcoBot && !painelEcoBot.hidden && !painelEcoBot.contains(elemento)) areas.push(painelEcoBot.getBoundingClientRect());
+  const botaoVLibras = document.getElementById("vlibras-access-wrapper")?.shadowRoot?.getElementById("vlibras-button");
+  if (botaoVLibras) areas.push(botaoVLibras.getBoundingClientRect());
+  return areas.filter((r) => r.width && r.height);
+}
+
+/** Onde o elemento aparece: radios escondidos (.opcao) são desenhados pelo <label>. */
+const caixaVisivel = (elemento) =>
+  (elemento.matches(".opcao input") && elemento.labels?.[0] ? elemento.labels[0] : elemento).getBoundingClientRect();
+
+/** Chama fn quando a rolagem (inclusive a suave) parar. */
+function depoisDaRolagem(fn) {
+  let ultimo = scrollY;
+  let parados = 0;
+  let quadros = 0;
+  const passo = () => {
+    quadros++;
+    if (scrollY === ultimo) parados++;
+    else { parados = 0; ultimo = scrollY; }
+    if (parados >= 3 || quadros > 90) fn();
+    else requestAnimationFrame(passo);
+  };
+  requestAnimationFrame(passo);
+}
+
+/** Quanto rolar para o elemento caber inteiro numa faixa livre da tela.
+    0 = já está visível; null = nenhuma rolagem resolve. */
+function rolagemParaMostrar(elemento) {
+  const r = caixaVisivel(elemento);
+  // Faixas da tela ocupadas por áreas fixas na mesma coluna do elemento.
+  const ocupadas = areasFixas(elemento)
+    .filter((a) => r.left < a.right && a.left < r.right)
+    .map((a) => [a.top - FOLGA_DO_FOCO, a.bottom + FOLGA_DO_FOCO])
+    .sort((a, b) => a[0] - b[0]);
+  // Faixas livres, entre o topo e o pé da tela.
+  const livres = [];
+  let inicio = FOLGA_DO_FOCO;
+  for (const [cima, baixo] of ocupadas) {
+    if (cima > inicio) livres.push([inicio, cima]);
+    inicio = Math.max(inicio, baixo);
+  }
+  if (innerHeight - FOLGA_DO_FOCO > inicio) livres.push([inicio, innerHeight - FOLGA_DO_FOCO]);
+  if (livres.some(([cima, baixo]) => r.top >= cima && r.bottom <= baixo)) return 0;
+
+  // Menor rolagem possível (dentro do limite da página) que põe o elemento numa faixa livre.
+  const rolagemMaxima = document.documentElement.scrollHeight - innerHeight;
+  const opcoes = livres
+    .filter(([cima, baixo]) => baixo - cima >= Math.min(r.height, innerHeight / 3))
+    .map(([cima, baixo]) => (r.top < cima || r.height > baixo - cima ? r.top - cima : r.bottom - baixo))
+    .filter((d) => scrollY + d >= 0 && scrollY + d <= rolagemMaxima)
+    .sort((a, b) => Math.abs(a) - Math.abs(b));
+  return opcoes.length ? opcoes[0] : null;
+}
+
+function manterFocoVisivel() {
+  const ajustar = (elemento, podeRecolher) => {
+    if (document.activeElement !== elemento || !elemento.matches(":focus-visible")) return;
+    const rolar = rolagemParaMostrar(elemento);
+    if (rolar) {
+      scrollBy({ top: rolar, behavior: "instant" });
+    } else if (rolar === null && podeRecolher && !$("#ecobot-painel")?.hidden) {
+      // Nenhuma rolagem resolve: o painel aberto do EcoBot ocupa quase a tela
+      // toda (celular com fonte grande). Ele é recolhido sem tirar o foco daqui;
+      // a conversa continua lá e o botão do EcoBot reabre o painel.
+      document.dispatchEvent(new CustomEvent("ecobot:recolher"));
+      requestAnimationFrame(() => depoisDaRolagem(() => ajustar(elemento, false)));
+    }
+  };
+  addEventListener("focusin", (evento) => {
+    const elemento = evento.target;
+    if (!(elemento instanceof Element) || elemento.closest(".ecobot") || elemento.id === "vlibras-access-wrapper") return;
+    depoisDaRolagem(() => ajustar(elemento, true));
+  });
 }
 
 /* INICIALIZAÇÃO ------------------------------------------------------- */
@@ -424,3 +890,4 @@ iniciarAcessibilidade();
 $$("[data-carrossel]").forEach(iniciarCarrossel);
 $$("form[data-validar]").forEach(iniciarFormulario);
 iniciarVLibras();
+manterFocoVisivel();

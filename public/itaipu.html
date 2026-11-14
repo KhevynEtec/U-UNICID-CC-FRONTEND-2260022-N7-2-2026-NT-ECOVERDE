@@ -7,7 +7,23 @@
   <meta name="description" content="Estudo de caso educativo sobre a Usina Binacional de Itaipu: geração de energia renovável, importância da energia limpa, preservação de ecossistemas e ações socioambientais.">
   <meta name="theme-color" content="#2E7D32">
   <link rel="icon" href="assets/icons/logo-ecoverde.svg" type="image/svg+xml">
-  <script>document.documentElement.classList.replace("no-js", "js");</script>
+  <script>
+    // Antes do primeiro desenho: troca no-js por js e aplica as preferências salvas
+    // (evita o pulo do menu e a tela piscar de clara para escura). Ver js/script.js, seção 2.
+    (function (html) {
+      html.classList.replace("no-js", "js");
+      try {
+        var salvo = localStorage, cores = { padrao: "", "alto-contraste": "alto-contraste", escuro: "modo-escuro", cinza: "escala-cinza" };
+        var cor = salvo.getItem("ecoverde-cor");
+        if (!Object.prototype.hasOwnProperty.call(cores, cor)) cor = salvo.getItem("ecoverde-contraste") === "1" ? "alto-contraste" : "padrao";
+        if (cores[cor]) html.classList.add(cores[cor]);
+        var fonte = parseInt(salvo.getItem("ecoverde-fonte"), 10);
+        if (fonte >= 1 && fonte <= 3) html.classList.add("fonte-" + fonte);
+        if (salvo.getItem("ecoverde-espacamento") === "1") html.classList.add("espacamento-texto");
+        if (salvo.getItem("ecoverde-links") === "1") html.classList.add("destacar-links");
+      } catch (e) { /* localStorage bloqueado: segue sem as preferências */ }
+    })(document.documentElement);
+  </script>
   <link rel="stylesheet" href="css/style.css">
   <script src="js/script.js" defer></script>
   <script src="js/ecobot.js" defer></script>
@@ -33,6 +49,8 @@
         <button type="button" id="btn-fonte-mais">A+<span class="visually-hidden"> Aumentar texto</span></button>
         <button type="button" id="btn-fonte-menos">A-<span class="visually-hidden"> Diminuir texto</span></button>
         <button type="button" id="btn-fonte-padrao">A<span class="visually-hidden"> Texto padrão</span></button>
+        <button type="button" id="btn-libras" data-aguardando>Libras<span class="visually-hidden">: abrir o tradutor VLibras</span></button>
+        <button type="button" id="btn-mais-opcoes" aria-expanded="false">Mais opções</button>
         <div id="aviso-acessibilidade" class="visually-hidden" role="status"></div>
       </div>
     </div>

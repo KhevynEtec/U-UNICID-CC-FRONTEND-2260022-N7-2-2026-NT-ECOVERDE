@@ -40,6 +40,7 @@ ODS relacionados: **ODS 7** (energia limpa), **ODS 10** (redução das desiguald
 - **Galeria** com `figure`, `figcaption`, fonte e texto alternativo.
 - **Central de mídia**: `<video>` com legendas WebVTT, `<audio>` com transcrição e mapa em `<iframe>`.
 - **Recursos de acessibilidade**: skip link, atalhos eMAG (1 a 4), alto contraste, ajuste de fonte e tradução para Libras com o **VLibras** (tradutor oficial do governo federal) em todas as páginas.
+- **Painel "Mais opções"** na barra de acessibilidade (criado por `js/script.js`): cores (Padrão, Alto contraste, Modo escuro e Escala de cinza), leitura em voz alta com a Web Speech API do navegador, leitura facilitada (espaçamento do texto pelo critério 1.4.12 da WCAG e destaque de links) e "Restaurar padrão". O botão "Libras" da barra abre o VLibras. As escolhas ficam salvas no navegador e são aplicadas pelo script do `<head>` antes do primeiro desenho.
 - **EcoBot (FAQ + API de IA)**: widget servido pela rota `POST /api/assistente`. Responde primeiro pelo **FAQ local**; quando o FAQ não sabe, consulta a **API de IA (Claude, da Anthropic)**. Sem a chave `IA_API_KEY`, funciona só com o FAQ. Respostas da IA aparecem identificadas.
 
 ## 7. Stack técnica

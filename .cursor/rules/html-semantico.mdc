@@ -53,7 +53,7 @@ HTML5 + CSS3 puros, sem frameworks. Site em `public/`, estilos em `public/css/st
 - `alt` genérico ("imagem", "foto1") ou ausente.
 - Links com texto vago ("clique aqui").
 - `onclick` e outros eventos inline — use `js/script.js`.
-  Única exceção: no `<head>`, antes do `<link>` do CSS, a linha `<script>document.documentElement.classList.replace("no-js", "js");</script>`. Ela troca a classe antes do primeiro desenho e evita o pulo do menu no celular (CLS). Não mova para o `script.js`.
+  Única exceção: no `<head>`, antes do `<link>` do CSS, um script curto (cerca de 15 linhas, com `try/catch`) que troca `no-js` por `js` e aplica as preferências salvas (cor, fonte, espaçamento e destaque de links). Ele roda antes do primeiro desenho para evitar o pulo do menu no celular, a tela piscar de clara para escura e o pulo de layout (CLS) de quem salvou preferências. É igual nas 10 páginas e espelha a seção 2 do `script.js`. Não mova para o `script.js`.
 
 ## 6. Perguntas
 Na dúvida sobre conteúdo, imagem, legenda ou fonte, pergunte antes de inventar.

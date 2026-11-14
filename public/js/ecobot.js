@@ -166,6 +166,16 @@
     botaoAbrir.focus();
   };
 
+  // Pedido do script.js (seção 6): o foco saiu do EcoBot para um elemento que o
+  // painel cobriria sem solução (celular com fonte grande). Recolhe o painel sem
+  // mover o foco; a conversa fica guardada e o botão reabre o painel.
+  document.addEventListener("ecobot:recolher", () => {
+    if (painel.hidden) return;
+    painel.hidden = true;
+    botaoAbrir.setAttribute("aria-expanded", "false");
+    raiz.classList.remove("is-aberto");
+  });
+
   botaoAbrir.addEventListener("click", () => (painel.hidden ? abrir() : fechar()));
   botaoFechar.addEventListener("click", fechar);
   painel.addEventListener("keydown", (e) => {
