@@ -366,29 +366,25 @@ function iniciarAcessibilidade() {
   $("#btn-fonte-menos")?.addEventListener("click", () => mudarFonte(-1));
   $("#btn-fonte-padrao")?.addEventListener("click", () => mudarFonte(0));
 
-  if (!grupo || !aviso) return;
+  // Os botões "Libras" e "Mais opções" estão no HTML das páginas (e não são
+  // criados aqui): se surgissem depois do primeiro desenho, a barra mudaria de
+  // altura e empurraria a página (CLS). Sem JavaScript a barra toda fica escondida.
+  const botaoLibras = $("#btn-libras");
+  const botaoMais = $("#btn-mais-opcoes");
+  if (!grupo || !aviso || !botaoMais) return;
 
-  // Botão "Libras": abre o tradutor VLibras. Nasce escondido e só aparece
-  // quando o VLibras carrega (seção 5). O botão do próprio VLibras fica no
-  // fim da página; este fica junto dos outros ajustes, no começo.
-  const botaoLibras = criar("button", { type: "button", id: "btn-libras", hidden: "" });
-  botaoLibras.append("Libras", criar("span", { class: "visually-hidden" }, ": abrir o tradutor VLibras"));
-  botaoLibras.addEventListener("click", () => {
+  // Botão "Libras": abre o tradutor VLibras. Fica com o espaço reservado,
+  // invisível e fora do Tab (data-aguardando), até o VLibras carregar (seção 5).
+  // O botão do próprio VLibras fica no fim da página; este fica no começo.
+  botaoLibras?.addEventListener("click", () => {
     window.VLibrasWidget?.open?.();
     anunciar("Tradutor de Libras aberto.");
   });
-  aviso.before(botaoLibras);
 
   /* Painel "Mais opções" --------------------------------------------- */
-  const botaoMais = criar("button", {
-    type: "button",
-    id: "btn-mais-opcoes",
-    "aria-expanded": "false",
-    "aria-controls": "painel-acessibilidade",
-  }, "Mais opções");
   const painel = criar("div", { id: "painel-acessibilidade", class: "painel-acessibilidade", hidden: "" });
-  aviso.before(botaoMais);
   grupo.after(painel); // logo depois dos botões: o Tab segue de "Mais opções" para o painel
+  botaoMais.setAttribute("aria-controls", painel.id); // só agora o painel existe (o W3C exige o id)
 
   const definirPainel = (aberto) => {
     painel.hidden = !aberto;
@@ -783,10 +779,16 @@ function iniciarVLibras() {
       // Parâmetros: endereço, personalização, avatar e posição.
       if (window.VLibras?.Widget) new window.VLibras.Widget(VLIBRAS_RAIZ, undefined, undefined, "L");
       // Widget pronto: mostra o botão "Libras" da barra de acessibilidade (seção 2).
-      if (typeof window.VLibrasWidget?.open === "function") $("#btn-libras")?.removeAttribute("hidden");
+      const botaoLibras = $("#btn-libras");
+      if (typeof window.VLibrasWidget?.open === "function") botaoLibras?.removeAttribute("data-aguardando");
+      else if (botaoLibras) botaoLibras.hidden = true;
     });
-    // Falha de rede: o site segue normalmente, sem o tradutor.
-    script.addEventListener("error", () => script.remove());
+    // Falha de rede: o site segue normalmente, sem o tradutor (e sem o botão "Libras").
+    script.addEventListener("error", () => {
+      script.remove();
+      const botaoLibras = $("#btn-libras");
+      if (botaoLibras) botaoLibras.hidden = true;
+    });
     document.body.append(script);
   };
 

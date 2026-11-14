@@ -373,6 +373,12 @@ main:focus {
   color: var(--texto-escuro);
 }
 
+/* "Libras" enquanto o VLibras não carrega: ocupa o lugar (a barra não muda
+   de altura quando ele aparece), mas fica invisível, fora do Tab e do leitor de tela. */
+.controles-acessibilidade [data-aguardando] {
+  visibility: hidden;
+}
+
 .painel-acessibilidade button:disabled {
   border-style: dashed;
   background: transparent;
