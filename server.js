@@ -11,6 +11,7 @@ try {
 }
 
 const { perguntarIA, iaConfigurada, TAMANHO_MAXIMO } = await import("./lib/ia.js");
+const { criarVerificadorEmail, dominioDoEmail } = await import("./lib/email.js");
 
 const app = express();
 const PORTA = process.env.PORT || 3000;
@@ -57,6 +58,22 @@ app.post("/api/assistente", limitarEcoBot, async (req, res) => {
   }
 
   res.json(await perguntarIA(pergunta));
+});
+
+// Verificação do domínio do e-mail dos formulários (registro MX).
+// O formulário chama ao sair do campo de e-mail e antes da confirmação.
+const verificarDominio = criarVerificadorEmail();
+const limitarVerificacaoEmail = criarLimitador({
+  limitePorMinuto: 30,
+  mensagem: "Muitas verificações de e-mail seguidas. Aguarde um minuto e tente de novo.",
+});
+
+app.get("/api/verificar-email", limitarVerificacaoEmail, async (req, res) => {
+  const dominio = dominioDoEmail(req.query.email);
+  if (!dominio) {
+    return res.status(400).json({ erro: "Envie um e-mail em formato válido no parâmetro \"email\"." });
+  }
+  res.json({ resultado: await verificarDominio(dominio) });
 });
 
 // Usada pelo Railway (e por nós) para saber se o servidor está no ar.
