@@ -2387,6 +2387,12 @@ html.alto-contraste.destacar-links a:not(.btn) {
   box-shadow: 0 0 0 2px #FFEB3B;
 }
 
+/* O texto dentro do link (ex.: nome e slogan do logo) usa a cor do link,
+   e não a cor própria, que não teria contraste com o fundo de destaque. */
+html.destacar-links a:not(.btn) :where(*) {
+  color: inherit !important;
+}
+
 /* 20. RESPONSIVIDADE ====================================================== */
 
 /* Menu recolhível em telas pequenas (somente com JavaScript ativo;
