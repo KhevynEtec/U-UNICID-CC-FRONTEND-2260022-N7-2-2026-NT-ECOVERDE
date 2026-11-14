@@ -2270,6 +2270,23 @@ html.alto-contraste .ecobot__aviso {
   }
 }
 
+/* 23. VLIBRAS (tradutor de Libras) ======================================== */
+/* O botão do VLibras (criado por js/script.js, em shadow DOM) vem com a camada
+   mais alta possível. Esta camada própria o coloca abaixo do EcoBot (900): no
+   celular, o painel aberto do EcoBot fica por cima do botão, e não o contrário.
+   A janela do avatar (#vlibras-app-root) é outro elemento e continua por cima. */
+#vlibras-access-wrapper {
+  position: relative;
+  z-index: 800;
+}
+
+@media print {
+  #vlibras-access-wrapper,
+  #vlibras-app-root {
+    display: none !important;
+  }
+}
+
 /* 21. MOVIMENTO REDUZIDO E IMPRESSÃO ====================================== */
 @media (prefers-reduced-motion: reduce) {
   *,
