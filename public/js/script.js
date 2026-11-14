@@ -1,7 +1,7 @@
 /* EcoVerde — script.js
    JavaScript só onde HTML/CSS não bastam. Sem bibliotecas.
    O conteúdo continua acessível sem JS (aprimoramento progressivo).
-   1. Menu   2. Acessibilidade (contraste e fonte)   3. Carrossel   4. Formulários
+   1. Menu   2. Acessibilidade (barra e painel "Mais opções")   3. Carrossel   4. Formulários
    5. VLibras (tradutor de Libras do governo federal, carregado de fora) */
 "use strict";
 
@@ -15,6 +15,7 @@ raiz.classList.add("js");
 const guardar = {
   ler: (chave) => { try { return localStorage.getItem(chave); } catch { return null; } },
   gravar: (chave, valor) => { try { localStorage.setItem(chave, valor); } catch { /* sem persistência */ } },
+  remover: (chave) => { try { localStorage.removeItem(chave); } catch { /* sem persistência */ } },
 };
 
 const reduzirMovimento = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -57,18 +58,67 @@ function iniciarMenu() {
   });
 }
 
-/* 2. ACESSIBILIDADE --------------------------------------------------- */
+/* 2. ACESSIBILIDADE ---------------------------------------------------
+   Barra: Alto contraste, A+, A-, A, Libras e "Mais opções".
+   O painel "Mais opções" é criado aqui por JavaScript: não repete HTML nas
+   10 páginas, e quem está sem JavaScript não vê controles que não funcionam.
+   As preferências salvas já são aplicadas pelo script do <head> antes do
+   primeiro desenho; aqui elas são lidas de novo para sincronizar os controles. */
+
+// Modos de cor: valor salvo em "ecoverde-cor" → classe no <html>.
+// A mesma tabela está no script do <head> das páginas.
+const MODOS_COR = {
+  padrao: { classe: "", nome: "Padrão" },
+  "alto-contraste": { classe: "alto-contraste", nome: "Alto contraste" },
+  escuro: { classe: "modo-escuro", nome: "Modo escuro" },
+  cinza: { classe: "escala-cinza", nome: "Escala de cinza" },
+};
+
+/** Cor salva. Quem tinha só a chave antiga "ecoverde-contraste" continua com o alto contraste. */
+function corSalva() {
+  const cor = guardar.ler("ecoverde-cor");
+  if (cor && Object.hasOwn(MODOS_COR, cor)) return cor;
+  return guardar.ler("ecoverde-contraste") === "1" ? "alto-contraste" : "padrao";
+}
+
+/** Grupo do painel: <fieldset> com <legend>. */
+function grupoDoPainel(titulo, classe = "") {
+  const grupo = criar("fieldset", { class: `painel-acessibilidade__grupo ${classe}`.trim() });
+  grupo.append(criar("legend", {}, titulo));
+  return grupo;
+}
+
+/** Opção do painel (radio ou checkbox) com <label> de verdade. */
+function opcaoDoPainel(tipo, nome, id, valor, rotulo) {
+  const caixa = criar("div", { class: "painel-acessibilidade__opcao" });
+  const campo = criar("input", { type: tipo, name: nome, id, value: valor });
+  caixa.append(campo, criar("label", { for: id }, rotulo));
+  return { caixa, campo };
+}
+
 function iniciarAcessibilidade() {
+  const grupo = $(".controles-acessibilidade");
   const botaoContraste = $("#btn-contraste");
   const aviso = $("#aviso-acessibilidade");
   const NIVEL_MAX = 3;
   const anunciar = (texto) => { if (aviso) aviso.textContent = texto; };
 
-  const aplicarContraste = (ativo) => {
-    raiz.classList.toggle("alto-contraste", ativo);
-    botaoContraste?.setAttribute("aria-pressed", ativo);
+  /* Cores ------------------------------------------------------------ */
+  const radiosCor = [];
+  const aplicarCor = (cor) => {
+    for (const { classe } of Object.values(MODOS_COR)) if (classe) raiz.classList.remove(classe);
+    if (MODOS_COR[cor].classe) raiz.classList.add(MODOS_COR[cor].classe);
+    botaoContraste?.setAttribute("aria-pressed", cor === "alto-contraste");
+    for (const radio of radiosCor) radio.checked = radio.value === cor;
+  };
+  const escolherCor = (cor, mensagem = `Cores: ${MODOS_COR[cor].nome}.`) => {
+    aplicarCor(cor);
+    guardar.gravar("ecoverde-cor", cor);
+    guardar.remover("ecoverde-contraste"); // chave antiga: a escolha agora fica em "ecoverde-cor"
+    anunciar(mensagem);
   };
 
+  /* Fonte ------------------------------------------------------------ */
   const aplicarFonte = (nivel) => {
     raiz.classList.remove("fonte-1", "fonte-2", "fonte-3");
     if (nivel > 0) raiz.classList.add(`fonte-${nivel}`);
@@ -83,32 +133,70 @@ function iniciarAcessibilidade() {
     anunciar(novo === 0 ? "Tamanho de texto padrão." : `Tamanho de texto: nível ${novo} de ${NIVEL_MAX}.`);
   };
 
-  aplicarContraste(guardar.ler("ecoverde-contraste") === "1");
+  aplicarCor(corSalva());
   aplicarFonte(nivelSalvo());
 
+  // Botão rápido da barra: liga e desliga o alto contraste (sincronizado com o painel).
   botaoContraste?.addEventListener("click", () => {
     const ativo = !raiz.classList.contains("alto-contraste");
-    aplicarContraste(ativo);
-    guardar.gravar("ecoverde-contraste", ativo ? "1" : "0");
-    anunciar(ativo ? "Alto contraste ativado." : "Alto contraste desativado.");
+    escolherCor(ativo ? "alto-contraste" : "padrao", ativo ? "Alto contraste ativado." : "Alto contraste desativado.");
   });
 
   $("#btn-fonte-mais")?.addEventListener("click", () => mudarFonte(1));
   $("#btn-fonte-menos")?.addEventListener("click", () => mudarFonte(-1));
   $("#btn-fonte-padrao")?.addEventListener("click", () => mudarFonte(0));
 
+  if (!grupo || !aviso) return;
+
   // Botão "Libras": abre o tradutor VLibras. Nasce escondido e só aparece
   // quando o VLibras carrega (seção 5). O botão do próprio VLibras fica no
   // fim da página; este fica junto dos outros ajustes, no começo.
-  if (aviso) {
-    const botaoLibras = criar("button", { type: "button", id: "btn-libras", hidden: "" });
-    botaoLibras.append("Libras", criar("span", { class: "visually-hidden" }, ": abrir o tradutor VLibras"));
-    botaoLibras.addEventListener("click", () => {
-      window.VLibrasWidget?.open?.();
-      anunciar("Tradutor de Libras aberto.");
-    });
-    aviso.before(botaoLibras);
+  const botaoLibras = criar("button", { type: "button", id: "btn-libras", hidden: "" });
+  botaoLibras.append("Libras", criar("span", { class: "visually-hidden" }, ": abrir o tradutor VLibras"));
+  botaoLibras.addEventListener("click", () => {
+    window.VLibrasWidget?.open?.();
+    anunciar("Tradutor de Libras aberto.");
+  });
+  aviso.before(botaoLibras);
+
+  /* Painel "Mais opções" --------------------------------------------- */
+  const botaoMais = criar("button", {
+    type: "button",
+    id: "btn-mais-opcoes",
+    "aria-expanded": "false",
+    "aria-controls": "painel-acessibilidade",
+  }, "Mais opções");
+  const painel = criar("div", { id: "painel-acessibilidade", class: "painel-acessibilidade", hidden: "" });
+  aviso.before(botaoMais);
+  grupo.after(painel); // logo depois dos botões: o Tab segue de "Mais opções" para o painel
+
+  const definirPainel = (aberto) => {
+    painel.hidden = !aberto;
+    botaoMais.setAttribute("aria-expanded", aberto);
+  };
+  botaoMais.addEventListener("click", () => definirPainel(painel.hidden));
+  // Esc fecha o painel e devolve o foco ao botão
+  const fecharComEsc = (e) => {
+    if (e.key === "Escape" && !painel.hidden) {
+      definirPainel(false);
+      botaoMais.focus();
+    }
+  };
+  painel.addEventListener("keydown", fecharComEsc);
+  botaoMais.addEventListener("keydown", fecharComEsc);
+
+  // Grupo "Cores"
+  const grupoCores = grupoDoPainel("Cores");
+  const opcoesCor = criar("div", { class: "painel-acessibilidade__opcoes" });
+  for (const [valor, { nome }] of Object.entries(MODOS_COR)) {
+    const { caixa, campo } = opcaoDoPainel("radio", "ecoverde-cor", `cor-${valor}`, valor, nome);
+    campo.addEventListener("change", () => { if (campo.checked) escolherCor(valor); });
+    radiosCor.push(campo);
+    opcoesCor.append(caixa);
   }
+  grupoCores.append(opcoesCor);
+  painel.append(grupoCores);
+  aplicarCor(corSalva()); // marca o radio da cor atual
 }
 
 /* 3. CARROSSEL ---------------------------------------------------------

@@ -342,7 +342,8 @@ main:focus {
   align-items: center;
 }
 
-.controles-acessibilidade button {
+.controles-acessibilidade button,
+.painel-acessibilidade button {
   min-height: 32px;
   padding: 0 var(--esp-3);
   border: 1px solid var(--branco);
@@ -354,14 +355,95 @@ main:focus {
 }
 
 .controles-acessibilidade button:hover,
-.controles-acessibilidade button[aria-pressed="true"] {
+.controles-acessibilidade button[aria-pressed="true"],
+.controles-acessibilidade button[aria-expanded="true"],
+.painel-acessibilidade button:hover,
+.painel-acessibilidade button[aria-pressed="true"] {
   background: var(--branco);
   color: var(--texto-escuro);
+}
+
+.painel-acessibilidade button:disabled {
+  border-style: dashed;
+  background: transparent;
+  color: var(--branco);
+  cursor: not-allowed;
 }
 
 /* Os controles dependem de JavaScript: só aparecem quando ele está ativo */
 .no-js .controles-acessibilidade {
   display: none;
+}
+
+/* Painel "Mais opções" (criado por js/script.js, logo abaixo dos botões).
+   Fica dentro da barra, com as mesmas cores dela em todos os modos. */
+.painel-acessibilidade {
+  display: grid;
+  flex-basis: 100%;
+  gap: var(--esp-3);
+  padding: var(--esp-3) 0 var(--esp-4);
+  border-top: 1px solid var(--cinza-borda);
+}
+
+.painel-acessibilidade[hidden] {
+  display: none;
+}
+
+.painel-acessibilidade__grupo {
+  min-width: 0;
+  margin: 0;
+  padding: var(--esp-2) var(--esp-3) var(--esp-3);
+  border: 1px solid var(--cinza-borda);
+  border-radius: var(--raio-sm);
+}
+
+.painel-acessibilidade__grupo legend {
+  padding: 0 var(--esp-2);
+  color: var(--branco);
+  font-weight: 700;
+}
+
+.painel-acessibilidade__opcoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--esp-2) var(--esp-4);
+}
+
+.painel-acessibilidade__opcao {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-2);
+  min-height: 32px;
+}
+
+.painel-acessibilidade__opcao input {
+  width: 1.15rem;
+  height: 1.15rem;
+  margin: 0;
+  accent-color: var(--setembro-verde);
+  cursor: pointer;
+}
+
+.painel-acessibilidade label {
+  color: var(--branco);
+  cursor: pointer;
+}
+
+.painel-acessibilidade select {
+  width: auto;
+  max-width: 100%;
+  min-height: 32px;
+  padding: 0 var(--esp-2);
+  border: 1px solid var(--branco);
+  background: var(--texto-escuro);
+  color: var(--branco);
+}
+
+@media (min-width: 900px) {
+  .painel-acessibilidade {
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  }
 }
 
 /* 6. HEADER E NAVEGAÇÃO GLOBAL ============================================ */
