@@ -82,6 +82,20 @@ function corSalva() {
   return guardar.ler("ecoverde-contraste") === "1" ? "alto-contraste" : "padrao";
 }
 
+// Leitura facilitada: chave salva → classe no <html> (também lida pelo script do <head>).
+const LEITURA_FACILITADA = [
+  {
+    chave: "ecoverde-espacamento", classe: "espacamento-texto", id: "facil-espacamento",
+    rotulo: "Aumentar espaçamento do texto",
+    ligado: "Espaçamento do texto aumentado.", desligado: "Espaçamento do texto normal.",
+  },
+  {
+    chave: "ecoverde-links", classe: "destacar-links", id: "facil-links",
+    rotulo: "Destacar links",
+    ligado: "Links destacados.", desligado: "Destaque de links desligado.",
+  },
+];
+
 /** Grupo do painel: <fieldset> com <legend>. */
 function grupoDoPainel(titulo, classe = "") {
   const grupo = criar("fieldset", { class: `painel-acessibilidade__grupo ${classe}`.trim() });
@@ -405,10 +419,49 @@ function iniciarAcessibilidade() {
   aplicarCor(corSalva()); // marca o radio da cor atual
 
   // Grupo "Leitura em voz alta": só existe se o navegador tiver a Web Speech API.
+  let leitura = null;
   if (window.speechSynthesis && typeof window.SpeechSynthesisUtterance === "function") {
-    const leitura = criarLeituraEmVozAlta(anunciar);
+    leitura = criarLeituraEmVozAlta(anunciar);
     painel.append(leitura.grupo);
   }
+
+  // Grupo "Leitura facilitada" (checkboxes)
+  const grupoFacil = grupoDoPainel("Leitura facilitada");
+  const opcoesFacil = criar("div", { class: "painel-acessibilidade__opcoes" });
+  const caixasFacil = LEITURA_FACILITADA.map((opcao) => {
+    const { caixa, campo } = opcaoDoPainel("checkbox", opcao.chave, opcao.id, "1", opcao.rotulo);
+    campo.checked = guardar.ler(opcao.chave) === "1";
+    raiz.classList.toggle(opcao.classe, campo.checked);
+    campo.addEventListener("change", () => {
+      raiz.classList.toggle(opcao.classe, campo.checked);
+      if (campo.checked) guardar.gravar(opcao.chave, "1");
+      else guardar.remover(opcao.chave);
+      anunciar(campo.checked ? opcao.ligado : opcao.desligado);
+    });
+    opcoesFacil.append(caixa);
+    return { opcao, campo };
+  });
+  grupoFacil.append(opcoesFacil);
+  painel.append(grupoFacil);
+
+  // "Restaurar padrão": desfaz tudo, inclusive o tamanho da fonte.
+  const acoes = criar("div", { class: "painel-acessibilidade__acoes" });
+  const botaoRestaurar = criar("button", { type: "button", id: "btn-restaurar-padrao" }, "Restaurar padrão");
+  botaoRestaurar.addEventListener("click", () => {
+    aplicarCor("padrao");
+    aplicarFonte(0);
+    for (const { opcao, campo } of caixasFacil) {
+      campo.checked = false;
+      raiz.classList.remove(opcao.classe);
+    }
+    leitura?.restaurar();
+    for (const chave of ["ecoverde-cor", "ecoverde-contraste", "ecoverde-fonte", ...LEITURA_FACILITADA.map((o) => o.chave)]) {
+      guardar.remover(chave);
+    }
+    anunciar("Preferências de acessibilidade restauradas para o padrão.");
+  });
+  acoes.append(botaoRestaurar);
+  painel.append(acoes);
 }
 
 /* 3. CARROSSEL ---------------------------------------------------------

@@ -449,14 +449,20 @@ main:focus {
   color: var(--branco);
 }
 
+.painel-acessibilidade__acoes {
+  grid-column: 1 / -1;
+}
+
 .painel-acessibilidade__campo {
   display: flex;
+  flex: 1 1 10rem;
   flex-direction: column;
   gap: var(--esp-1);
+  min-width: 0; /* nomes longos de voz não alargam o painel */
 }
 
 .painel-acessibilidade select {
-  width: auto;
+  width: 100%;
   max-width: 100%;
   min-height: 32px;
   padding: 0 var(--esp-2);
@@ -2326,6 +2332,59 @@ html.modo-escuro .form__status--erro {
    tela). Em qualquer outro elemento, como o <body>, ele quebraria isso. */
 html.escala-cinza {
   filter: grayscale(1);
+}
+
+/* LEITURA FACILITADA (painel "Mais opções") --------------------------------
+   Como no alto contraste, usa !important: são preferências da pessoa e
+   precisam valer sobre o estilo de qualquer componente. */
+
+/* Espaçamento do texto: valores do critério 1.4.12 da WCAG (altura da
+   linha 1,5×, 2× depois de parágrafos, 0,12em entre letras e 0,16em entre
+   palavras). O texto corrido, que já usa 1,65, não fica mais apertado.
+   O VLibras fica de fora: o espaçamento herdado deformaria o widget. */
+html.espacamento-texto :where(body *):not(#vlibras-access-wrapper):not(#vlibras-app-root) {
+  line-height: 1.5 !important;
+  letter-spacing: 0.12em !important;
+  word-spacing: 0.16em !important;
+}
+
+/* Mesma especificidade da regra acima (os :not com id): vem depois e vence. */
+html.espacamento-texto :where(p, li, dd, td, th, figcaption, blockquote):not(#vlibras-access-wrapper):not(#vlibras-app-root) {
+  line-height: var(--lh-base) !important;
+}
+
+html.espacamento-texto p {
+  margin-bottom: 2em !important;
+}
+
+/* Com o espaçamento e a fonte maior, nada pode passar da largura da tela
+   (testado a 375 px com a fonte no nível 3): o topo quebra em duas linhas
+   e palavras longas ("socioambientais") podem ser divididas. As tabelas
+   ficam de fora: elas já rolam dentro da própria caixa. */
+html.espacamento-texto .site-header__topo {
+  flex-wrap: wrap;
+}
+
+html.espacamento-texto :where(h1, h2, h3, p, li, a, dt, dd, figcaption, label, legend) {
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+/* Destacar links: sublinhado grosso e fundo de destaque. Links com
+   aparência de botão (.btn) já são destacados e ficam como estão. */
+html.destacar-links a:not(.btn) {
+  background-color: var(--aviso-fundo) !important;
+  color: var(--texto-escuro) !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 0.18em !important;
+  text-underline-offset: 0.2em;
+  box-shadow: 0 0 0 2px var(--aviso-fundo);
+}
+
+html.alto-contraste.destacar-links a:not(.btn) {
+  background-color: #FFEB3B !important;
+  color: #000 !important;
+  box-shadow: 0 0 0 2px #FFEB3B;
 }
 
 /* 20. RESPONSIVIDADE ====================================================== */
