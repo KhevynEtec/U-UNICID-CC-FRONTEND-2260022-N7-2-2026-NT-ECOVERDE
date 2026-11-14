@@ -157,9 +157,37 @@ function iniciarCarrossel(carrossel) {
 }
 
 /* 4. FORMULÁRIOS --------------------------------------------------------
-   A validação principal é a nativa do HTML5. Este trecho apenas mostra a
+   A validação principal é a nativa do HTML5. Este trecho mostra a
    mensagem de erro junto ao campo, marca aria-invalid e exibe a
-   confirmação (o projeto ainda não tem backend). */
+   confirmação (o projeto ainda não tem backend).
+   Campos com data-validacao="nome|email|telefone|mensagem" recebem também
+   as regras de js/validacao.js, aplicadas com setCustomValidity. Se esse
+   arquivo não carregar, vale só a validação HTML5. */
+const regras = globalThis.EcoValidacao;
+const REGRA_DO_CAMPO = {
+  nome: regras?.validarNome,
+  email: regras?.validarEmail,
+  telefone: regras?.validarTelefone,
+  mensagem: regras?.validarMensagem,
+};
+
+// E-mail cujo domínio o servidor disse não existir: campo → { valor, mensagem }.
+// Sai assim que a pessoa edita o campo.
+const erroDoServidor = new WeakMap();
+
+/** Recalcula o erro personalizado do campo. Sempre limpa antes, para nada ficar "travado". */
+function aplicarRegra(campo) {
+  const regra = REGRA_DO_CAMPO[campo.dataset.validacao];
+  if (!regra) return;
+  campo.setCustomValidity("");
+  if (!campo.value.trim()) return; // vazio: quem cuida é o "required"
+
+  const doServidor = erroDoServidor.get(campo);
+  const mensagem = regra(campo.value) ||
+    (doServidor?.valor === campo.value.trim() ? doServidor.mensagem : "");
+  campo.setCustomValidity(mensagem);
+}
+
 function mensagemPara(campo) {
   const v = campo.validity;
   const label = campo.id ? $(`label[for="${campo.id}"]`) : null;
@@ -171,6 +199,7 @@ function mensagemPara(campo) {
     if (campo.tagName === "SELECT") return `Selecione uma opção em ${rotulo}.`;
     return `Preencha o campo ${rotulo}.`;
   }
+  if (v.customError) return campo.validationMessage; // regras de js/validacao.js
   if (v.typeMismatch && campo.type === "email") return "Informe um e-mail válido, por exemplo: nome@exemplo.com.";
   if (v.patternMismatch) return campo.dataset.erroFormato || "O formato informado não é válido.";
   if (v.rangeUnderflow) return `O valor mínimo é ${campo.min}.`;
@@ -190,7 +219,10 @@ function limparErros(base) {
 function atualizarErro(campo) {
   const container = campo.closest(".campo, fieldset");
   if (!container) return;
-  const valido = campo.checkValidity();
+  aplicarRegra(campo);
+  // validity.valid em vez de checkValidity(): checkValidity() dispara o evento
+  // "invalid", que chama esta função de novo (laço infinito).
+  const valido = campo.validity.valid;
   const grupo = campo.type === "radio" ? $$(`input[name="${campo.name}"]`, container) : [campo];
 
   grupo.forEach((item) => {
@@ -202,15 +234,68 @@ function atualizarErro(campo) {
   if (saida) saida.textContent = valido ? "" : mensagemPara(campo);
 }
 
+/* Pergunta ao servidor se o domínio do e-mail recebe mensagens.
+   Devolve "existe", "inexistente" ou "indefinido". Qualquer falha vira
+   "indefinido", e "indefinido" nunca bloqueia o formulário. */
+const resultadosEmail = new Map(); // e-mail já verificado → resultado
+
+async function verificarEmailNoServidor(campo) {
+  const valor = campo.value.trim();
+  if (!valor || !regras || regras.validarEmail(valor)) return "indefinido"; // só e-mail com formato válido
+
+  let resultado = resultadosEmail.get(valor.toLowerCase());
+  if (!resultado) {
+    try {
+      const resposta = await fetch(`/api/verificar-email?email=${encodeURIComponent(valor)}`);
+      if (!resposta.ok) return "indefinido";
+      ({ resultado } = await resposta.json());
+    } catch {
+      return "indefinido"; // sem servidor ou sem rede
+    }
+    if (resultado !== "existe" && resultado !== "inexistente") return "indefinido";
+    resultadosEmail.set(valor.toLowerCase(), resultado);
+  }
+
+  // A pessoa mudou o e-mail enquanto esperava: a resposta antiga não vale mais.
+  if (campo.value.trim() !== valor) return "indefinido";
+
+  if (resultado === "inexistente") {
+    const dominio = valor.split("@").pop().toLowerCase();
+    erroDoServidor.set(campo, {
+      valor,
+      mensagem: `Não encontramos o domínio ${dominio}. Confira se o e-mail foi digitado corretamente.`,
+    });
+    atualizarErro(campo);
+  }
+  return resultado;
+}
+
 function iniciarFormulario(form) {
   const status = $(".form__status", form);
+  const botaoEnviar = $('[type="submit"]', form);
+  const campoEmail = $('[data-validacao="email"]', form);
   let tentouEnviar = false;
+  let verificando = false;
 
   $$("input, select, textarea", form).forEach((campo) => {
     campo.addEventListener("invalid", () => { tentouEnviar = true; atualizarErro(campo); });
-    campo.addEventListener("blur", () => { if (tentouEnviar || campo.value) atualizarErro(campo); });
-    campo.addEventListener("input", () => { if (campo.getAttribute("aria-invalid") === "true") atualizarErro(campo); });
+    campo.addEventListener("blur", () => {
+      // Telefone: formata ao sair do campo, nunca durante a digitação.
+      if (campo.dataset.validacao === "telefone" && regras) {
+        const formatado = regras.formatarTelefone(campo.value);
+        if (formatado !== campo.value) campo.value = formatado;
+      }
+      aplicarRegra(campo);
+      if (tentouEnviar || campo.value) atualizarErro(campo);
+      if (campo === campoEmail) verificarEmailNoServidor(campo);
+    });
+    campo.addEventListener("input", () => {
+      erroDoServidor.delete(campo); // editou: o aviso do servidor some
+      aplicarRegra(campo);          // e a regra é recalculada a cada mudança
+      if (campo.getAttribute("aria-invalid") === "true") atualizarErro(campo);
+    });
     campo.addEventListener("change", () => { if (tentouEnviar) atualizarErro(campo); });
+    aplicarRegra(campo); // valor que o navegador já preencheu (voltar à página, preenchimento automático)
   });
 
   // Doação: o campo "outro valor" fica obrigatório quando escolhido
@@ -239,11 +324,40 @@ function iniciarFormulario(form) {
     sincronizarOutro();
   }
 
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     // O navegador só dispara "submit" com todos os campos válidos.
     // INTEGRAÇÃO PENDENTE: sem backend, o envio é interrompido aqui e
     // apenas uma confirmação de interface é exibida.
     e.preventDefault();
+    if (verificando) return;
+
+    // Antes da confirmação, confere no servidor se o domínio do e-mail existe.
+    if (campoEmail?.value.trim()) {
+      const valor = campoEmail.value.trim();
+      verificando = true;
+      if (botaoEnviar) botaoEnviar.disabled = true; // evita clique duplo
+      if (status) {
+        status.className = "form__status";
+        status.textContent = "Verificando e-mail…";
+      }
+      const resultado = await verificarEmailNoServidor(campoEmail);
+      verificando = false;
+      if (botaoEnviar) botaoEnviar.disabled = false;
+
+      if (campoEmail.value.trim() !== valor) {
+        // O e-mail mudou durante a verificação: não confirma; a pessoa envia de novo.
+        if (status) status.textContent = "";
+        return;
+      }
+      if (resultado === "inexistente") {
+        if (status) status.textContent = "";
+        tentouEnviar = true;
+        atualizarErro(campoEmail); // mostra "Não encontramos o domínio…" junto ao campo
+        campoEmail.focus();
+        return;
+      }
+    }
+
     if (status) {
       status.className = "form__status form__status--sucesso";
       status.textContent = form.dataset.sucesso ||
@@ -256,7 +370,14 @@ function iniciarFormulario(form) {
     status?.focus();
   });
 
-  form.addEventListener("reset", () => limparErros(form));
+  form.addEventListener("reset", () => {
+    limparErros(form);
+    // reset() muda os valores sem disparar "input": limpa os erros personalizados aqui.
+    $$("input, select, textarea", form).forEach((campo) => {
+      campo.setCustomValidity("");
+      erroDoServidor.delete(campo);
+    });
+  });
 }
 
 /* INICIALIZAÇÃO ------------------------------------------------------- */

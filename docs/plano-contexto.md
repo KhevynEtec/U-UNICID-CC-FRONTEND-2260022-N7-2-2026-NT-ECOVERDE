@@ -36,7 +36,7 @@ ODS relacionados: **ODS 7** (energia limpa), **ODS 10** (redução das desiguald
 
 - **10 páginas** interligadas, com o mesmo cabeçalho, menu, barra de acessibilidade e rodapé:
   `index`, `sobre`, `itaipu`, `doacao`, `acessibilidade`, `galeria`, `midia`, `noticias`, `contato`, `orcamento_hospedagem`.
-- **Formulários validados** com HTML5 nativo (doação e contato), com erro exibido junto ao campo.
+- **Formulários validados** com HTML5 nativo (doação e contato), com erro exibido junto ao campo. Regras extras em `js/validacao.js` recusam dados falsos (nome, e-mail, telefone e mensagem), e o servidor confere se o domínio do e-mail existe.
 - **Galeria** com `figure`, `figcaption`, fonte e texto alternativo.
 - **Central de mídia**: `<video>` com legendas WebVTT, `<audio>` com transcrição e mapa em `<iframe>`.
 - **Recursos de acessibilidade**: skip link, atalhos eMAG (1 a 4), alto contraste e ajuste de fonte.
@@ -72,11 +72,14 @@ ecoverde/
 │   ├── *.html
 │   ├── css/style.css
 │   ├── js/script.js
+│   ├── js/validacao.js      # regras dos formulários (nome, e-mail, telefone, mensagem)
 │   ├── js/ecobot.js
 │   └── assets/ (images, icons, media)
 ├── lib/faq.js               # base de perguntas do EcoBot
 ├── lib/ia.js                # FAQ primeiro; API de IA se houver chave
-├── server.js                # Express: site estático + /api/assistente
+├── lib/email.js             # verifica o domínio do e-mail (registro MX)
+├── test/                    # testes automáticos (npm test)
+├── server.js                # Express: site estático + /api/assistente + /api/verificar-email
 ├── package.json
 ├── .env.example
 └── .gitignore               # ignora .env e node_modules
