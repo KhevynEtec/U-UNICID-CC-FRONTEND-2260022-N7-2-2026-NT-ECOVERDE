@@ -1,7 +1,8 @@
 /* EcoVerde — script.js
    JavaScript só onde HTML/CSS não bastam. Sem bibliotecas.
    O conteúdo continua acessível sem JS (aprimoramento progressivo).
-   1. Menu   2. Acessibilidade (contraste e fonte)   3. Carrossel   4. Formulários */
+   1. Menu   2. Acessibilidade (contraste e fonte)   3. Carrossel   4. Formulários
+   5. VLibras (tradutor de Libras do governo federal, carregado de fora) */
 "use strict";
 
 const raiz = document.documentElement;
@@ -382,8 +383,44 @@ function iniciarFormulario(form) {
   });
 }
 
+/* 5. VLIBRAS ------------------------------------------------------------
+   Tradutor oficial do governo federal para Libras (https://vlibras.gov.br).
+   O próprio script cria o botão e a janela do avatar (em shadow DOM), então
+   não há HTML do VLibras nas páginas e o W3C não é afetado.
+   - Carrega depois do "load" da página, para não atrasar o site.
+   - O widget se inicializa sozinho mesmo com a página já carregada
+     (testado), por isso não é preciso disparar um "load" falso.
+   - À esquerda (position "L"), para nunca cobrir o EcoBot, que fica à direita.
+   - Sem internet ou com o site do governo fora do ar, nada acontece. */
+const VLIBRAS_RAIZ = "https://vlibras.gov.br/app";
+
+function iniciarVLibras() {
+  if (document.getElementById("vlibras-script")) return; // não carrega duas vezes
+
+  // Padrões lidos pelo script do VLibras, caso ele se inicialize antes do onload.
+  window.VLibrasWidget = { path: VLIBRAS_RAIZ, position: "L" };
+
+  const carregar = () => {
+    const script = document.createElement("script");
+    script.id = "vlibras-script";
+    script.src = `${VLIBRAS_RAIZ}/vlibras-plugin.js`;
+    script.async = true;
+    script.addEventListener("load", () => {
+      // Parâmetros: endereço, personalização, avatar e posição.
+      if (window.VLibras?.Widget) new window.VLibras.Widget(VLIBRAS_RAIZ, undefined, undefined, "L");
+    });
+    // Falha de rede: o site segue normalmente, sem o tradutor.
+    script.addEventListener("error", () => script.remove());
+    document.body.append(script);
+  };
+
+  if (document.readyState === "complete") carregar();
+  else window.addEventListener("load", carregar, { once: true });
+}
+
 /* INICIALIZAÇÃO ------------------------------------------------------- */
 iniciarMenu();
 iniciarAcessibilidade();
 $$("[data-carrossel]").forEach(iniciarCarrossel);
 $$("form[data-validar]").forEach(iniciarFormulario);
+iniciarVLibras();
