@@ -440,6 +440,21 @@ main:focus {
   cursor: pointer;
 }
 
+.painel-acessibilidade__grupo > * + * {
+  margin-top: var(--esp-2);
+}
+
+.painel-acessibilidade__ajuda {
+  max-width: none;
+  color: var(--branco);
+}
+
+.painel-acessibilidade__campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-1);
+}
+
 .painel-acessibilidade select {
   width: auto;
   max-width: 100%;

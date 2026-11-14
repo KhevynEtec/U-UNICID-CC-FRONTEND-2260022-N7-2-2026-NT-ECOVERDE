@@ -97,6 +97,206 @@ function opcaoDoPainel(tipo, nome, id, valor, rotulo) {
   return { caixa, campo };
 }
 
+/* Leitura em voz alta (Web Speech API do próprio navegador, sem biblioteca) */
+const LIMITE_DA_FALA = 200; // caracteres por fala: alguns navegadores cortam falas longas
+const BLOCOS_DE_TEXTO = "p, li, h1, h2, h3, h4, h5, h6, dt, dd, figcaption, caption, th, td, blockquote, summary, label, legend, pre, address";
+const IGNORAR_NA_LEITURA = '[aria-hidden="true"], [hidden], script, style, noscript, template, .ecobot';
+const VELOCIDADES = [["0.75", "0,75×"], ["1", "1× (normal)"], ["1.25", "1,25×"], ["1.5", "1,5×"]];
+
+/** Divide o texto em frases curtas. Frases longas são quebradas em vírgulas ou espaços. */
+function dividirEmFrases(texto, limite = LIMITE_DA_FALA) {
+  const frases = [];
+  for (let frase of texto.replace(/\s+/g, " ").trim().split(/(?<=[.!?…:;])\s+/)) {
+    while (frase.length > limite) {
+      let corte = frase.lastIndexOf(", ", limite);
+      if (corte < limite / 2) corte = frase.lastIndexOf(" ", limite);
+      if (corte <= 0) corte = limite;
+      frases.push(frase.slice(0, corte + 1).trim());
+      frase = frase.slice(corte + 1).trim();
+    }
+    if (frase) frases.push(frase);
+  }
+  return frases;
+}
+
+/** Textos do <main>, um por bloco (parágrafo, item, título...), sem o que está
+    escondido ou com aria-hidden. O texto de .visually-hidden entra: ele existe
+    justamente para quem não vê a tela. */
+function textosDoMain() {
+  const main = $("main");
+  if (!main) return [];
+  const blocos = [];
+  let blocoAtual = null;
+  const percurso = document.createTreeWalker(main, NodeFilter.SHOW_TEXT, {
+    acceptNode(no) {
+      const el = no.parentElement;
+      if (!el || !no.nodeValue.trim() || el.closest(IGNORAR_NA_LEITURA)) return NodeFilter.FILTER_REJECT;
+      const visivel = el.checkVisibility ? el.checkVisibility({ visibilityProperty: true }) : el.getClientRects().length > 0;
+      return visivel ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+    },
+  });
+  for (let no = percurso.nextNode(); no; no = percurso.nextNode()) {
+    const bloco = no.parentElement.closest(BLOCOS_DE_TEXTO) || no.parentElement;
+    if (bloco !== blocoAtual) {
+      blocos.push("");
+      blocoAtual = bloco;
+    }
+    blocos[blocos.length - 1] += no.nodeValue;
+  }
+  return blocos.map((b) => b.replace(/\s+/g, " ").trim()).filter(Boolean);
+}
+
+/** Campo do painel: <label> em cima de um <select>. */
+function seletorDoPainel(id, rotulo) {
+  const caixa = criar("div", { class: "painel-acessibilidade__campo" });
+  const campo = criar("select", { id });
+  caixa.append(criar("label", { for: id }, rotulo), campo);
+  return { caixa, campo };
+}
+
+/** Grupo "Leitura em voz alta". Devolve o grupo e a função que volta ao padrão. */
+function criarLeituraEmVozAlta(anunciar) {
+  const fala = window.speechSynthesis;
+  const grupo = grupoDoPainel("Leitura em voz alta");
+  const botoes = criar("div", { class: "painel-acessibilidade__opcoes" });
+  const botaoOuvir = criar("button", { type: "button", id: "leitura-ouvir" }, "Ouvir");
+  const botaoPausar = criar("button", { type: "button", id: "leitura-pausar", disabled: "" }, "Pausar");
+  const botaoParar = criar("button", { type: "button", id: "leitura-parar", disabled: "" }, "Parar");
+  botoes.append(botaoOuvir, botaoPausar, botaoParar);
+
+  const velocidade = seletorDoPainel("leitura-velocidade", "Velocidade");
+  for (const [valor, nome] of VELOCIDADES) velocidade.campo.append(criar("option", { value: valor }, nome));
+  const velocidadeSalva = guardar.ler("ecoverde-voz-velocidade");
+  velocidade.campo.value = VELOCIDADES.some(([v]) => v === velocidadeSalva) ? velocidadeSalva : "1";
+
+  const voz = seletorDoPainel("leitura-voz", "Voz");
+  const vozesDoPortugues = () => {
+    const todas = fala.getVoices();
+    const brasil = todas.filter((v) => /^pt[-_]br$/i.test(v.lang));
+    return brasil.length ? brasil : todas.filter((v) => /^pt\b/i.test(v.lang));
+  };
+  const preencherVozes = () => {
+    const vozes = vozesDoPortugues();
+    voz.campo.replaceChildren(criar("option", { value: "" }, vozes.length ? "Automática (português)" : "Padrão do navegador"));
+    for (const v of vozes) voz.campo.append(criar("option", { value: v.name }, v.name));
+    const salva = guardar.ler("ecoverde-voz");
+    if (vozes.some((v) => v.name === salva)) voz.campo.value = salva;
+  };
+  preencherVozes();
+  fala.addEventListener?.("voiceschanged", preencherVozes); // a lista de vozes chega depois em alguns navegadores
+
+  const campos = criar("div", { class: "painel-acessibilidade__opcoes" });
+  campos.append(velocidade.caixa, voz.caixa);
+  grupo.append(
+    criar("p", { class: "painel-acessibilidade__ajuda" }, "Lê o texto selecionado ou, se nada estiver selecionado, o conteúdo principal da página."),
+    botoes,
+    campos,
+  );
+
+  // Estado da leitura. "rodada" muda a cada início ou parada: respostas de
+  // falas antigas (canceladas) são ignoradas.
+  let frases = [];
+  let posicao = 0;
+  let rodada = 0;
+  let estado = "parado"; // "parado" | "lendo" | "pausado"
+
+  const atualizarBotoes = () => {
+    const parado = estado === "parado";
+    // Não deixa o foco "sumir" num botão que vai ficar desabilitado.
+    if (parado && (document.activeElement === botaoPausar || document.activeElement === botaoParar)) botaoOuvir.focus();
+    botaoPausar.disabled = parado;
+    botaoParar.disabled = parado;
+    botaoPausar.textContent = estado === "pausado" ? "Continuar" : "Pausar";
+  };
+
+  const vozEscolhida = () => {
+    const vozes = vozesDoPortugues();
+    return vozes.find((v) => v.name === voz.campo.value) || vozes[0] || null;
+  };
+
+  const encerrar = (mensagem) => {
+    rodada++;
+    fala.cancel();
+    frases = [];
+    posicao = 0;
+    estado = "parado";
+    atualizarBotoes();
+    if (mensagem) anunciar(mensagem);
+  };
+
+  const falarProxima = (minhaRodada) => {
+    if (minhaRodada !== rodada) return;
+    if (posicao >= frases.length) {
+      encerrar("Leitura concluída.");
+      return;
+    }
+    const trecho = new SpeechSynthesisUtterance(frases[posicao]);
+    trecho.lang = "pt-BR";
+    const escolhida = vozEscolhida();
+    if (escolhida) trecho.voice = escolhida;
+    trecho.rate = Number(velocidade.campo.value) || 1;
+    trecho.addEventListener("end", () => {
+      if (minhaRodada !== rodada) return;
+      posicao++;
+      falarProxima(minhaRodada);
+    });
+    trecho.addEventListener("error", (e) => {
+      if (minhaRodada !== rodada || e.error === "interrupted" || e.error === "canceled") return;
+      encerrar("Não foi possível continuar a leitura em voz alta.");
+    });
+    fala.speak(trecho);
+  };
+
+  botaoOuvir.addEventListener("click", () => {
+    const selecionado = getSelection()?.toString().trim() || "";
+    const lista = (selecionado ? [selecionado] : textosDoMain()).flatMap((texto) => dividirEmFrases(texto));
+    if (!lista.length) {
+      anunciar("Não há texto para ler.");
+      return;
+    }
+    rodada++;
+    fala.cancel();
+    frases = lista;
+    posicao = 0;
+    estado = "lendo";
+    atualizarBotoes();
+    anunciar(selecionado ? "Lendo o texto selecionado." : "Lendo o conteúdo da página.");
+    falarProxima(rodada);
+  });
+
+  botaoPausar.addEventListener("click", () => {
+    if (estado === "lendo") {
+      fala.pause();
+      estado = "pausado";
+      anunciar("Leitura pausada.");
+    } else if (estado === "pausado") {
+      fala.resume();
+      estado = "lendo";
+      anunciar("Leitura retomada.");
+    }
+    atualizarBotoes();
+  });
+
+  botaoParar.addEventListener("click", () => encerrar("Leitura interrompida."));
+  velocidade.campo.addEventListener("change", () => guardar.gravar("ecoverde-voz-velocidade", velocidade.campo.value));
+  voz.campo.addEventListener("change", () => guardar.gravar("ecoverde-voz", voz.campo.value));
+
+  // Sair da página para a leitura (o navegador poderia continuar falando).
+  addEventListener("pagehide", () => {
+    rodada++;
+    fala.cancel();
+  });
+
+  const restaurar = () => {
+    encerrar();
+    velocidade.campo.value = "1";
+    voz.campo.value = "";
+    guardar.remover("ecoverde-voz-velocidade");
+    guardar.remover("ecoverde-voz");
+  };
+  return { grupo, restaurar };
+}
+
 function iniciarAcessibilidade() {
   const grupo = $(".controles-acessibilidade");
   const botaoContraste = $("#btn-contraste");
@@ -203,6 +403,12 @@ function iniciarAcessibilidade() {
   grupoCores.append(opcoesCor);
   painel.append(grupoCores);
   aplicarCor(corSalva()); // marca o radio da cor atual
+
+  // Grupo "Leitura em voz alta": só existe se o navegador tiver a Web Speech API.
+  if (window.speechSynthesis && typeof window.SpeechSynthesisUtterance === "function") {
+    const leitura = criarLeituraEmVozAlta(anunciar);
+    painel.append(leitura.grupo);
+  }
 }
 
 /* 3. CARROSSEL ---------------------------------------------------------
