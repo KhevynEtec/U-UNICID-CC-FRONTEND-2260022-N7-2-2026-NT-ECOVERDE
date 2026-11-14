@@ -8,6 +8,7 @@
   <meta name="theme-color" content="#2E7D32">
   <link rel="icon" href="assets/icons/logo-ecoverde.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/style.css">
+  <script type="module" src="js/validacao.js"></script>
   <script src="js/script.js" defer></script>
   <script src="js/ecobot.js" defer></script>
 </head>
@@ -181,20 +182,20 @@
 
           <div class="campo">
             <label for="valor-outro">Informe o valor (R$)</label>
-            <input type="number" id="valor-outro" placeholder="Ex.: 25" name="valor_outro" min="5" step="0.01" inputmode="decimal" aria-describedby="ajuda-valor-outro erro-valor-outro">
-            <span class="ajuda" id="ajuda-valor-outro">Preencha apenas se escolheu “Outro valor”. Valor mínimo: R$ 5,00.</span>
+            <input type="number" id="valor-outro" placeholder="Ex.: 25" name="valor_outro" min="5" max="100000" step="0.01" inputmode="decimal" aria-describedby="ajuda-valor-outro erro-valor-outro">
+            <span class="ajuda" id="ajuda-valor-outro">Preencha apenas se escolheu “Outro valor”. Valor mínimo: R$ 5,00. Máximo: R$ 100.000,00.</span>
             <span class="mensagem-erro" id="erro-valor-outro"></span>
           </div>
 
           <div class="form__linha">
             <div class="campo">
               <label for="doacao-nome">Nome completo <span class="obrigatorio" aria-hidden="true">*</span></label>
-              <input type="text" id="doacao-nome" placeholder="Ex.: Maria da Silva" name="nome" required minlength="3" maxlength="120" autocomplete="name" aria-describedby="erro-doacao-nome">
+              <input type="text" id="doacao-nome" data-validacao="nome" placeholder="Ex.: Maria da Silva" name="nome" required minlength="3" maxlength="120" autocomplete="name" aria-describedby="erro-doacao-nome">
               <span class="mensagem-erro" id="erro-doacao-nome"></span>
             </div>
             <div class="campo">
               <label for="doacao-email">E-mail <span class="obrigatorio" aria-hidden="true">*</span></label>
-              <input type="email" id="doacao-email" placeholder="nome@exemplo.com" name="email" required maxlength="160" autocomplete="email" aria-describedby="ajuda-doacao-email erro-doacao-email">
+              <input type="email" id="doacao-email" data-validacao="email" placeholder="nome@exemplo.com" name="email" required maxlength="160" autocomplete="email" aria-describedby="ajuda-doacao-email erro-doacao-email">
               <span class="ajuda" id="ajuda-doacao-email">Exemplo: nome@exemplo.com</span>
               <span class="mensagem-erro" id="erro-doacao-email"></span>
             </div>
@@ -203,7 +204,7 @@
           <div class="form__linha">
             <div class="campo">
               <label for="doacao-telefone">Telefone (opcional)</label>
-              <input type="tel" id="doacao-telefone" placeholder="(11) 91234-5678" name="telefone" autocomplete="tel" pattern="\(?[0-9]{2}\)? ?[0-9]{4,5}-?[0-9]{4}" data-erro-formato="Informe o telefone com DDD, por exemplo: (11) 91234-5678." aria-describedby="ajuda-doacao-telefone erro-doacao-telefone">
+              <input type="tel" id="doacao-telefone" data-validacao="telefone" placeholder="(11) 91234-5678" name="telefone" autocomplete="tel" pattern="(\+55 ?)?\(?[1-9]{2}\)? ?(9[0-9]{4}|[2-5][0-9]{3})-?[0-9]{4}" data-erro-formato="Informe o telefone com DDD, por exemplo: (11) 91234-5678." aria-describedby="ajuda-doacao-telefone erro-doacao-telefone">
               <span class="ajuda" id="ajuda-doacao-telefone">Com DDD. Exemplo: (11) 91234-5678</span>
               <span class="mensagem-erro" id="erro-doacao-telefone"></span>
             </div>
@@ -221,8 +222,9 @@
 
           <div class="campo">
             <label for="doacao-mensagem">Mensagem de apoio (opcional)</label>
-            <textarea id="doacao-mensagem" placeholder="Deixe uma mensagem de apoio ao projeto" name="mensagem" maxlength="500" rows="4" aria-describedby="ajuda-doacao-mensagem"></textarea>
+            <textarea id="doacao-mensagem" data-validacao="mensagem" placeholder="Deixe uma mensagem de apoio ao projeto" name="mensagem" maxlength="500" rows="4" aria-describedby="ajuda-doacao-mensagem erro-doacao-mensagem"></textarea>
             <span class="ajuda" id="ajuda-doacao-mensagem">Até 500 caracteres.</span>
+            <span class="mensagem-erro" id="erro-doacao-mensagem"></span>
           </div>
 
           <div class="campo">
