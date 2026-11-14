@@ -190,8 +190,82 @@
             <li><kbd>Enter</kbd> ativa links e botões; <kbd>Espaço</kbd> ativa botões e marca caixas de seleção.</li>
             <li>Setas do teclado escolhem opções em grupos de botões de opção e percorrem os destaques do carrossel.</li>
             <li><kbd>Esc</kbd> fecha o menu em telas pequenas e devolve o foco ao botão “Menu”.</li>
+            <li><kbd>Esc</kbd> também fecha o painel “Mais opções” e devolve o foco ao botão.</li>
           </ul>
           <p>O primeiro item de cada página é o link “Pular para o conteúdo principal”, que aparece ao pressionar <kbd>Tab</kbd>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="secao secao--branca" aria-labelledby="titulo-painel" id="painel">
+      <div class="container">
+        <div class="texto-corrido">
+          <h2 id="titulo-painel">Painel “Mais opções”</h2>
+          <p>O botão “Mais opções”, na barra do topo, abre um painel com outros ajustes. As escolhas valem para todas as páginas e continuam ativas quando você volta ao site.</p>
+          <h3>Cores</h3>
+          <p>Quatro modos: <strong>Padrão</strong>; <strong>Alto contraste</strong>, com fundo preto, textos brancos e links e botões amarelos; <strong>Modo escuro</strong>, com fundo escuro e cores suaves, sem inverter imagens nem vídeos; e <strong>Escala de cinza</strong>, que tira as cores da página inteira. O botão “Alto contraste” da barra continua funcionando e acompanha a escolha feita no painel.</p>
+          <h3>Leitura em voz alta</h3>
+          <p>Usa as vozes do próprio navegador, sem instalar nada. O botão <strong>Ouvir</strong> lê o texto que você selecionou ou, se nada estiver selecionado, o conteúdo principal da página. Também há <strong>Pausar/Continuar</strong>, <strong>Parar</strong>, a escolha da velocidade (de 0,75× a 1,5×) e da voz, com prioridade para as vozes em português do Brasil. A leitura para quando você sai da página. Se o navegador não tiver vozes, essa parte não aparece.</p>
+          <h3>Leitura facilitada</h3>
+          <p><strong>Aumentar espaçamento do texto</strong> amplia o espaço entre linhas, parágrafos, letras e palavras, conforme o critério 1.4.12 da <abbr title="Web Content Accessibility Guidelines">WCAG</abbr>. <strong>Destacar links</strong> deixa todos os links sublinhados com traço grosso e com fundo de destaque.</p>
+          <h3>Restaurar padrão</h3>
+          <p>Desfaz todas as escolhas, inclusive o tamanho do texto, e apaga o que estava salvo.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="secao" aria-labelledby="titulo-libras" id="libras">
+      <div class="container">
+        <div class="texto-corrido">
+          <h2 id="titulo-libras">Libras com o VLibras</h2>
+          <p>O VLibras é o tradutor oficial do governo federal para a Língua Brasileira de Sinais. Com ele, um avatar 3D traduz para Libras os textos da página.</p>
+          <ul>
+            <li><strong>Como abrir:</strong> pelo botão <strong>Libras</strong>, na barra do topo, ou pelo botão azul do VLibras no canto inferior esquerdo da tela. Com o tradutor aberto, clique num texto da página para vê-lo em Libras.</li>
+            <li><strong>Por que uma ferramenta externa:</strong> no navegador, o EcoVerde não usa bibliotecas externas, com esta única exceção. Os navegadores não têm tradução para Libras, e o VLibras é a ferramenta oficial do governo para isso.</li>
+            <li><strong>De onde ele vem:</strong> é carregado a partir do site oficial do VLibras (vlibras.gov.br) depois que a página termina de abrir, para não atrasar o site. Se ele não carregar, o restante do site continua funcionando normalmente.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="secao secao--branca" aria-labelledby="titulo-formularios" id="formularios">
+      <div class="container">
+        <div class="texto-corrido">
+          <h2 id="titulo-formularios">Formulários</h2>
+          <p>Os formulários de contato e de doação conferem os dados antes do envio e explicam como corrigir cada problema:</p>
+          <ul>
+            <li>a mensagem de erro aparece junto ao campo e é lida pelo leitor de tela quando o campo recebe o foco;</li>
+            <li>nome, e-mail, telefone e mensagem têm regras para evitar dados digitados por engano, como um e-mail com erro de digitação (“Você quis dizer nome@gmail.com?”) ou um telefone com DDD inexistente;</li>
+            <li>o telefone é formatado automaticamente quando você sai do campo;</li>
+            <li>para o e-mail, o site consulta apenas se o domínio (a parte depois do @) existe e recebe mensagens;</li>
+            <li>a confirmação de envio é anunciada pelo leitor de tela.</li>
+          </ul>
+          <p>Os formulários são demonstrativos: a mensagem e a doação não são enviadas e nenhum pagamento é processado. Só o e-mail passa pelo servidor do EcoVerde, para a consulta do domínio, e não é gravado.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="secao" aria-labelledby="titulo-privacidade" id="privacidade">
+      <div class="container">
+        <div class="texto-corrido">
+          <h2 id="titulo-privacidade">Privacidade das preferências</h2>
+          <p>Suas escolhas de acessibilidade (cores, tamanho do texto, espaçamento, destaque de links, velocidade e voz da leitura) ficam salvas <strong>só no seu navegador</strong> e não são enviadas ao EcoVerde. Para apagá-las, use <strong>Restaurar padrão</strong> ou limpe os dados do site no navegador.</p>
+          <p>O VLibras também guarda no seu navegador se a janela dele estava aberta. Ao usar o tradutor, o texto escolhido é enviado ao serviço do VLibras para ser traduzido.</p>
+          <p>As perguntas feitas ao EcoBot são enviadas ao servidor do EcoVerde e, quando as perguntas frequentes do site não têm a resposta, também à API de inteligência artificial que gera a resposta. O servidor do EcoVerde não grava as perguntas. Por isso, não informe dados pessoais no EcoBot.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="secao secao--branca" aria-labelledby="titulo-limitacoes" id="limitacoes">
+      <div class="container">
+        <div class="texto-corrido">
+          <h2 id="titulo-limitacoes">Limitações conhecidas</h2>
+          <ul>
+            <li>Em telas de celular com o texto no maior tamanho, o botão do EcoBot pode cobrir a parte de baixo do painel “Mais opções” até você rolar a página. Pelo teclado, a página rola sozinha e o item focado aparece.</li>
+            <li>Com o texto no maior tamanho e o espaçamento aumentado, palavras longas do índice lateral (nas páginas Itaipu e Notícias) podem ser quebradas sem hífen.</li>
+            <li>O VLibras depende do site do governo estar no ar. Se ele estiver fora do ar, o botão “Libras” não aparece e o resto do site funciona normalmente.</li>
+          </ul>
+          <p>Encontrou outra barreira? <a href="contato.html">Conte para a equipe pelo formulário de contato</a>.</p>
         </div>
       </div>
     </section>
