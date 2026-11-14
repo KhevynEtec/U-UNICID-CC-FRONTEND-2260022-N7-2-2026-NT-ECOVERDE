@@ -21,6 +21,14 @@ const reduzirMovimento = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const $ = (seletor, base = document) => base.querySelector(seletor);
 const $$ = (seletor, base = document) => [...base.querySelectorAll(seletor)];
 
+/** Cria um elemento com atributos e, opcionalmente, texto (mesmo padrão do ecobot.js). */
+const criar = (tag, atributos = {}, texto) => {
+  const el = document.createElement(tag);
+  for (const [nome, valor] of Object.entries(atributos)) el.setAttribute(nome, valor);
+  if (texto) el.textContent = texto;
+  return el;
+};
+
 /* 1. MENU ------------------------------------------------------------- */
 function iniciarMenu() {
   const botao = $(".nav-toggle");
@@ -88,6 +96,19 @@ function iniciarAcessibilidade() {
   $("#btn-fonte-mais")?.addEventListener("click", () => mudarFonte(1));
   $("#btn-fonte-menos")?.addEventListener("click", () => mudarFonte(-1));
   $("#btn-fonte-padrao")?.addEventListener("click", () => mudarFonte(0));
+
+  // Botão "Libras": abre o tradutor VLibras. Nasce escondido e só aparece
+  // quando o VLibras carrega (seção 5). O botão do próprio VLibras fica no
+  // fim da página; este fica junto dos outros ajustes, no começo.
+  if (aviso) {
+    const botaoLibras = criar("button", { type: "button", id: "btn-libras", hidden: "" });
+    botaoLibras.append("Libras", criar("span", { class: "visually-hidden" }, ": abrir o tradutor VLibras"));
+    botaoLibras.addEventListener("click", () => {
+      window.VLibrasWidget?.open?.();
+      anunciar("Tradutor de Libras aberto.");
+    });
+    aviso.before(botaoLibras);
+  }
 }
 
 /* 3. CARROSSEL ---------------------------------------------------------
@@ -408,6 +429,8 @@ function iniciarVLibras() {
     script.addEventListener("load", () => {
       // Parâmetros: endereço, personalização, avatar e posição.
       if (window.VLibras?.Widget) new window.VLibras.Widget(VLIBRAS_RAIZ, undefined, undefined, "L");
+      // Widget pronto: mostra o botão "Libras" da barra de acessibilidade (seção 2).
+      if (typeof window.VLibrasWidget?.open === "function") $("#btn-libras")?.removeAttribute("hidden");
     });
     // Falha de rede: o site segue normalmente, sem o tradutor.
     script.addEventListener("error", () => script.remove());
