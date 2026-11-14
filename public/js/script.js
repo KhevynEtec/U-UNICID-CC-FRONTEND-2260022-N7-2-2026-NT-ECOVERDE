@@ -5,6 +5,8 @@
 "use strict";
 
 const raiz = document.documentElement;
+// O <head> de cada página já troca no-js por js antes do CSS (evita o pulo
+// do menu no celular). Repetir aqui é uma garantia e não muda nada.
 raiz.classList.remove("no-js");
 raiz.classList.add("js");
 
