@@ -2010,6 +2010,23 @@ html.alto-contraste .obrigatorio {
   color: #FF8A80 !important;
 }
 
+/* Datas da linha do tempo e "Transcrição" ficavam verde-escuro sobre preto (3.29:1) */
+html.alto-contraste .linha-tempo time,
+html.alto-contraste .linha-tempo .data {
+  color: #FFF !important;
+}
+
+html.alto-contraste .transcricao summary {
+  color: #FFEB3B !important;
+}
+
+/* Teclas (<kbd>) ficavam com texto branco sobre fundo branco (1:1) */
+html.alto-contraste kbd {
+  border-color: #FFF !important;
+  background: #000 !important;
+  color: #FFF !important;
+}
+
 html.alto-contraste .carrossel__indicador span {
   border-color: #FFEB3B;
   background: #000;
