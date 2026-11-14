@@ -20,27 +20,33 @@ app.set("trust proxy", 1); // o Railway fica na frente do servidor como proxy
 app.use(express.json({ limit: "4kb" }));
 app.use(express.static(path.join(import.meta.dirname, "public"), { extensions: ["html"] }));
 
-// Limite simples de pedidos por visitante: protege os créditos da API de IA.
-const LIMITE_POR_MINUTO = 15;
-const pedidosPorIp = new Map();
-function limitarPedidos(req, res, next) {
-  const agora = Date.now();
-  const registro = pedidosPorIp.get(req.ip);
-  if (!registro || agora - registro.inicio > 60_000) {
-    pedidosPorIp.set(req.ip, { inicio: agora, total: 1 });
-    return next();
-  }
-  if (++registro.total > LIMITE_POR_MINUTO) {
-    return res.status(429).json({ erro: "Muitas perguntas seguidas. Aguarde um minuto e tente de novo." });
-  }
-  next();
-}
-setInterval(() => {
-  const agora = Date.now();
-  for (const [ip, registro] of pedidosPorIp) if (agora - registro.inicio > 60_000) pedidosPorIp.delete(ip);
-}, 60_000).unref();
+// Limite simples de pedidos por visitante (IP), com contagem própria para cada rota.
+function criarLimitador({ limitePorMinuto, mensagem }) {
+  const pedidosPorIp = new Map();
+  setInterval(() => {
+    const agora = Date.now();
+    for (const [ip, registro] of pedidosPorIp) if (agora - registro.inicio > 60_000) pedidosPorIp.delete(ip);
+  }, 60_000).unref();
 
-app.post("/api/assistente", limitarPedidos, async (req, res) => {
+  return function limitarPedidos(req, res, next) {
+    const agora = Date.now();
+    const registro = pedidosPorIp.get(req.ip);
+    if (!registro || agora - registro.inicio > 60_000) {
+      pedidosPorIp.set(req.ip, { inicio: agora, total: 1 });
+      return next();
+    }
+    if (++registro.total > limitePorMinuto) return res.status(429).json({ erro: mensagem });
+    next();
+  };
+}
+
+// EcoBot: protege os créditos da API de IA.
+const limitarEcoBot = criarLimitador({
+  limitePorMinuto: 15,
+  mensagem: "Muitas perguntas seguidas. Aguarde um minuto e tente de novo.",
+});
+
+app.post("/api/assistente", limitarEcoBot, async (req, res) => {
   const pergunta = typeof req.body?.pergunta === "string" ? req.body.pergunta.trim() : "";
 
   if (!pergunta) {
