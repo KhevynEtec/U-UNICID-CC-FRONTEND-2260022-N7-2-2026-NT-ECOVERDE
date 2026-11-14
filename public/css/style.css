@@ -943,6 +943,24 @@ main:focus {
   margin-bottom: var(--esp-2);
 }
 
+/* Cards dos ODS (sobre.html#ods): lista sem marcadores; o número do ODS
+   é texto (tag), sem os ícones oficiais da ONU. */
+.lista-ods {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lista-ods > li + li {
+  margin-top: 0;
+}
+
+.lista-ods .tag {
+  display: block;
+  width: fit-content;
+  margin-bottom: var(--esp-2);
+}
+
 /* Cards dos três pilares */
 .pilar {
   border-top: 6px solid var(--verde-folha);

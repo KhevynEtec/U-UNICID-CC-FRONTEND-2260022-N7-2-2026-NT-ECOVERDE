@@ -4,7 +4,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import path from "node:path";
-import { perguntarIA, normalizar } from "../lib/ia.js";
+import { perguntarIA, normalizar, buscarNoFaq } from "../lib/ia.js";
 import { FAQ } from "../lib/faq.js";
 
 const SEM_IA = { cliente: null };
@@ -45,6 +45,37 @@ for (const [pergunta, idEsperado] of casos) {
     assert.equal(resposta, esperado.resposta);
   });
 }
+
+test("FAQ: perguntas sobre os ODS respondem com a seção da página Sobre", async () => {
+  const esperado = FAQ.find((item) => item.id === "ods");
+  for (const pergunta of ["Quais ODS o EcoVerde apoia?", "O que são os ODS?", "O que é a Agenda 2030?",
+    "Quais objetivos de desenvolvimento sustentável o site apoia?"]) {
+    const { resposta, encontrou, fonte, link } = await perguntarIA(pergunta, SEM_IA);
+    assert.equal(encontrou, true, pergunta);
+    assert.equal(fonte, "faq", pergunta);
+    assert.equal(resposta, esperado.resposta, pergunta);
+    assert.equal(link.href, "sobre.html#ods", pergunta);
+  }
+});
+
+test("FAQ: a pergunta dos ODS não rouba as perguntas que já existiam", () => {
+  // Destino de cada pergunta registrado ANTES de a pergunta dos ODS existir.
+  const antes = [
+    ["Como separar o lixo reciclável?", "reciclagem"], ["O que é a Usina de Itaipu?", "itaipu"],
+    ["O que é o Setembro Verde?", "setembro-verde"], ["Quais são os atalhos de teclado?", "atalhos"],
+    ["Como falar com a equipe?", "projeto"], ["Como economizar água?", "agua"],
+    ["Como economizar energia?", "energia"], ["O que é energia limpa?", "energia-limpa"],
+    ["Como uma hidrelétrica gera energia?", "hidreletrica"], ["Quais os impactos de Itaipu?", "impactos"],
+    ["Como posso doar?", "doacao"], ["Quais recursos de acessibilidade o site tem?", "acessibilidade"],
+    // Com palavras parecidas com as chaves novas ("sustentável", "objetivo", "ONU"):
+    ["O que é energia sustentável?", "energia"], ["Energia renovável é sustentável?", "energia-limpa"],
+    ["Qual o objetivo do projeto?", "projeto"], ["O que a ONU fala sobre reciclagem?", "reciclagem"],
+    ["Como ter um consumo sustentável de água?", "agua"], ["Quais os impactos ambientais de Itaipu?", "impactos"],
+    ["Como a ONU vê a inclusão de pessoas com deficiência?", "setembro-verde"],
+    ["Itaipu é uma fonte sustentável?", "energia-limpa"], ["O que é o EcoVerde?", "projeto"],
+  ];
+  for (const [pergunta, id] of antes) assert.equal(buscarNoFaq(pergunta)?.id, id, pergunta);
+});
 
 test("FAQ tem prioridade: não chama a API quando encontra a resposta", async () => {
   const cliente = clienteFalso({ stop_reason: "end_turn", content: [{ type: "text", text: "da IA" }] });
