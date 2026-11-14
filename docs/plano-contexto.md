@@ -39,7 +39,7 @@ ODS relacionados: **ODS 7** (energia limpa), **ODS 10** (redução das desiguald
 - **Formulários validados** com HTML5 nativo (doação e contato), com erro exibido junto ao campo. Regras extras em `js/validacao.js` recusam dados falsos (nome, e-mail, telefone e mensagem), e o servidor confere se o domínio do e-mail existe.
 - **Galeria** com `figure`, `figcaption`, fonte e texto alternativo.
 - **Central de mídia**: `<video>` com legendas WebVTT, `<audio>` com transcrição e mapa em `<iframe>`.
-- **Recursos de acessibilidade**: skip link, atalhos eMAG (1 a 4), alto contraste e ajuste de fonte.
+- **Recursos de acessibilidade**: skip link, atalhos eMAG (1 a 4), alto contraste, ajuste de fonte e tradução para Libras com o **VLibras** (tradutor oficial do governo federal) em todas as páginas.
 - **EcoBot (FAQ + API de IA)**: widget servido pela rota `POST /api/assistente`. Responde primeiro pelo **FAQ local**; quando o FAQ não sabe, consulta a **API de IA (Claude, da Anthropic)**. Sem a chave `IA_API_KEY`, funciona só com o FAQ. Respostas da IA aparecem identificadas.
 
 ## 7. Stack técnica
@@ -56,6 +56,7 @@ ODS relacionados: **ODS 7** (energia limpa), **ODS 10** (redução das desiguald
 - **Acessibilidade:** WCAG 2.1 nível AA — contraste mínimo 4.5:1, foco visível, rótulos, `alt`, ARIA correto, navegação 100% por teclado.
 - **Responsividade:** mobile-first, ajustes em 600px, 900px e 1100px.
 - **Desempenho e sustentabilidade digital:** ilustrações em SVG, imagens em WebP, sem fontes ou bibliotecas externas.
+  **Única exceção: o VLibras** (`https://vlibras.gov.br`), carregado de fora por `js/script.js`. Motivo: é o tradutor oficial de Libras do governo federal, pedido pelo professor para atender pessoas surdas. Ele carrega depois da página e, se falhar, o site segue normalmente.
 - **Movimento reduzido:** respeitar `prefers-reduced-motion`; carrossel sem rotação automática.
 - **Segurança e LGPD:** nenhuma chave ou token no código (somente `.env` e variáveis do Railway); nenhum dado pessoal real coletado — os formulários não enviam dados.
 - **Honestidade de conteúdo:** nenhum dado factual inventado; pendências marcadas como "A complementar".
