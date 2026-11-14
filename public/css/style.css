@@ -2540,9 +2540,25 @@ html.destacar-links a:not(.btn) :where(*) {
     grid-template-columns: 260px minmax(0, 1fr);
   }
 
+  /* Índice fixo ao lado do artigo (itaipu.html e noticias.html). Com fonte
+     grande e espaçamento ele pode ficar mais alto que a tela: a altura fica
+     limitada à da tela e o índice rola por dentro, para que todos os links
+     possam ser vistos e focados (issue #44). */
   .layout-artigo .indice {
     position: sticky;
     top: var(--esp-4);
+    max-height: calc(100vh - 2 * var(--esp-4));
+    overflow-y: auto;
+    /* Barra de rolagem com contraste (puxador × trilho): 7.6:1 */
+    scrollbar-color: var(--texto-suave) var(--cinza-suave);
+  }
+
+  html.modo-escuro .layout-artigo .indice {
+    scrollbar-color: var(--escuro-borda) var(--escuro-campo); /* 4.2:1 */
+  }
+
+  html.alto-contraste .layout-artigo .indice {
+    scrollbar-color: #FFEB3B #000;
   }
 
   .site-footer__grid {
