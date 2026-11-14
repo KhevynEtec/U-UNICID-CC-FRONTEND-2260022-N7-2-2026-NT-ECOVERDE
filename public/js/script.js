@@ -6,8 +6,9 @@
 "use strict";
 
 const raiz = document.documentElement;
-// O <head> de cada página já troca no-js por js antes do CSS (evita o pulo
-// do menu no celular). Repetir aqui é uma garantia e não muda nada.
+// O <head> de cada página já troca no-js por js e aplica as preferências
+// salvas antes do CSS (evita o pulo do menu e a tela piscar). Repetir aqui
+// é uma garantia e não muda nada.
 raiz.classList.remove("no-js");
 raiz.classList.add("js");
 
@@ -124,7 +125,12 @@ function iniciarAcessibilidade() {
     if (nivel > 0) raiz.classList.add(`fonte-${nivel}`);
   };
 
-  const nivelSalvo = () => parseInt(guardar.ler("ecoverde-fonte"), 10) || 0;
+  // Só 0 a 3, como no script do <head>: um valor estranho salvo é ignorado
+  // (antes virava uma classe inexistente, como "fonte-9").
+  const nivelSalvo = () => {
+    const nivel = parseInt(guardar.ler("ecoverde-fonte"), 10);
+    return nivel >= 0 && nivel <= NIVEL_MAX ? nivel : 0;
+  };
 
   const mudarFonte = (delta) => {
     const novo = delta === 0 ? 0 : Math.min(NIVEL_MAX, Math.max(0, nivelSalvo() + delta));
