@@ -58,6 +58,16 @@
   --foco: #FFB300;                 /* anel de foco âmbar, contrastante com verdes e azuis */
   --foco-contorno: #212121;
 
+  /* Modo escuro (seção 19). Contraste medido sobre --escuro-superficie. */
+  --escuro-fundo: #121212;         /* fundo da página */
+  --escuro-superficie: #1E1E1E;    /* cards, formulários e painéis */
+  --escuro-campo: #2A2A2A;         /* campos de formulário e caixas internas */
+  --escuro-texto: #E6E6E6;         /* 13.4:1 */
+  --escuro-texto-suave: #BDBDBD;   /* 8.9:1 */
+  --escuro-verde: #81C784;         /* textos e links verdes: 8.3:1 */
+  --escuro-borda: #8A8A8A;         /* bordas de campos: 4.8:1 (mínimo 3:1) */
+  --escuro-erro: #FF8A80;          /* mensagens de erro: 7.3:1 */
+
   /* Tipografia — fonte do sistema (sem requisições externas) */
   --fonte-base: "Open Sans", Arial, Helvetica, sans-serif;
   --fs-base: 1.0625rem;            /* 17px */
@@ -2007,6 +2017,283 @@ html.alto-contraste .carrossel__indicador span {
 
 html.alto-contraste .carrossel__indicador[aria-current="true"] span {
   background: #FFEB3B;
+}
+
+/* MODO ESCURO (html.modo-escuro, escolhido no painel "Mais opções") -------
+   Muda superfícies, textos, links, formulários e bordas. Imagens, vídeo,
+   iframes e ilustrações não recebem filtro (nada é invertido).
+   As faixas verdes com texto branco (menu, hero, cabeçalhos, rodapé, botões
+   verdes) já têm contraste AA e continuam iguais.
+   :where(html.modo-escuro) mantém a especificidade das regras de elemento
+   (a, h1, input...) igual à original: assim elas não passam por cima das
+   regras de componente, como .menu a e .btn--primario. */
+:where(html.modo-escuro) body {
+  background-color: var(--escuro-fundo);
+  color: var(--escuro-texto);
+}
+
+:where(html.modo-escuro) h1,
+:where(html.modo-escuro) h2,
+:where(html.modo-escuro) h3,
+:where(html.modo-escuro) caption,
+html.modo-escuro .galeria figcaption,
+html.modo-escuro .marca,
+html.modo-escuro .marca:hover {
+  color: var(--escuro-texto);
+}
+
+:where(html.modo-escuro) a {
+  color: var(--escuro-verde);
+}
+
+:where(html.modo-escuro) a:hover {
+  color: var(--escuro-texto);
+}
+
+:where(html.modo-escuro) code,
+:where(html.modo-escuro) kbd {
+  border-color: var(--escuro-borda);
+  background: var(--escuro-campo);
+}
+
+:where(html.modo-escuro) figcaption,
+html.modo-escuro .lead,
+html.modo-escuro .marca__slogan,
+html.modo-escuro .fontes,
+html.modo-escuro .ajuda,
+html.modo-escuro .credito,
+html.modo-escuro .dica-rolagem,
+html.modo-escuro .membro p,
+html.modo-escuro .ecobot__fonte,
+html.modo-escuro .ecobot__aviso {
+  color: var(--escuro-texto-suave);
+}
+
+/* Textos que usavam os verdes escuros (#2E7D32 e #256D2A) */
+html.modo-escuro .sobretitulo,
+html.modo-escuro .marca__nome,
+html.modo-escuro .marca__nome span,
+html.modo-escuro .linha-tempo time,
+html.modo-escuro .linha-tempo .data,
+html.modo-escuro .transcricao summary,
+html.modo-escuro .ecobot__msg a {
+  color: var(--escuro-verde);
+}
+
+/* Nas faixas verdes do topo (hero e cabeçalhos das páginas) o texto continua claro */
+html.modo-escuro .hero .sobretitulo,
+html.modo-escuro .cabecalho-pagina .sobretitulo {
+  color: var(--branco);
+}
+
+html.modo-escuro .hero .lead,
+html.modo-escuro .cabecalho-pagina .lead {
+  color: var(--setembro-claro);
+}
+
+/* Superfícies */
+html.modo-escuro .site-header,
+html.modo-escuro .secao--branca,
+html.modo-escuro .secao--setembro,
+html.modo-escuro .card,
+html.modo-escuro .dica,
+html.modo-escuro .carrossel__slide,
+html.modo-escuro .indice,
+html.modo-escuro .form,
+html.modo-escuro .galeria figure,
+html.modo-escuro .midia-bloco,
+html.modo-escuro .tabela-wrapper,
+html.modo-escuro .membro,
+html.modo-escuro .ecobot__painel,
+html.modo-escuro .ecobot__msg--usuario {
+  border-color: var(--escuro-campo);
+  background: var(--escuro-superficie);
+  box-shadow: none;
+}
+
+html.modo-escuro .membro {
+  border-top-color: var(--verde-folha);
+}
+
+html.modo-escuro .membro:nth-child(3n + 2) { border-top-color: var(--azul-hidro); }
+html.modo-escuro .membro:nth-child(3n + 3) { border-top-color: var(--setembro-verde); }
+
+html.modo-escuro .ecobot__painel {
+  border-color: var(--escuro-borda);
+  color: var(--escuro-texto);
+}
+
+html.modo-escuro .ecobot__historico,
+html.modo-escuro .linha-tempo li::before {
+  background: var(--escuro-fundo);
+}
+
+/* Caixas internas (avisos, destaques, tags, transcrição) */
+html.modo-escuro .tag,
+html.modo-escuro .tag--azul,
+html.modo-escuro .tag--setembro,
+html.modo-escuro .aviso,
+html.modo-escuro .aviso--info,
+html.modo-escuro .placeholder,
+html.modo-escuro .texto-placeholder,
+html.modo-escuro .destaque,
+html.modo-escuro .destaque--verde,
+html.modo-escuro .dado,
+html.modo-escuro .transcricao,
+html.modo-escuro .ecobot__msg--bot,
+html.modo-escuro tbody th,
+html.modo-escuro .tabela--azul tbody th,
+html.modo-escuro tfoot th,
+html.modo-escuro tfoot td {
+  background: var(--escuro-campo);
+  color: var(--escuro-texto);
+}
+
+html.modo-escuro .tag,
+html.modo-escuro .tag--azul,
+html.modo-escuro .tag--setembro {
+  color: var(--escuro-verde);
+}
+
+html.modo-escuro .aviso--info,
+html.modo-escuro .destaque,
+html.modo-escuro .destaque--verde {
+  border-left-color: var(--escuro-verde);
+}
+
+html.modo-escuro .dado {
+  border-color: var(--escuro-verde);
+}
+
+html.modo-escuro .ecobot__msg--bot {
+  border-color: var(--escuro-borda);
+}
+
+html.modo-escuro .transcricao {
+  border-color: var(--escuro-borda);
+}
+
+html.modo-escuro .transcricao summary:hover {
+  background: var(--escuro-superficie);
+}
+
+/* Tabelas */
+:where(html.modo-escuro) th,
+:where(html.modo-escuro) td {
+  border-top-color: var(--escuro-campo);
+}
+
+html.modo-escuro tbody tr:nth-child(even) td {
+  background: var(--escuro-fundo);
+}
+
+/* Menu: a página atual não fica como um bloco branco */
+html.modo-escuro .menu a[aria-current="page"] {
+  background: var(--escuro-superficie);
+  color: var(--escuro-verde);
+}
+
+/* Botões e controles com contorno verde */
+html.modo-escuro .nav-toggle,
+html.modo-escuro .btn--contorno,
+html.modo-escuro .carrossel__btn,
+html.modo-escuro .filtro-galeria a,
+html.modo-escuro .ecobot__sugestao {
+  border-color: var(--escuro-verde);
+  background: var(--escuro-superficie);
+  color: var(--escuro-verde);
+}
+
+html.modo-escuro .nav-toggle:hover,
+html.modo-escuro .btn--contorno:hover,
+html.modo-escuro .carrossel__btn:hover,
+html.modo-escuro .filtro-galeria a:hover,
+html.modo-escuro .ecobot__sugestao:hover {
+  background: var(--escuro-campo);
+  color: var(--escuro-verde);
+}
+
+html.modo-escuro .carrossel__indicador span {
+  border-color: var(--escuro-verde);
+  background: var(--escuro-superficie);
+}
+
+html.modo-escuro .carrossel__indicador[aria-current="true"] span {
+  background: var(--escuro-verde);
+}
+
+/* Formulários */
+:where(html.modo-escuro) input[type="text"],
+:where(html.modo-escuro) input[type="email"],
+:where(html.modo-escuro) input[type="tel"],
+:where(html.modo-escuro) input[type="number"],
+:where(html.modo-escuro) input[type="url"],
+:where(html.modo-escuro) select,
+:where(html.modo-escuro) textarea {
+  border-color: var(--escuro-borda);
+  background: var(--escuro-campo);
+  color: var(--escuro-texto);
+}
+
+:where(html.modo-escuro) input:hover,
+:where(html.modo-escuro) select:hover,
+:where(html.modo-escuro) textarea:hover,
+:where(html.modo-escuro) input:focus-visible,
+:where(html.modo-escuro) select:focus-visible,
+:where(html.modo-escuro) textarea:focus-visible {
+  border-color: var(--escuro-verde);
+}
+
+html.modo-escuro ::placeholder {
+  color: var(--escuro-texto-suave);
+}
+
+:where(html.modo-escuro) fieldset,
+html.modo-escuro .opcao label {
+  border-color: var(--escuro-borda);
+}
+
+html.modo-escuro .opcao label:hover {
+  border-color: var(--escuro-verde);
+  background: var(--escuro-campo);
+}
+
+html.modo-escuro .opcao input:checked + label {
+  border-color: var(--escuro-verde);
+  background: var(--escuro-verde);
+  color: var(--escuro-fundo);
+}
+
+html.modo-escuro .mensagem-erro,
+html.modo-escuro .obrigatorio {
+  color: var(--escuro-erro);
+}
+
+html.modo-escuro .campo.is-invalido input,
+html.modo-escuro .campo.is-invalido select,
+html.modo-escuro .campo.is-invalido textarea {
+  border-color: var(--escuro-erro);
+  background: var(--escuro-campo);
+}
+
+html.modo-escuro .form__status--sucesso {
+  border-left-color: var(--escuro-verde);
+  background: var(--escuro-campo);
+  color: var(--escuro-verde);
+}
+
+html.modo-escuro .form__status--erro {
+  border-left-color: var(--escuro-erro);
+  background: var(--escuro-campo);
+  color: var(--escuro-erro);
+}
+
+/* ESCALA DE CINZA (html.escala-cinza) -------------------------------------
+   O filtro fica no <html>: na raiz do documento ele não muda a referência
+   de posição dos elementos fixos (o EcoBot e o VLibras continuam presos à
+   tela). Em qualquer outro elemento, como o <body>, ele quebraria isso. */
+html.escala-cinza {
+  filter: grayscale(1);
 }
 
 /* 20. RESPONSIVIDADE ====================================================== */
