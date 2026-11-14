@@ -796,9 +796,98 @@ function iniciarVLibras() {
   else window.addEventListener("load", carregar, { once: true });
 }
 
+/* 6. FOCO SEMPRE VISÍVEL ------------------------------------------------
+   O EcoBot (embaixo, à direita) e o botão do VLibras (à esquerda, no meio)
+   ficam fixos na tela. Quando o teclado leva o foco para algo que está atrás
+   deles, a página rola só o necessário para o elemento aparecer
+   (WCAG 2.4.11). O CSS já ajuda com scroll-padding-bottom no <html>. */
+const FOLGA_DO_FOCO = 12;
+
+/** Áreas fixas que podem cobrir o elemento focado (fora delas mesmas). */
+function areasFixas(elemento) {
+  const areas = [];
+  const botaoEcoBot = $(".ecobot__abrir");
+  if (botaoEcoBot && !elemento.closest(".ecobot")) areas.push(botaoEcoBot.getBoundingClientRect());
+  const painelEcoBot = $("#ecobot-painel");
+  if (painelEcoBot && !painelEcoBot.hidden && !painelEcoBot.contains(elemento)) areas.push(painelEcoBot.getBoundingClientRect());
+  const botaoVLibras = document.getElementById("vlibras-access-wrapper")?.shadowRoot?.getElementById("vlibras-button");
+  if (botaoVLibras) areas.push(botaoVLibras.getBoundingClientRect());
+  return areas.filter((r) => r.width && r.height);
+}
+
+/** Onde o elemento aparece: radios escondidos (.opcao) são desenhados pelo <label>. */
+const caixaVisivel = (elemento) =>
+  (elemento.matches(".opcao input") && elemento.labels?.[0] ? elemento.labels[0] : elemento).getBoundingClientRect();
+
+/** Chama fn quando a rolagem (inclusive a suave) parar. */
+function depoisDaRolagem(fn) {
+  let ultimo = scrollY;
+  let parados = 0;
+  let quadros = 0;
+  const passo = () => {
+    quadros++;
+    if (scrollY === ultimo) parados++;
+    else { parados = 0; ultimo = scrollY; }
+    if (parados >= 3 || quadros > 90) fn();
+    else requestAnimationFrame(passo);
+  };
+  requestAnimationFrame(passo);
+}
+
+/** Quanto rolar para o elemento caber inteiro numa faixa livre da tela.
+    0 = já está visível; null = nenhuma rolagem resolve. */
+function rolagemParaMostrar(elemento) {
+  const r = caixaVisivel(elemento);
+  // Faixas da tela ocupadas por áreas fixas na mesma coluna do elemento.
+  const ocupadas = areasFixas(elemento)
+    .filter((a) => r.left < a.right && a.left < r.right)
+    .map((a) => [a.top - FOLGA_DO_FOCO, a.bottom + FOLGA_DO_FOCO])
+    .sort((a, b) => a[0] - b[0]);
+  // Faixas livres, entre o topo e o pé da tela.
+  const livres = [];
+  let inicio = FOLGA_DO_FOCO;
+  for (const [cima, baixo] of ocupadas) {
+    if (cima > inicio) livres.push([inicio, cima]);
+    inicio = Math.max(inicio, baixo);
+  }
+  if (innerHeight - FOLGA_DO_FOCO > inicio) livres.push([inicio, innerHeight - FOLGA_DO_FOCO]);
+  if (livres.some(([cima, baixo]) => r.top >= cima && r.bottom <= baixo)) return 0;
+
+  // Menor rolagem possível (dentro do limite da página) que põe o elemento numa faixa livre.
+  const rolagemMaxima = document.documentElement.scrollHeight - innerHeight;
+  const opcoes = livres
+    .filter(([cima, baixo]) => baixo - cima >= Math.min(r.height, innerHeight / 3))
+    .map(([cima, baixo]) => (r.top < cima || r.height > baixo - cima ? r.top - cima : r.bottom - baixo))
+    .filter((d) => scrollY + d >= 0 && scrollY + d <= rolagemMaxima)
+    .sort((a, b) => Math.abs(a) - Math.abs(b));
+  return opcoes.length ? opcoes[0] : null;
+}
+
+function manterFocoVisivel() {
+  const ajustar = (elemento, podeRecolher) => {
+    if (document.activeElement !== elemento || !elemento.matches(":focus-visible")) return;
+    const rolar = rolagemParaMostrar(elemento);
+    if (rolar) {
+      scrollBy({ top: rolar, behavior: "instant" });
+    } else if (rolar === null && podeRecolher && !$("#ecobot-painel")?.hidden) {
+      // Nenhuma rolagem resolve: o painel aberto do EcoBot ocupa quase a tela
+      // toda (celular com fonte grande). Ele é recolhido sem tirar o foco daqui;
+      // a conversa continua lá e o botão do EcoBot reabre o painel.
+      document.dispatchEvent(new CustomEvent("ecobot:recolher"));
+      requestAnimationFrame(() => depoisDaRolagem(() => ajustar(elemento, false)));
+    }
+  };
+  addEventListener("focusin", (evento) => {
+    const elemento = evento.target;
+    if (!(elemento instanceof Element) || elemento.closest(".ecobot") || elemento.id === "vlibras-access-wrapper") return;
+    depoisDaRolagem(() => ajustar(elemento, true));
+  });
+}
+
 /* INICIALIZAÇÃO ------------------------------------------------------- */
 iniciarMenu();
 iniciarAcessibilidade();
 $$("[data-carrossel]").forEach(iniciarCarrossel);
 $$("form[data-validar]").forEach(iniciarFormulario);
 iniciarVLibras();
+manterFocoVisivel();
