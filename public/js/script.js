@@ -761,8 +761,69 @@ function iniciarFormulario(form) {
    - O widget se inicializa sozinho mesmo com a página já carregada
      (testado), por isso não é preciso disparar um "load" falso.
    - À esquerda (position "L"), para nunca cobrir o EcoBot, que fica à direita.
+     O botão vai para o canto inferior esquerdo (ver posicionarVLibras).
    - Sem internet ou com o site do governo fora do ar, nada acontece. */
 const VLIBRAS_RAIZ = "https://vlibras.gov.br/app";
+const LARGURA_MAXIMA_DO_BOTAO_VLIBRAS = 200; // o botão se abre até 200 px com o mouse ou o foco
+
+/* Botão do VLibras no canto inferior esquerdo, na altura do EcoBot.
+   A versão atual do widget (7.12) só aceita position "L" (meio da lateral
+   esquerda, onde cobria controles do painel "Mais opções"); as posições de
+   canto ("BL" etc.) não existem mais. Como o shadow DOM do widget é aberto,
+   um <style> colocado dentro dele muda a posição.
+   RISCO: depende do id interno #vlibras-access. Se o governo mudar o widget,
+   o <style> não encontra nada e o botão volta ao meio da lateral esquerda;
+   nada quebra. */
+function posicionarVLibras() {
+  const sombra = document.getElementById("vlibras-access-wrapper")?.shadowRoot;
+  if (!sombra) return false;
+  if (!sombra.getElementById("ecoverde-posicao")) {
+    const estilo = document.createElement("style");
+    estilo.id = "ecoverde-posicao";
+    // :host(.vlibras-compacto): sem espaço até o EcoBot, o botão não se abre
+    // (fica só o ícone de 40 px) para não passar por baixo do EcoBot.
+    estilo.textContent = `
+      #vlibras-access { top: auto; bottom: 1rem; left: 1rem; }
+      :host(.vlibras-compacto) #vlibras-access:hover,
+      :host(.vlibras-compacto) #vlibras-access:has(#vlibras-button:focus-visible) { width: 40px; }
+      :host(.vlibras-compacto) #vlibras-popup { display: none; }`;
+    sombra.append(estilo);
+  }
+  return true;
+}
+
+/* Com o painel do EcoBot aberto cobrindo o canto do VLibras (no celular o
+   painel ocupa quase toda a largura), só o botão flutuante do VLibras some;
+   volta quando o EcoBot fecha. A janela do avatar (#vlibras-app-root) é outro
+   elemento e nunca é escondida. O botão "Libras" da barra continua abrindo
+   o tradutor. */
+function acompanharEcoBot() {
+  const anfitriao = document.getElementById("vlibras-access-wrapper");
+  const area = anfitriao?.shadowRoot?.getElementById("vlibras-access");
+  const painel = $("#ecobot-painel");
+  if (!anfitriao || !area || !painel) return;
+
+  const botaoEcoBot = $(".ecobot__abrir");
+  // Considera a largura máxima do botão do VLibras (ele se abre com o mouse ou o foco).
+  const cruzaAberto = (v, o) =>
+    o.left < v.left + LARGURA_MAXIMA_DO_BOTAO_VLIBRAS && v.left < o.right && o.top < v.bottom && v.top < o.bottom;
+
+  const atualizar = () => {
+    const v = area.getBoundingClientRect();
+    const cobre = !painel.hidden && cruzaAberto(v, painel.getBoundingClientRect());
+    // O foco nunca some junto com o botão: vai para o "Libras" da barra.
+    if (cobre && document.activeElement === anfitriao) $("#btn-libras")?.focus();
+    anfitriao.classList.toggle("vlibras-recolhido", cobre);
+    // Botão do EcoBot perto demais (celular com fonte grande): o VLibras não se abre.
+    anfitriao.classList.toggle("vlibras-compacto", !!botaoEcoBot && cruzaAberto(v, botaoEcoBot.getBoundingClientRect()));
+  };
+
+  new MutationObserver(atualizar).observe(painel, { attributes: true, attributeFilter: ["hidden"] });
+  addEventListener("resize", atualizar);
+  // A+ / A- mudam o tamanho do botão do EcoBot sem mudar a janela.
+  if (botaoEcoBot && "ResizeObserver" in window) new ResizeObserver(atualizar).observe(botaoEcoBot);
+  atualizar();
+}
 
 function iniciarVLibras() {
   if (document.getElementById("vlibras-script")) return; // não carrega duas vezes
@@ -778,6 +839,8 @@ function iniciarVLibras() {
     script.addEventListener("load", () => {
       // Parâmetros: endereço, personalização, avatar e posição.
       if (window.VLibras?.Widget) new window.VLibras.Widget(VLIBRAS_RAIZ, undefined, undefined, "L");
+      // Canto inferior esquerdo e convivência com o EcoBot.
+      if (posicionarVLibras()) acompanharEcoBot();
       // Widget pronto: mostra o botão "Libras" da barra de acessibilidade (seção 2).
       const botaoLibras = $("#btn-libras");
       if (typeof window.VLibrasWidget?.open === "function") botaoLibras?.removeAttribute("data-aguardando");
@@ -810,8 +873,9 @@ function areasFixas(elemento) {
   if (botaoEcoBot && !elemento.closest(".ecobot")) areas.push(botaoEcoBot.getBoundingClientRect());
   const painelEcoBot = $("#ecobot-painel");
   if (painelEcoBot && !painelEcoBot.hidden && !painelEcoBot.contains(elemento)) areas.push(painelEcoBot.getBoundingClientRect());
-  const botaoVLibras = document.getElementById("vlibras-access-wrapper")?.shadowRoot?.getElementById("vlibras-button");
-  if (botaoVLibras) areas.push(botaoVLibras.getBoundingClientRect());
+  const anfitriaoVLibras = document.getElementById("vlibras-access-wrapper");
+  const botaoVLibras = anfitriaoVLibras?.shadowRoot?.getElementById("vlibras-button");
+  if (botaoVLibras && !anfitriaoVLibras.classList.contains("vlibras-recolhido")) areas.push(botaoVLibras.getBoundingClientRect());
   return areas.filter((r) => r.width && r.height);
 }
 
