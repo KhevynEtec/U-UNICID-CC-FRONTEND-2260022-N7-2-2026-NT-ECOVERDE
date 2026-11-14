@@ -18,22 +18,24 @@ Projeto acadêmico da disciplina **Desenvolvimento Front-End para Web** · UNICI
 
 | Página | Arquivo | Conteúdo |
 | --- | --- | --- |
-| Início | `index.html` | Hero, três pilares, carrossel acessível, dicas e chamada para o Setembro Verde |
-| Sobre | `sobre.html` | História, cronograma, missão, visão, valores e público-alvo |
+| Início | `index.html` | Hero, três pilares, destaque dos ODS, carrossel acessível, dicas e chamada para o Setembro Verde |
+| Sobre | `sobre.html` | História, cronograma, missão, visão, valores, “EcoVerde e os ODS” e público-alvo |
 | Itaipu | `itaipu.html` | Artigo educativo: geração renovável, energia limpa, ecossistemas e impactos |
-| Setembro Verde | `doacao.html` | A causa e um formulário de doação validado (demonstrativo) |
-| Acessibilidade | `acessibilidade.html` | Compromisso, teclas de atalho e navegação por teclado |
+| Setembro Verde | `doacao.html` | A causa e um formulário de doação com validação forte (demonstrativo) |
+| Acessibilidade | `acessibilidade.html` | Compromisso, teclas de atalho, navegação por teclado, painel “Mais opções”, Libras, formulários, privacidade e limitações conhecidas |
 | Galeria | `galeria.html` | Imagens com `figure`, `figcaption`, fonte e texto alternativo |
 | Mídia | `midia.html` | Vídeo autoral narrado com legendas, Podcast EcoVerde com transcrição e mapa da região de Itaipu |
 | Notícias | `noticias.html` | Notícias reais por categoria, com data e fonte |
-| Contato | `contato.html` | Formulário validado e cards da equipe |
+| Contato | `contato.html` | Formulário com validação forte e cards da equipe |
 | Orçamento | `orcamento_hospedagem.html` | Comparativo de hospedagem verde e registro de domínio |
 
 **Acessibilidade (público prioritário: pessoas com deficiência)**
 
-- Link “Pular para o conteúdo principal” e teclas de atalho no padrão eMAG (1 conteúdo, 2 menu, 3 rodapé, 4 acessibilidade).
-- Alto contraste e ajuste do tamanho do texto, salvos no navegador.
-- Navegação completa por teclado, foco visível, contraste WCAG AA e respeito a `prefers-reduced-motion`.
+- Link “Pular para o conteúdo principal” e teclas de atalho no padrão eMAG (1 conteúdo, 2 menu, 3 rodapé, 4 acessibilidade, 5 EcoBot).
+- Alto contraste e ajuste do tamanho do texto na barra do topo.
+- **Painel “Mais opções”:** quatro modos de cor (Padrão, Alto contraste, Modo escuro e Escala de cinza), leitura em voz alta com as vozes do próprio navegador (Web Speech API), leitura facilitada (espaçamento do texto pelo critério 1.4.12 da WCAG e destaque de links) e “Restaurar padrão”. As preferências ficam salvas só no navegador e são aplicadas antes do primeiro desenho da página.
+- **Libras com o VLibras**, tradutor oficial do governo federal: botão “Libras” na barra do topo ou botão no canto inferior esquerdo da tela.
+- Navegação completa por teclado, foco visível que não fica escondido atrás do EcoBot nem do VLibras, contraste WCAG AA (também no modo escuro) e respeito a `prefers-reduced-motion`.
 
 **EcoBot — FAQ + API de IA**
 
@@ -43,7 +45,9 @@ Projeto acadêmico da disciplina **Desenvolvimento Front-End para Web** · UNICI
 - Sem a chave `IA_API_KEY`, ou se a API falhar, o EcoBot continua funcionando só com o FAQ.
 - A chave fica só no servidor e cada visitante pode fazer até 15 perguntas por minuto.
 
-Os formulários validam os dados, mas **não enviam nada**: nenhum dado pessoal é coletado e nenhum pagamento é processado.
+**Formulários (contato e doação):** validação HTML5 com regras próprias (`public/js/validacao.js`) para nome, e-mail, telefone e mensagem. Elas recusam dados falsos (como o nome “aa”, o e-mail kk@email.com ou o telefone 11111111), sugerem a correção de domínios digitados errado e conferem o DDD. O servidor consulta se o domínio do e-mail existe (registro MX), sem gravar o e-mail. Os formulários são demonstrativos: a mensagem e a doação não são enviadas e nenhum pagamento é processado.
+
+**ODS:** o projeto se relaciona com os ODS 7, 10, 12 e 13 da Agenda 2030, explicados na página Sobre com a fonte da ONU Brasil. O EcoBot também responde sobre eles.
 
 ---
 
@@ -56,7 +60,7 @@ git clone https://github.com/KhevynEtec/U-UNICID-CC-FRONTEND-2260022-N7-2-2026-N
 cd U-UNICID-CC-FRONTEND-2260022-N7-2-2026-NT-ECOVERDE
 npm install
 npm start      # abre em http://localhost:3000
-npm test       # testes automatizados do EcoBot
+npm test       # testes automatizados: EcoBot, validação dos formulários e verificação de e-mail
 ```
 
 Para ativar a camada de IA, copie `.env.example` para `.env` e preencha `IA_API_KEY`. O `.env` não vai para o Git.
@@ -65,8 +69,8 @@ Para ativar a camada de IA, copie `.env.example` para `.env` e preencha `IA_API_
 
 ## Tecnologias e publicação
 
-- **Front-end:** HTML5 semântico, CSS3 puro (um arquivo, mobile-first, com variáveis) e JavaScript nativo. Sem frameworks e sem fontes externas.
-- **Servidor:** Node.js + Express (`server.js`) — entrega a pasta `public/` e a rota `POST /api/assistente` do EcoBot.
+- **Front-end:** HTML5 semântico, CSS3 puro (um arquivo, mobile-first, com variáveis) e JavaScript nativo. Sem frameworks e sem fontes externas. A única biblioteca externa no front-end é o VLibras (ver “Decisões do projeto”).
+- **Servidor:** Node.js + Express (`server.js`) — entrega a pasta `public/` e as rotas `POST /api/assistente` (EcoBot), `GET /api/verificar-email` (domínio do e-mail dos formulários) e `GET /api/saude` (servidor no ar). O EcoBot e a verificação de e-mail têm limite de pedidos por visitante.
 - **IA do EcoBot:** SDK oficial `@anthropic-ai/sdk`.
 - **Versionamento:** Git e GitHub. Desde a Aula 06, cada tarefa tem a sua branch e o seu pull request.
 - **Deploy:** Railway, com publicação automática a cada merge na `main`. Passo a passo em [docs/deploy-railway.md](docs/deploy-railway.md).
@@ -81,13 +85,15 @@ Paleta: Verde Folha `#2E7D32`, Azul Hidro `#0288D1`, Setembro Verde `#7CB342`, F
 ├── public/                    # o site
 │   ├── *.html                 # as 10 páginas
 │   ├── css/style.css
-│   ├── js/script.js           # menu, acessibilidade, carrossel, formulários
+│   ├── js/script.js           # menu, barra e painel de acessibilidade, carrossel, formulários, VLibras
+│   ├── js/validacao.js        # regras dos formulários (nome, e-mail, telefone, mensagem)
 │   ├── js/ecobot.js           # widget do EcoBot
 │   └── assets/                # imagens, ícones, vídeo, áudio e legendas
 ├── lib/
 │   ├── faq.js                 # perguntas e respostas do EcoBot
-│   └── ia.js                  # FAQ primeiro; API de IA se configurada
-├── test/ia.test.js            # testes do EcoBot
+│   ├── ia.js                  # FAQ primeiro; API de IA se configurada
+│   └── email.js               # verifica o domínio do e-mail (registro MX)
+├── test/                      # testes: ia, validacao e email (npm test)
 ├── server.js                  # servidor Express
 ├── docs/                      # documentação do projeto (ver abaixo)
 ├── .cursor/rules/             # regras da IA (Cursor)
@@ -95,6 +101,15 @@ Paleta: Verde Folha `#2E7D32`, Azul Hidro `#0288D1`, Setembro Verde `#7CB342`, F
 ├── AGENTS.md                  # resumo das regras para qualquer agente de IA
 └── .env.example               # modelo de variáveis; o .env real fica fora do Git
 ```
+
+---
+
+## Decisões do projeto
+
+- **Script curto no `<head>` das páginas:** troca `no-js` por `js` e aplica as preferências salvas antes do primeiro desenho, para evitar o pulo do menu, a tela piscar de clara para escura e o deslocamento de layout (CLS). É a única exceção ao JavaScript inline, registrada em [.cursor/rules/html-semantico.mdc](.cursor/rules/html-semantico.mdc).
+- **`!important` só no alto contraste e na leitura facilitada:** são preferências da pessoa e precisam valer sobre o estilo de qualquer componente. Exceção registrada em [.cursor/rules/css-estilo.mdc](.cursor/rules/css-estilo.mdc). O modo escuro não usa `!important`.
+- **VLibras como única biblioteca externa no front-end:** é o tradutor oficial de Libras do governo federal, e os navegadores não têm tradução para Libras. É carregado depois da página e, se falhar, o site segue normalmente. Exceção registrada no [plano de contexto](docs/plano-contexto.md).
+- **Galeria com ilustrações originais em SVG** no lugar das fotos do Unsplash/Pexels previstas no escopo: os direitos de uso ficam garantidos (são da própria equipe), os arquivos são leves e cada imagem tem descrição alternativa completa.
 
 ---
 
@@ -121,4 +136,4 @@ No site, a IA aparece no EcoBot (respostas marcadas como “gerada por IA”) e 
 
 ## Pendências
 
-- Testes manuais registrados em [docs/evidencias-testes.md](docs/evidencias-testes.md) (W3C, WAVE, Lighthouse, teclado, celular, formulários e mídia).
+- Registrar em [docs/evidencias-testes.md](docs/evidencias-testes.md) e no [diário de bordo](docs/diario-de-bordo.md) os testes e as decisões dos PRs #39, #40, #41, #42, #43, #45 e #46 (validação dos formulários, pulo do menu, VLibras, painel de acessibilidade, posição do VLibras, ODS e índice lateral).
