@@ -91,26 +91,31 @@ Os alertas não são erros. São pontos que o WAVE pede para uma pessoa conferir
 | Foco visível | Conferir o contorno amarelo em todos os elementos | ✅ | |
 | Ordem lógica de tabulação | A ordem do foco segue a ordem visual | ✅ | |
 | Teclas de atalho 1–4 | Testar no Chrome/Edge (`Alt`), Firefox (`Alt+Shift`), macOS (`Ctrl+Option`) | ✅ | |
-| Leitor de tela (NVDA/VoiceOver) | Ler títulos, regiões, imagens, formulários e carrossel | ⏳ | Não testado: equipe sem leitor de tela instalado. |
-| Textos alternativos | Conferir se cada `alt` descreve a imagem | ⚠️ | |
+| Leitor de tela (NVDA/VoiceOver) | Ler títulos, regiões, imagens, formulários e carrossel | ✅ | Testado com NVDA por Alexandre Almeida de Jesus Nogueira em 14/11/2026 (navegador não informado): as páginas do site foram lidas pelo NVDA sem problemas encontrados. |
+| Textos alternativos | Conferir se cada `alt` descreve a imagem | ✅ | Presença de `alt` confirmada pelo WAVE (08/11) e pelo axe; qualidade das descrições: não informado. |
 | Labels dos formulários | Cada campo anuncia seu rótulo e instruções | ✅ | |
-| Mensagens de erro | Erros anunciados e explicam como corrigir | ⚠️ | |
+| Mensagens de erro | Erros anunciados e explicam como corrigir | ✅ | Testes do [PR #39](https://github.com/KhevynEtec/U-UNICID-CC-FRONTEND-2260022-N7-2-2026-NT-ECOVERDE/pull/39) (mensagem junto ao campo, explicando como corrigir) e teste com NVDA de 14/11/2026. |
 | Headings | Lista de títulos do leitor de tela faz sentido | ✅ | |
 | Links e botões | Textos de link compreensíveis fora de contexto | ✅ | |
 | ARIA | `aria-current`, `aria-expanded`, `aria-pressed` atualizam corretamente | ✅ | |
 | Contraste | Conferir com WAVE ou Colour Contrast Analyser | ✅ | |
 | Alto contraste e tamanho de texto | Ativar os controles da barra superior | ✅ | |
 | `lang="pt-BR"` | Leitor de tela pronuncia em português | ✅ | |
-| Movimento reduzido | Ativar “reduzir movimento” no sistema e conferir que não há animações | ✅ | |
+| Movimento reduzido | Ativar “reduzir movimento” no sistema e conferir que não há animações | ⏳ | Não testado: não há teste registrado com a opção do sistema ligada. O CSS desliga as animações em `prefers-reduced-motion`. |
 
 ## 3. Testes de responsividade
 
-| Dispositivo / largura | Navegador | Menu | Layout | Imagens | Tabelas | Status |
+Larguras testadas nos PRs da entrega final, no **Microsoft Edge em modo sem janela, com emulação de largura** (não em aparelhos físicos). “—” indica que o item não foi testado naquela largura.
+
+| Largura | Navegador | Menu | Layout | Imagens | Tabelas | Status |
 |---|---|---|---|---|---|---|
-| Smartphone (360–414 px) | | | | | | ✅ |
-| Tablet (768–1024 px) | | | | | | ⚠️ |
-| Desktop (1280 px ou mais) | | | | | | ✅ |
-| Zoom do navegador em 200% | | | | | | ✅ |
+| 375 px (celular) | Microsoft Edge (emulação) | ✅ abre, fecha e `Esc` devolve o foco (PR #40) | ✅ sem rolagem horizontal nas 10 páginas, também com fonte 3 + espaçamento (PR #42) | — | ✅ rolam dentro da própria caixa, sem rolar a página (PR #42) | ✅ |
+| 600 px | Microsoft Edge (emulação) | — | ✅ controles do painel e dos formulários sem cobertura (PR #43) | — | — | ✅ |
+| 800 px | Microsoft Edge (emulação) | — | ✅ controles do painel e dos formulários sem cobertura (PR #43); sem rolagem horizontal (PR #45) | — | — | ✅ |
+| 1024 px | Microsoft Edge (emulação) | — | ✅ controles do painel e dos formulários sem cobertura (PR #43) | — | — | ✅ |
+| 1280 px | Microsoft Edge (emulação) | — | ✅ controles sem cobertura (PRs #43 e #45); índice lateral (PR #46) | — | — | ✅ |
+| 1440 px | Microsoft Edge (emulação) | — | ✅ índice lateral com fonte 3 + espaçamento (PR #46) | — | — | ✅ |
+| Texto ampliado | Chromium (19/10) e Microsoft Edge (emulação) | — | ✅ 640 px com o texto no tamanho máximo do portal (19/10); 375 px com fonte 3 + espaçamento (PR #42) | — | — | ✅ |
 
 ## 4. Testes dos formulários
 
@@ -174,7 +179,7 @@ URL: https://u-unicid-cc-frontend-2260022-n7-2-2026-nt-ecover-production.up.rail
 | Cenário | Resultado esperado | Status |
 |---|---|---|
 | `Alt+5` até o botão EcoBot e `Enter` | Painel abre, foco vai para o campo de pergunta, `aria-expanded="true"` | ✅ |
-| Enviar pergunta com `Enter` | Resposta aparece e é anunciada pelo leitor de tela | ✅ Resposta aparece; anúncio pelo leitor de tela não testado. |
+| Enviar pergunta com `Enter` | Resposta aparece e é anunciada pelo leitor de tela | ⏳ A resposta aparece; o anúncio pelo leitor de tela não foi testado. |
 | `Esc` com o painel aberto | Painel fecha e o foco volta ao botão EcoBot | ✅ |
 | Botões de sugestão | Enviam a pergunta correspondente | ✅ |
 | Pergunta fora do FAQ, com `IA_API_KEY` válida | Resposta da IA com o aviso "Resposta gerada por IA" | ✅ |
