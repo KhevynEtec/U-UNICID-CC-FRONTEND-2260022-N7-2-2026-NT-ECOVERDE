@@ -111,7 +111,9 @@ Paleta: Verde Folha `#2E7D32`, Azul Hidro `#0288D1`, Setembro Verde `#7CB342`, F
 - **Script curto no `<head>` das páginas:** troca `no-js` por `js` e aplica as preferências salvas antes do primeiro desenho, para evitar o pulo do menu, a tela piscar de clara para escura e o deslocamento de layout (CLS). É a única exceção ao JavaScript inline, registrada em [.cursor/rules/html-semantico.mdc](../.cursor/rules/html-semantico.mdc).
 - **`!important` só no alto contraste e na leitura facilitada:** são preferências da pessoa e precisam valer sobre o estilo de qualquer componente. Exceção registrada em [.cursor/rules/css-estilo.mdc](../.cursor/rules/css-estilo.mdc). O modo escuro não usa `!important`.
 - **VLibras como única biblioteca externa no front-end:** é o tradutor oficial de Libras do governo federal, e os navegadores não têm tradução para Libras. É carregado depois da página e, se falhar, o site segue normalmente. Exceção registrada no [plano de contexto](plano-contexto.md).
-- **Galeria com ilustrações originais em SVG** no lugar das fotos do Unsplash/Pexels previstas no escopo: os direitos de uso ficam garantidos (são da própria equipe), os arquivos são leves e cada imagem tem descrição alternativa completa.
+- **Imagens: fotos do Pixabay nas páginas, ilustrações originais na galeria.**
+  - **Páginas Início, Sobre, Itaipu e Setembro Verde:** usam 7 imagens de uso livre do Pixabay (licença do Pixabay), a pedido da equipe, para mostrar os temas com fotos, como a própria Usina de Itaipu. A legenda credita “Pixabay” (o autor de cada foto não foi registrado). As imagens foram convertidas para WebP e recortadas na mesma proporção das ilustrações que substituíram, para o layout não mudar: os originais somavam cerca de 9 MB, e as versões do site, 372 KB. A foto do topo da Início tem também uma versão de 720 px para o celular.
+  - **Galeria:** continua com as ilustrações originais em SVG, no lugar das fotos do Unsplash/Pexels previstas no escopo, porque os direitos de uso ficam garantidos (foram feitas pela própria equipe), os arquivos são leves e cada imagem tem descrição alternativa completa.
 
 ---
 
