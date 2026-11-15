@@ -1339,6 +1339,12 @@ main:focus {
   border-radius: var(--raio);
 }
 
+/* Imagem com fundo branco sobre seção colorida (ex.: ilustração de inclusão
+   na página Sobre): cantos arredondados para o retângulo branco não destoar. */
+.imagem-arredondada {
+  border-radius: var(--raio);
+}
+
 figcaption {
   margin-top: var(--esp-2);
   font-size: var(--fs-sm);
