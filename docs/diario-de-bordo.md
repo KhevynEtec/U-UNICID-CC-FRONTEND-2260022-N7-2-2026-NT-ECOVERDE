@@ -241,6 +241,28 @@ Cada integrante deve registrar suas atividades, decisões e dificuldades.
 - Itens ainda ⏳ em `evidencias-testes.md`: movimento reduzido, o `title` do mapa com leitor de tela e o anúncio da resposta do EcoBot pelo leitor de tela.
 - Confirmar com o professor se a compactação em `.zip` é necessária.
 
+### 15/11/2026 – Fotos do Pixabay nas páginas principais
+**Responsável:** Khevyn Lopes dos Santos, com o agente Claude Code no VS Code
+
+**O que foi feito:**
+- 7 ilustrações das páginas Início (topo e carrossel), Sobre (2), Itaipu (2) e Setembro Verde (1) foram trocadas por imagens de uso livre do Pixabay, escolhidas pela equipe. A galeria continua com as ilustrações originais em SVG.
+- Cada imagem foi convertida para WebP e recortada na mesma proporção da ilustração que substituiu, para o layout não mudar. Peso: cerca de 9 MB nos originais e 372 KB nas versões do site. A foto do topo da Início tem também uma versão de 720 px para o celular.
+- Texto alternativo novo para cada imagem e crédito “Pixabay” na legenda.
+- Validação (detalhes na seção 8.9 de `evidencias-testes.md`): W3C com 0 erros, axe com 0 violações nos 4 modos de cor, Lighthouse com acessibilidade 100 e CLS 0 nas 4 páginas, e desempenho de 95 a 99.
+
+**Decisões tomadas:**
+- Recortar as fotos na proporção das ilustrações antigas, para nada mudar de tamanho nas páginas.
+- Uma foto de recife de coral com tartaruga marinha foi descartada para a seção dos ecossistemas da Itaipu, porque o reservatório é de água doce; entrou uma foto de peixes em um rio.
+- O crédito ficou só “Pixabay”, porque o autor de cada foto não foi registrado.
+
+**Dificuldades e soluções:**
+- A foto do topo derrubou o desempenho da página inicial para 92 no celular; uma versão de 720 px, escolhida pelo navegador com `srcset`, levou de volta a 95 (a `main` mediu 96 na mesma hora).
+- O validador do W3C não aceita o atributo `fetchpriority` em `<img>`; ele foi retirado para manter 0 erros.
+
+**Próximos passos:**
+- Medir o Lighthouse no site publicado depois do merge.
+- Se possível, registrar o autor e o link de cada foto no Pixabay para completar os créditos.
+
 ### DD/MM/AAAA – _[próximo registro]_
 **Responsável:**
 **O que foi feito:**

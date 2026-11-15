@@ -339,6 +339,26 @@ Lighthouse 12.6.1, modo mobile, executado com `npx` (sem adicionar ao `package.j
 
 **Boas práticas 96:** em todas as páginas, o único item é `image-aspect-ratio`. A imagem é do próprio VLibras (`vlibras-popup.webp`, 450 × 120 px, exibida em 40 × 40 px dentro do botão do widget), e não do código do EcoVerde.
 
+### 8.9 Fotos do Pixabay nas páginas (15/11/2026)
+
+Troca das ilustrações por 7 fotos do Pixabay nas páginas Início, Sobre, Itaipu e Setembro Verde (branch `feat/fotos-pixabay`). Lighthouse 12.6.1, modo mobile, **servidor local**, 3 rodadas por página (mediana). O site publicado será medido depois do merge.
+
+| Página | Acessibilidade | Desempenho (3 rodadas) | CLS |
+|---|---|---|---|
+| index.html | 100 | 95 (95 / 95 / 95) | 0 |
+| sobre.html | 100 | 99 (99 / 99 / 99) | 0 |
+| itaipu.html | 100 | 99 (99 / 99 / 99) | 0 |
+| doacao.html | 100 | 99 (99 / 99 / 99) | 0 |
+
+Na mesma máquina e no mesmo momento, a `index.html` da `main` (ainda com a ilustração) deu desempenho 96: a diferença de 1 ponto está dentro da variação do Lighthouse. Em ambas, o maior elemento da tela (LCP) é o parágrafo de texto do topo, e não a foto.
+
+| Teste | Resultado | Status |
+|---|---|---|
+| W3C (`index`, `sobre`, `itaipu` e `doacao`) e `style.css` | 0 erros | ✅ |
+| axe, 4 páginas × 4 modos de cor | 0 violações, também com a leitura facilitada | ✅ |
+| 375, 800 e 1280 px | Sem rolagem horizontal; nenhum link coberto pelo EcoBot ou pelo VLibras, também com fonte 3 + espaçamento | ✅ |
+| Peso das imagens | Originais com cerca de 9 MB; versões do site em WebP com 372 KB no total | ✅ |
+
 ## 9. Limitações conhecidas
 
 - **EcoBot sobre o fim do painel “Mais opções”:** a 375 px com a fonte no nível 3 e a página no topo, o botão do EcoBot cobre o seletor “Velocidade”, no pé da tela. Pelo teclado, a página rola e o seletor aparece; com o mouse, é preciso rolar a página.
