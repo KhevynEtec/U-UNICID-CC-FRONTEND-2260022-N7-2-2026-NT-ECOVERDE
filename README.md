@@ -110,6 +110,7 @@ Paleta: Verde Folha `#2E7D32`, Azul Hidro `#0288D1`, Setembro Verde `#7CB342`, F
 - **`!important` só no alto contraste e na leitura facilitada:** são preferências da pessoa e precisam valer sobre o estilo de qualquer componente. Exceção registrada em [.cursor/rules/css-estilo.mdc](.cursor/rules/css-estilo.mdc). O modo escuro não usa `!important`.
 - **VLibras como única biblioteca externa no front-end:** é o tradutor oficial de Libras do governo federal, e os navegadores não têm tradução para Libras. É carregado depois da página e, se falhar, o site segue normalmente. Exceção registrada no [plano de contexto](docs/plano-contexto.md).
 - **Galeria com ilustrações originais em SVG** no lugar das fotos do Unsplash/Pexels previstas no escopo: os direitos de uso ficam garantidos (são da própria equipe), os arquivos são leves e cada imagem tem descrição alternativa completa.
+- **Fotos do Pixabay nas páginas Início, Sobre, Itaipu e Setembro Verde:** 7 imagens de uso livre (licença do Pixabay), com o crédito “Pixabay” na legenda. Foram convertidas para WebP e recortadas na mesma proporção das ilustrações que substituíram, para o layout não mudar: os originais somavam cerca de 9 MB, e as versões do site, menos de 400 KB. A foto do topo da Início tem também uma versão de 720 px para o celular.
 
 ---
 
