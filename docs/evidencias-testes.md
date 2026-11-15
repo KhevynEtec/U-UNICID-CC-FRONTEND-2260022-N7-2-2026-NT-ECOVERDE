@@ -56,6 +56,12 @@ Validar em https://validator.w3.org/ (página por upload ou URL).
 | orcamento_hospedagem.html | 08/11/2026 | 0 | 0 | ✅ | [Print na issue #20](https://github.com/KhevynEtec/U-UNICID-CC-FRONTEND-2260022-N7-2-2026-NT-ECOVERDE/issues/20#issuecomment-6724901276) |
 | css/style.css (W3C CSS Validator) | 08/11/2026 | 0 (1 erro corrigido no [PR #22](https://github.com/KhevynEtec/U-UNICID-CC-FRONTEND-2260022-N7-2-2026-NT-ECOVERDE/pull/22)) | Alertas informativos | ✅ | Alertas: variáveis CSS, prefixo `-webkit-`, `clip` do texto para leitor de tela e cores iguais de fundo e borda nos botões |
 
+### 1.1 Nova validação manual (14/11/2026)
+
+Depois dos PRs da entrega final, as 10 páginas foram validadas de novo **manualmente no validator.w3.org, pela URL do Railway**, por Khevyn Lopes dos Santos em 14/11/2026: **as 10 páginas com 0 erros**.
+
+As validações automáticas feitas durante os PRs usaram o **validator.nu**, que é o mesmo mecanismo (Nu Html Checker), porque o validator.w3.org bloqueia pedidos automáticos com uma verificação anti-robô.
+
 ## 2. Testes de acessibilidade
 
 ### 2.1 WAVE (https://wave.webaim.org/ ou extensão do navegador)
@@ -91,26 +97,31 @@ Os alertas não são erros. São pontos que o WAVE pede para uma pessoa conferir
 | Foco visível | Conferir o contorno amarelo em todos os elementos | ✅ | |
 | Ordem lógica de tabulação | A ordem do foco segue a ordem visual | ✅ | |
 | Teclas de atalho 1–4 | Testar no Chrome/Edge (`Alt`), Firefox (`Alt+Shift`), macOS (`Ctrl+Option`) | ✅ | |
-| Leitor de tela (NVDA/VoiceOver) | Ler títulos, regiões, imagens, formulários e carrossel | ⏳ | Não testado: equipe sem leitor de tela instalado. |
-| Textos alternativos | Conferir se cada `alt` descreve a imagem | ⚠️ | |
+| Leitor de tela (NVDA/VoiceOver) | Ler títulos, regiões, imagens, formulários e carrossel | ✅ | Testado com NVDA por Alexandre Almeida de Jesus Nogueira em 14/11/2026 (navegador não informado): as páginas do site foram lidas pelo NVDA sem problemas encontrados. |
+| Textos alternativos | Conferir se cada `alt` descreve a imagem | ✅ | Presença de `alt` confirmada pelo WAVE (08/11) e pelo axe; qualidade das descrições: não informado. |
 | Labels dos formulários | Cada campo anuncia seu rótulo e instruções | ✅ | |
-| Mensagens de erro | Erros anunciados e explicam como corrigir | ⚠️ | |
+| Mensagens de erro | Erros anunciados e explicam como corrigir | ✅ | Testes do [PR #39](https://github.com/KhevynEtec/U-UNICID-CC-FRONTEND-2260022-N7-2-2026-NT-ECOVERDE/pull/39) (mensagem junto ao campo, explicando como corrigir) e teste com NVDA de 14/11/2026. |
 | Headings | Lista de títulos do leitor de tela faz sentido | ✅ | |
 | Links e botões | Textos de link compreensíveis fora de contexto | ✅ | |
 | ARIA | `aria-current`, `aria-expanded`, `aria-pressed` atualizam corretamente | ✅ | |
 | Contraste | Conferir com WAVE ou Colour Contrast Analyser | ✅ | |
 | Alto contraste e tamanho de texto | Ativar os controles da barra superior | ✅ | |
 | `lang="pt-BR"` | Leitor de tela pronuncia em português | ✅ | |
-| Movimento reduzido | Ativar “reduzir movimento” no sistema e conferir que não há animações | ✅ | |
+| Movimento reduzido | Ativar “reduzir movimento” no sistema e conferir que não há animações | ⏳ | Não testado: não há teste registrado com a opção do sistema ligada. O CSS desliga as animações em `prefers-reduced-motion`. |
 
 ## 3. Testes de responsividade
 
-| Dispositivo / largura | Navegador | Menu | Layout | Imagens | Tabelas | Status |
+Larguras testadas nos PRs da entrega final, no **Microsoft Edge em modo sem janela, com emulação de largura** (não em aparelhos físicos). “—” indica que o item não foi testado naquela largura.
+
+| Largura | Navegador | Menu | Layout | Imagens | Tabelas | Status |
 |---|---|---|---|---|---|---|
-| Smartphone (360–414 px) | | | | | | ✅ |
-| Tablet (768–1024 px) | | | | | | ⚠️ |
-| Desktop (1280 px ou mais) | | | | | | ✅ |
-| Zoom do navegador em 200% | | | | | | ✅ |
+| 375 px (celular) | Microsoft Edge (emulação) | ✅ abre, fecha e `Esc` devolve o foco (PR #40) | ✅ sem rolagem horizontal nas 10 páginas, também com fonte 3 + espaçamento (PR #42) | — | ✅ rolam dentro da própria caixa, sem rolar a página (PR #42) | ✅ |
+| 600 px | Microsoft Edge (emulação) | — | ✅ controles do painel e dos formulários sem cobertura (PR #43) | — | — | ✅ |
+| 800 px | Microsoft Edge (emulação) | — | ✅ controles do painel e dos formulários sem cobertura (PR #43); sem rolagem horizontal (PR #45) | — | — | ✅ |
+| 1024 px | Microsoft Edge (emulação) | — | ✅ controles do painel e dos formulários sem cobertura (PR #43) | — | — | ✅ |
+| 1280 px | Microsoft Edge (emulação) | — | ✅ controles sem cobertura (PRs #43 e #45); índice lateral (PR #46) | — | — | ✅ |
+| 1440 px | Microsoft Edge (emulação) | — | ✅ índice lateral com fonte 3 + espaçamento (PR #46) | — | — | ✅ |
+| Texto ampliado | Chromium (19/10) e Microsoft Edge (emulação) | — | ✅ 640 px com o texto no tamanho máximo do portal (19/10); 375 px com fonte 3 + espaçamento (PR #42) | — | — | ✅ |
 
 ## 4. Testes dos formulários
 
@@ -174,7 +185,7 @@ URL: https://u-unicid-cc-frontend-2260022-n7-2-2026-nt-ecover-production.up.rail
 | Cenário | Resultado esperado | Status |
 |---|---|---|
 | `Alt+5` até o botão EcoBot e `Enter` | Painel abre, foco vai para o campo de pergunta, `aria-expanded="true"` | ✅ |
-| Enviar pergunta com `Enter` | Resposta aparece e é anunciada pelo leitor de tela | ✅ Resposta aparece; anúncio pelo leitor de tela não testado. |
+| Enviar pergunta com `Enter` | Resposta aparece e é anunciada pelo leitor de tela | ⏳ A resposta aparece; o anúncio pelo leitor de tela não foi testado. |
 | `Esc` com o painel aberto | Painel fecha e o foco volta ao botão EcoBot | ✅ |
 | Botões de sugestão | Enviam a pergunta correspondente | ✅ |
 | Pergunta fora do FAQ, com `IA_API_KEY` válida | Resposta da IA com o aviso "Resposta gerada por IA" | ✅ |
@@ -190,3 +201,146 @@ URL: https://u-unicid-cc-frontend-2260022-n7-2-2026-nt-ecover-production.up.rail
 | Servidores MCP configurados | Cursor → *Customize → MCPs* | `github`, `railway` e `figma` reconhecidos a partir do `.cursor/mcp.json`. Aparecem como *Disabled*: o Cursor só ativa MCP de projeto depois de aprovação e configuração dos tokens. [print](evidencias/cursor-mcp.png) | ✅ 07/11/2026 |
 | Pull requests feitos com agente | [Aba Pull requests do GitHub](https://github.com/KhevynEtec/U-UNICID-CC-FRONTEND-2260022-N7-2-2026-NT-ECOVERDE/pulls?q=is%3Apr+is%3Aclosed) | PRs #2 a #7: plano de contexto, regras, MCP, servidor e EcoBot, diário e link do deploy | ✅ 07/11/2026 |
 | Deploy concluído | [Site publicado](https://u-unicid-cc-frontend-2260022-n7-2-2026-nt-ecover-production.up.railway.app) | Site e EcoBot no ar no Railway (testes na seção 6.1.1) | ✅ 07/11/2026 |
+
+## 8. Entrega final (14/11/2026)
+
+Resultados registrados nas descrições dos pull requests da entrega final. Salvo indicação, os testes no navegador foram feitos no **Microsoft Edge em modo sem janela**, com o servidor local (`npm start`).
+
+### 8.1 Formulários – [PR #39](https://github.com/KhevynEtec/U-UNICID-CC-FRONTEND-2260022-N7-2-2026-NT-ECOVERDE/pull/39) (issue #32)
+
+| Teste | Resultado | Status |
+|---|---|---|
+| Casos do professor: nome “aa”, e-mail `kk@email.com`, telefone `11111111` | Recusados, com a mensagem junto ao campo explicando como corrigir. Também conferidos no site publicado em 14/11/2026 | ✅ |
+| Casos válidos (ex.: “Maria da Silva”, `maria.silva@gmail.com`, `11987651234`) | Aceitos; o telefone é formatado como `(11) 98765-1234` ao sair do campo | ✅ |
+| Rota `GET /api/verificar-email` | `gmail.com` e `unicid.edu.br` → `existe`; domínio inventado → `inexistente`; formato inválido → erro 400 | ✅ |
+| Envio com domínio inexistente | Sem confirmação; foco no campo de e-mail com “Não encontramos o domínio…” | ✅ |
+| E-mail trocado durante a verificação | A resposta antiga é ignorada | ✅ |
+| `npm test` | 43 testes aprovados no estado final do projeto (41 ao fim do PR #39) | ✅ |
+| W3C (`contato.html` e `doacao.html`) | 0 erros | ✅ |
+
+### 8.2 Pulo do menu no celular – [PR #40](https://github.com/KhevynEtec/U-UNICID-CC-FRONTEND-2260022-N7-2-2026-NT-ECOVERDE/pull/40) (issue #33)
+
+| Teste | Antes | Depois | Status |
+|---|---|---|---|
+| Lighthouse 12.6.1 mobile na `index.html` (servidor local, mediana de 3 rodadas): CLS | 0,521 | 0 | ✅ |
+| Lighthouse 12.6.1 mobile na `index.html`: desempenho | 78 | 100 | ✅ |
+| Menu a 375 px: abre, fecha e `Esc` devolve o foco ao botão | — | Funciona | ✅ |
+| Sem JavaScript: menu sempre visível | — | Funciona | ✅ |
+| W3C, 10 páginas | — | 0 erros | ✅ |
+
+### 8.3 VLibras – [PR #41](https://github.com/KhevynEtec/U-UNICID-CC-FRONTEND-2260022-N7-2-2026-NT-ECOVERDE/pull/41) (issue #34) e [PR #43](https://github.com/KhevynEtec/U-UNICID-CC-FRONTEND-2260022-N7-2-2026-NT-ECOVERDE/pull/43) (posição)
+
+| Teste | Resultado | Status |
+|---|---|---|
+| Widget nas 10 páginas | Aparece em todas, sem erro de JavaScript | ✅ |
+| Script do VLibras chegando 4 s depois do `load` da página | O botão aparece, com um único evento `load` (nenhum `load` falso) | ✅ |
+| Clique num parágrafo com o tradutor aberto | O texto vai para o serviço de tradução do VLibras e o avatar sinaliza | ✅ |
+| Sem acesso ao VLibras | Sem botão; site e EcoBot funcionando | ✅ |
+| Posição | Canto inferior esquerdo, na altura do EcoBot (PR #43) | ✅ |
+| Sobreposição com o EcoBot a 375, 600, 800, 1024 e 1280 px | Nenhuma, com o EcoBot fechado; com o painel do EcoBot aberto cobrindo o canto, o botão do VLibras some e volta ao fechar | ✅ |
+| Controles do painel e dos formulários cobertos (`elementFromPoint`) nas 5 larguras | Nenhum | ✅ |
+| Foco no botão do VLibras quando ele some | Vai para o botão “Libras” da barra | ✅ |
+| Janela do avatar com o EcoBot aberto | Continua visível e por cima de tudo | ✅ |
+| Alto contraste + fonte 3 | Botão e avatar sem deformar | ✅ |
+
+### 8.4 Painel “Mais opções” – [PR #42](https://github.com/KhevynEtec/U-UNICID-CC-FRONTEND-2260022-N7-2-2026-NT-ECOVERDE/pull/42) (issue #35)
+
+| Teste | Resultado | Status |
+|---|---|---|
+| axe-core, 10 páginas × 4 modos de cor | 0 violações, com o painel e o EcoBot abertos e os formulários com erros | ✅ |
+| axe-core com espaçamento + links destacados + fonte 3 | 0 violações nos 4 modos | ✅ |
+| Lighthouse (`index.html` e `contato.html`), Padrão e Modo escuro | Acessibilidade 100, desempenho 100 e CLS 0 | ✅ |
+| Roteiro completo de teclado (abrir, cada opção, `Esc`, Restaurar) | 29 verificações aprovadas, foco visível em todas as paradas, sem armadilha | ✅ |
+| Foco escondido atrás do EcoBot ou do VLibras (Tab pelo painel e pelos formulários) | 0 paradas escondidas a 375 px (antes: 20 de 68), também com fonte 3, com o EcoBot aberto e a 1280 px | ✅ |
+| Leitura em voz alta | Conferida de ouvido por Khevyn Lopes dos Santos em 14/11/2026, no Microsoft Edge: texto selecionado, páginas inteiras, Pausar, Continuar, Parar e velocidade | ✅ |
+| EcoBot e VLibras fixos ao rolar, nos 4 modos | Sim (a escala de cinza fica no `<html>`) | ✅ |
+| Preferências ao trocar de página e ao recarregar | Mantidas | ✅ |
+| 375 px com fonte 3 + espaçamento + painel aberto | Sem rolagem horizontal nas 10 páginas | ✅ |
+
+**Contraste do Modo escuro medido pelo axe** (1.617 elementos nas 10 páginas):
+
+| Contraste | Cores | Elementos |
+|---|---|---|
+| 4,72:1 | `#F1F8E9` sobre `#2E7D32` | `.lead` do cabeçalho das páginas internas (igual ao modo padrão) |
+| 4,81:1 | `#FFFFFF` sobre `#8D6E00` | rótulo do `.placeholder` |
+| 5,13:1 | `#FFFFFF` sobre `#2E7D32` | botões verdes, botão do EcoBot, títulos dos cabeçalhos, trilha, cabeçalho das tabelas |
+| 5,86:1 | `#F1F8E9` sobre `#256D2A` | `.lead` do hero |
+| 6,36:1 | `#FFFFFF` sobre `#256D2A` | links do menu, sobretítulo do hero |
+| 6,36:1 | `#256D2A` sobre `#FFFFFF` | botão claro nas faixas verdes |
+| 6,43:1 | `#212121` sobre `#7CB342` | botão Setembro Verde |
+| 7,13:1 | `#81C784` sobre `#2A2A2A` | tags, “Transcrição”, links dentro de avisos, mensagens de sucesso |
+| 7,30:1 | `#FF8A80` sobre `#1E1E1E` | mensagens de erro |
+| 8,28:1 | `#81C784` sobre `#1E1E1E` | “EcoVerde” do logo, item atual do menu, sobretítulos, `.link-seta`, botões do carrossel, sugestões do EcoBot, datas |
+| 8,87:1 | `#BDBDBD` sobre `#1E1E1E` | slogan, ajuda, créditos, legendas, aviso do EcoBot |
+| 9,31:1 | `#81C784` sobre `#121212` | links do conteúdo, sobretítulos |
+| 9,97:1 | `#BDBDBD` sobre `#121212` | `.lead`, `figcaption`, `.fontes` |
+| 11,50:1 | `#E6E6E6` sobre `#2A2A2A` | campos, mensagens do EcoBot, `.aviso`, `.destaque`, `.dado`, `.placeholder` |
+| 13,36:1 | `#E6E6E6` sobre `#1E1E1E` | cards, carrossel, títulos de seção |
+| 13,39:1 | `#E8F5E9` sobre `#1B2A1C` | textos do rodapé |
+| 15,01:1 | `#E6E6E6` sobre `#121212` | texto corrido e títulos |
+| 15,06:1 | `#FFFFFF` sobre `#1B2A1C` | links do rodapé |
+| 16,10:1 | `#FFFFFF` sobre `#212121` | barra de acessibilidade e painel |
+
+### 8.5 ODS – [PR #45](https://github.com/KhevynEtec/U-UNICID-CC-FRONTEND-2260022-N7-2-2026-NT-ECOVERDE/pull/45) (issue #36)
+
+| Teste | Resultado | Status |
+|---|---|---|
+| Nomes e objetivos dos ODS 7, 10, 12 e 13 | Conferidos na ONU Brasil (brasil.un.org/pt-br/sdgs) em 14/11/2026 | ✅ |
+| Meta 10.2 | Está na página oficial do ODS 10 e cita “deficiência”; incluída no card do ODS 10 | ✅ |
+| FAQ: perguntas sobre os ODS | 4 perguntas vão para a resposta nova, com o link para `sobre.html#ods` | ✅ |
+| FAQ: perguntas que já existiam | 21 perguntas continuam indo para as mesmas respostas; a chave “onu” foi retirada porque roubaria “O que a ONU fala sobre reciclagem?” | ✅ |
+| axe, 4 páginas alteradas × 4 modos | 0 violações, também com a leitura facilitada | ✅ |
+| Lighthouse (`sobre.html` e `index.html`), Padrão e Modo escuro | Acessibilidade 100 | ✅ |
+| 375 px | Sem rolagem horizontal; nenhum link coberto pelo EcoBot ou pelo VLibras | ✅ |
+
+### 8.6 Índice lateral – [PR #46](https://github.com/KhevynEtec/U-UNICID-CC-FRONTEND-2260022-N7-2-2026-NT-ECOVERDE/pull/46) (issue #44)
+
+| Teste | Resultado | Status |
+|---|---|---|
+| Links do índice com Tab, fonte 3 + espaçamento, a 1100, 1280 e 1440 px | Itaipu (8 links) e Notícias (6 links): todos dentro da tela e da área visível do índice | ✅ |
+| Sem preferências (1280 px) | O índice cabe e não aparece barra de rolagem | ✅ |
+| `contato.html` e `orcamento_hospedagem.html` | Sem mudança (o índice delas não fica fixo) | ✅ |
+| Roda do mouse sobre o índice | O índice rola primeiro; a página só depois do fim do índice | ✅ |
+| axe, 4 páginas com índice × 4 modos | 0 violações, com e sem fonte 3 + espaçamento | ✅ |
+
+**Contraste da barra de rolagem do índice** (puxador sobre trilho; mínimo exigido para interface: 3:1):
+
+| Modo | Cores | Contraste |
+|---|---|---|
+| Padrão e Escala de cinza | `#424242` sobre `#E0E0E0` | 7,6:1 |
+| Modo escuro | `#8A8A8A` sobre `#2A2A2A` | 4,2:1 |
+| Alto contraste | `#FFEB3B` sobre `#000000` | 17,2:1 |
+
+### 8.7 Documentação – [PR #47](https://github.com/KhevynEtec/U-UNICID-CC-FRONTEND-2260022-N7-2-2026-NT-ECOVERDE/pull/47) (issue #37)
+
+| Teste | Resultado | Status |
+|---|---|---|
+| W3C, `acessibilidade.html` | 0 erros, 0 avisos | ✅ |
+| axe, `acessibilidade.html` × 4 modos | 0 violações, também com a leitura facilitada | ✅ |
+| Lighthouse, `acessibilidade.html`, Padrão e Modo escuro | Acessibilidade 100 | ✅ |
+| Links internos dos dois README e da página | 61 links apontam para arquivos e âncoras que existem | ✅ |
+
+### 8.8 Lighthouse no site publicado (14/11/2026)
+
+Lighthouse 12.6.1, modo mobile, executado com `npx` (sem adicionar ao `package.json`), na URL do Railway, 3 rodadas por página. Os valores são a mediana; o desempenho mostra também as 3 rodadas.
+
+| Página | Acessibilidade | Desempenho (3 rodadas) | Boas práticas | SEO | CLS |
+|---|---|---|---|---|---|
+| index.html | 100 | 98 (98 / 99 / 97) | 96 | 100 | 0 |
+| sobre.html | 100 | 100 (100 / 100 / 100) | 96 | 100 | 0 |
+| itaipu.html | 100 | 99 (100 / 99 / 99) | 96 | 100 | 0 |
+| doacao.html | 100 | 100 (100 / 100 / 100) | 96 | 100 | 0 |
+| acessibilidade.html | 100 | 100 (100 / 100 / 100) | 96 | 100 | 0 |
+| galeria.html | 100 | 99 (99 / 99 / 100) | 96 | 100 | 0 |
+| midia.html | 100 | 98 (98 / 90 / 98) | 96 | 100 | 0 |
+| noticias.html | 100 | 100 (100 / 100 / 100) | 96 | 100 | 0 |
+| contato.html | 100 | 99 (99 / 99 / 99) | 96 | 100 | 0 |
+| orcamento_hospedagem.html | 100 | 100 (100 / 99 / 100) | 96 | 100 | 0 |
+
+**Boas práticas 96:** em todas as páginas, o único item é `image-aspect-ratio`. A imagem é do próprio VLibras (`vlibras-popup.webp`, 450 × 120 px, exibida em 40 × 40 px dentro do botão do widget), e não do código do EcoVerde.
+
+## 9. Limitações conhecidas
+
+- **EcoBot sobre o fim do painel “Mais opções”:** a 375 px com a fonte no nível 3 e a página no topo, o botão do EcoBot cobre o seletor “Velocidade”, no pé da tela. Pelo teclado, a página rola e o seletor aparece; com o mouse, é preciso rolar a página.
+- **Palavras quebradas sem hífen no índice lateral:** com fonte 3 + espaçamento, palavras longas do índice (Itaipu e Notícias), como “Importância”, são quebradas no meio, porque o navegador não faz hifenização em português aqui. O texto continua legível e os links funcionam.
+- **VLibras depende do site do governo:** se o vlibras.gov.br estiver fora do ar, o botão “Libras” não aparece e o restante do site funciona normalmente.

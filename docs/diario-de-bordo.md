@@ -188,6 +188,59 @@ Cada integrante deve registrar suas atividades, decisões e dificuldades.
 - Apagar `styles.css` e `Screenshot_1.png` da raiz.
 - Confirmar com o professor se a compactação em `.zip` é necessária.
 
+### 14/11/2026 – Entrega final: correções do professor, acessibilidade ampliada, ODS e documentação
+**Responsável:** equipe Promptdão, com o Claude (chat) no planejamento e na revisão e o agente Claude Code no VS Code na execução
+
+**Participação de cada integrante** (conforme o histórico do GitHub e as tarefas manuais da etapa):
+
+| Integrante | O que fez |
+|---|---|
+| Alexandre Almeida de Jesus Nogueira | Testou o site com o leitor de tela NVDA (14/11/2026); fez o merge dos PRs #39 (formulários) e #40 (pulo do menu). |
+| Khevyn Lopes dos Santos | Autor dos commits dos 8 PRs da etapa (30 commits, com o agente Claude Code); validou manualmente as 10 páginas no validator.w3.org pela URL do Railway; conferiu de ouvido a leitura em voz alta no Microsoft Edge; fez o merge dos PRs #41, #46 e #47. |
+| Luis Plinio Cornélio Mota | Fez o merge dos PRs #42 (painel de acessibilidade) e #45 (ODS). |
+| Marcos Paulo Cornélio Mota | Nenhuma atividade registrada no histórico desta etapa. |
+| Yuri Navas Moreira | Fez o merge do PR #43 (posição do VLibras) e comentou “Alteração validada” no PR. |
+
+**O que foi feito:**
+- PR #39 (issue #32): validação forte dos formulários de contato e doação (nome, e-mail, telefone e mensagem), verificação do domínio do e-mail pelo registro MX e correção de um laço infinito antigo.
+- PR #40 (issue #33): o menu não pula mais ao carregar no celular; CLS de 0,521 para 0 no Lighthouse mobile.
+- PR #41 (issue #34): tradutor VLibras nas 10 páginas.
+- PR #42 (issue #35): painel “Mais opções” com 4 modos de cor, leitura em voz alta, leitura facilitada e “Restaurar padrão”, além do botão “Libras” na barra.
+- PR #43 (refs #35): botão do VLibras no canto inferior esquerdo, sem cobrir o painel nem o EcoBot.
+- PR #45 (issue #36): seção “EcoVerde e os ODS” e ligação do site aos ODS 7, 10, 12 e 13.
+- PR #46 (issue #44): índice lateral da Itaipu e das Notícias rolando por dentro quando não cabe na tela.
+- PR #47 (issue #37): página de acessibilidade e README atualizados com os recursos novos e as decisões do projeto.
+- Testes da etapa registrados em `evidencias-testes.md` (seções 1.1, 8 e 9), incluindo o Lighthouse das 10 páginas no site publicado.
+
+**Prompts usados (resumo) e uso de IA:**
+- O professor apontou que os formulários aceitavam dados falsos e pediu acessibilidade para pessoas surdas, mais opções de contraste e recursos para deficiência visual.
+- A equipe usou o Claude (chat) para analisar o projeto contra a rubrica da Aula 06 e o escopo, planejar as etapas e revisar cada plano e cada resultado.
+- O Claude Code no VS Code executou cada etapa numa branch própria, com pull request. Cada etapa começou com um prompt com contexto (AGENTS.md e regras), tarefa, regras de validação e processo (“mostre o plano antes de editar, sem push nem merge até eu pedir”). O agente mostrava o plano, a equipe aprovava ou ajustava e só então ele editava, testava e abria o PR.
+- Os commits feitos com IA têm a linha `Co-Authored-By` do agente.
+
+**Decisões tomadas:**
+- E-mail: verificação do domínio pelo registro MX no servidor; se a rota falhar ou não souber responder, o formulário não bloqueia.
+- VLibras como única biblioteca externa no front-end, por ser o tradutor oficial do governo e não haver tradução para Libras nos navegadores.
+- Preferências salvas aplicadas por um script curto no `<head>` (opção B), para a tela não piscar e nada pular de lugar.
+- A posição “BL” não existe na versão 7.12.3 do VLibras; o botão foi para o canto inferior esquerdo por um `<style>` dentro do shadow DOM do widget.
+- Paleta do modo escuro aprovada pela equipe, com contraste AA medido (textos verdes em `#81C784` e erros em `#FF8A80`).
+- Chave “onu” retirada do FAQ dos ODS, porque roubaria perguntas como “O que a ONU fala sobre reciclagem?”.
+- A meta 10.2 entrou no card do ODS 10 por estar na fonte oficial (ONU Brasil) e citar a inclusão independentemente de deficiência.
+- A galeria continua com ilustrações originais em SVG, no lugar das fotos previstas no escopo.
+
+**Dificuldades e soluções:**
+- Um laço infinito antigo em `atualizarErro` (o `checkValidity()` disparava o evento `invalid`, que chamava a função de novo) apareceu nos testes dos formulários e foi corrigido no PR #39.
+- O pulo do menu dependia da velocidade de carregamento: numa das três rodadas do Lighthouse ele não aparecia. Com a correção, as três deram CLS 0.
+- Em telas de altura média, o botão do VLibras no meio da lateral cobria um checkbox do painel; foi para o canto inferior esquerdo (PR #43).
+- O validator.w3.org bloqueia pedidos automáticos; as validações automáticas dos PRs foram feitas no validator.nu (mesmo mecanismo), e a validação final das 10 páginas foi feita manualmente no validator.w3.org.
+- O axe encontrou bugs antigos de contraste no alto contraste: teclas (`<kbd>`) com texto branco sobre fundo branco e textos verde-escuros sobre preto. Foram corrigidos no PR #42.
+- 5 dos 8 PRs desta etapa tiveram o merge feito por outro integrante. Os PRs #41, #46 e #47 tiveram o merge feito pelo próprio autor (Khevyn), o que contraria a regra da equipe, por causa do prazo de entrega (16/11). Para compensar, cada PR teve descrição completa, testes registrados e revisão do plano e do resultado antes do merge.
+
+**Próximos passos:**
+- Revisão dos PRs #41, #46 e #47 por outro integrante, com comentário de revisão no GitHub, mesmo após o merge.
+- Itens ainda ⏳ em `evidencias-testes.md`: movimento reduzido, o `title` do mapa com leitor de tela e o anúncio da resposta do EcoBot pelo leitor de tela.
+- Confirmar com o professor se a compactação em `.zip` é necessária.
+
 ### DD/MM/AAAA – _[próximo registro]_
 **Responsável:**
 **O que foi feito:**
