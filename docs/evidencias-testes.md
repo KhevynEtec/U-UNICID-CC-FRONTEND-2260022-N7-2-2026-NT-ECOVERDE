@@ -115,13 +115,13 @@ Larguras testadas nos PRs da entrega final, no **Microsoft Edge em modo sem jane
 
 | Largura | Navegador | Menu | Layout | Imagens | Tabelas | Status |
 |---|---|---|---|---|---|---|
-| 375 px (celular) | Microsoft Edge (emulação) | ✅ abre, fecha e `Esc` devolve o foco (PR #40) | ✅ sem rolagem horizontal nas 10 páginas, também com fonte 3 + espaçamento (PR #42) | — | ✅ rolam dentro da própria caixa, sem rolar a página (PR #42) | ✅ |
-| 600 px | Microsoft Edge (emulação) | — | ✅ controles do painel e dos formulários sem cobertura (PR #43) | — | — | ✅ |
-| 800 px | Microsoft Edge (emulação) | — | ✅ controles do painel e dos formulários sem cobertura (PR #43); sem rolagem horizontal (PR #45) | — | — | ✅ |
-| 1024 px | Microsoft Edge (emulação) | — | ✅ controles do painel e dos formulários sem cobertura (PR #43) | — | — | ✅ |
-| 1280 px | Microsoft Edge (emulação) | — | ✅ controles sem cobertura (PRs #43 e #45); índice lateral (PR #46) | — | — | ✅ |
-| 1440 px | Microsoft Edge (emulação) | — | ✅ índice lateral com fonte 3 + espaçamento (PR #46) | — | — | ✅ |
-| Texto ampliado | Chromium (19/10) e Microsoft Edge (emulação) | — | ✅ 640 px com o texto no tamanho máximo do portal (19/10); 375 px com fonte 3 + espaçamento (PR #42) | — | — | ✅ |
+| 375 px (celular) | Google Chrome sem janela, emulação (16/11/2026); Microsoft Edge, emulação (PRs) | ✅ botão "Menu" abre com Enter, mostra os 10 links, Esc fecha e devolve o foco (PR #40 e 16/11) | ✅ sem rolagem horizontal nas 10 páginas, também com fonte 3 + espaçamento (PR #42 e 16/11) | ✅ 30 imagens locais carregam, sem distorção e dentro da tela (16/11) | ✅ as 4 tabelas rolam dentro da própria caixa, focável pelo teclado (PR #42 e 16/11) | ✅ |
+| 600 px | Google Chrome sem janela, emulação (16/11/2026); Microsoft Edge, emulação (PR #43) | ✅ botão "Menu", mesmo teste (16/11) | ✅ sem rolagem horizontal; controles do painel e dos formulários sem cobertura (PR #43 e 16/11) | ✅ mesmo resultado (16/11) | ✅ as 4 tabelas rolam dentro da própria caixa (16/11) | ✅ |
+| 800 px | Google Chrome sem janela, emulação (16/11/2026); Microsoft Edge, emulação (PRs #43 e #45) | ✅ botão "Menu", mesmo teste (16/11) | ✅ sem rolagem horizontal; controles sem cobertura (PRs #43, #45 e 16/11) | ✅ mesmo resultado (16/11) | ✅ a do Orçamento rola na caixa; as outras cabem (16/11) | ✅ |
+| 1024 px | Google Chrome sem janela, emulação (16/11/2026); Microsoft Edge, emulação (PR #43) | ✅ botão "Menu", mesmo teste (16/11) | ✅ sem rolagem horizontal; controles sem cobertura (PR #43 e 16/11) | ✅ mesmo resultado (16/11) | ✅ as 4 cabem na tela (16/11) | ✅ |
+| 1280 px | Google Chrome sem janela, emulação (16/11/2026); Microsoft Edge, emulação (PRs #43, #45 e #46) | ✅ menu fixo na barra, 10 links visíveis (16/11) | ✅ sem rolagem horizontal; índice lateral (PR #46 e 16/11) | ✅ mesmo resultado (16/11) | ✅ as 4 cabem na tela (16/11) | ✅ |
+| 1440 px | Google Chrome sem janela, emulação (16/11/2026); Microsoft Edge, emulação (PR #46) | ✅ menu fixo na barra, 10 links visíveis (16/11) | ✅ sem rolagem horizontal; índice com fonte 3 + espaçamento (PR #46 e 16/11) | ✅ mesmo resultado (16/11) | ✅ as 4 cabem na tela (16/11) | ✅ |
+| Texto ampliado (fonte 3 + espaçamento) | Chromium (19/10); Microsoft Edge (PR #42); Google Chrome sem janela (16/11/2026) | ✅ nas 6 larguras, mesmo teste do menu (16/11) | ✅ sem rolagem horizontal nas 10 páginas, nas 6 larguras (16/11) | ✅ mesmo resultado (16/11) | ✅ as que não cabem rolam dentro da caixa, nas 6 larguras (16/11) | ✅ |
 
 ## 4. Testes dos formulários
 
