@@ -111,7 +111,7 @@ Os alertas não são erros. São pontos que o WAVE pede para uma pessoa conferir
 
 ## 3. Testes de responsividade
 
-Larguras testadas nos PRs da entrega final, no **Microsoft Edge em modo sem janela, com emulação de largura** (não em aparelhos físicos). “—” indica que o item não foi testado naquela largura.
+Testes de 16/11/2026 no Google Chrome em modo sem janela, com emulação de largura e 900 px de altura, sobre o código da main (commit 0333bad, o mesmo publicado) rodando com npm start. Os resultados dos PRs da entrega final, no Microsoft Edge, continuam citados. Não foram usados aparelhos físicos. As 6 fotos das notícias vêm dos sites das reportagens e não entraram neste teste. Elas foram conferidas no site publicado em 14/11/2026.
 
 | Largura | Navegador | Menu | Layout | Imagens | Tabelas | Status |
 |---|---|---|---|---|---|---|
