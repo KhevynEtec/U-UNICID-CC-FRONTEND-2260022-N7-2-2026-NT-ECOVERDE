@@ -1,6 +1,7 @@
 # EcoVerde — Sustentabilidade, energia limpa e inclusão
 
 **Site publicado:** https://u-unicid-cc-frontend-2260022-n7-2-2026-nt-ecover-production.up.railway.app
+
 **Slide:** https://www.canva.com/design/DAHbrKfL16o/E9y5HBNOGl8GJlUNKgF2Sw/edit?ui=eyJEIjp7IlMiOnRydWV9LCJBIjp7IkEiOiJkb3dubG9hZF9wZGZfc3RkIiwiRiI6dHJ1ZX19
 
 Portal web educativo e acessível que une três pilares: **sustentabilidade** (reciclagem e uso racional da água e da energia), **energia limpa** (estudo de caso da Usina Binacional de Itaipu) e **inclusão social** (causa Setembro Verde e acessibilidade digital). Inclui o **EcoBot**, assistente que tira dúvidas sobre os temas do site.
